@@ -9,7 +9,7 @@ export function gmtOffset(date: Date, timezone: string): string {
   const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
   const offset = (tzDate.getTime() - utcDate.getTime()) / 60 / 1000 / 60;
 
-  return offset > 0
+  return offset >= 0
     ? '+' + offset.toString()
     : offset.toString();
 }
