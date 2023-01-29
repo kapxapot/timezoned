@@ -24,7 +24,7 @@ export default function Home() {
       <main className="flex flex-wrap justify-center items-start p-5 gap-6">
         <Clock name="Local Time" />
         {timezones.map((timezone) => (
-          <Clock name={timezone} timezone={timezone} />
+          <Clock name={timezone} timezone={timezone} key={timezone} />
         ))}
       </main>
     </>
