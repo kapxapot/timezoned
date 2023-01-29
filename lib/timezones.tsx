@@ -1,5 +1,7 @@
+import { timeZonesNames } from "@vvo/tzdb";
+
 export function getTimezones(): string[] {
-  return Intl.supportedValuesOf('timeZone');
+  return timeZonesNames;
 }
 
 export function gmtOffset(date: Date, timezone: string): string {
