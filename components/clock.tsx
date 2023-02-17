@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
+import { Card } from 'flowbite-react';
 
 interface Props {
   name: string;
@@ -23,8 +24,8 @@ export default function Clock({ name, timezone }: Props) {
   );
 
   return (
-    <div className="flex flex-col items-center gap-2 p-3 bg-slate-100 rounded-xl">
-      <div className="font-bold">{name}</div>
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md bg-slate-50 p-4">
+      <h3 className="font-bold">{name}</h3>
       <div className="text-indigo-500 text-5xl -mt-1">
         {format(tzDate(timezone), 'HH:mm')}
       </div>

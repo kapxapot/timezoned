@@ -1,12 +1,15 @@
 import Head from 'next/head';
 import Clock from '@/components/clock';
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition } from '@headlessui/react';
+import { Button, Label, Select } from 'flowbite-react';
 import { Fragment, useEffect, useState } from 'react';
 import { getTimezones } from '@/lib/timezones';
 
 export default function Home() {
+  const [clocks, setClocks] = useState<string[]>([]);
   const [timezones, setTimezones] = useState<string[]>([]);
   const [showAddTimezoneModal, setShowTimezoneModal] = useState<boolean>(false);
+  const [selectedTimezone, setSelectedTimezone] = useState<string>('');
 
   function openAddTimezoneModal() {
     setShowTimezoneModal(true);
@@ -14,15 +17,24 @@ export default function Home() {
 
   function addTimezoneModalOk() {
     setShowTimezoneModal(false);
+
+    setClocks([...clocks, selectedTimezone]);
   }
 
   function addTimezoneModalCancel() {
     setShowTimezoneModal(false);
   }
 
+  function onTimezoneSelected(event: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectedTimezone(event.currentTarget.value);
+  }
+
   useEffect(
     () => {
-      setTimezones(getTimezones().slice(0, 2));
+      const timezones = getTimezones();
+
+      setTimezones(timezones);
+      setClocks(timezones.slice(0, 2));
     },
     []
   );
@@ -36,17 +48,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <nav className="flex space-x-2 justify-center mt-5">
-        <button
-          type="button"
-          onClick={openAddTimezoneModal}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-        >
-          Add timezone
-        </button>
+        <Button color="purple" onClick={openAddTimezoneModal}>Add timezone</Button>
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         <Clock name="Local Time" />
-        {timezones.map((timezone) => (
+        {clocks.map((timezone) => (
           <Clock name={timezone} timezone={timezone} key={timezone} />
         ))}
       </main>
@@ -75,28 +81,26 @@ export default function Home() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-md bg-white p-4 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className="text-lg font-medium leading-6 text-gray-900 mb-4"
                   >
-                    Payment successful
+                    Add timezone
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
 
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={addTimezoneModalOk}
-                    >
-                      Got it, thanks!
-                    </button>
+                  <div className="mb-2 block">
+                    <Label htmlFor="timezones" value="Timezone" />
+                  </div>
+                  <Select id="timezones" required={true} onChange={onTimezoneSelected}>
+                    {timezones.map((timezone) => (
+                      <option>{timezone}</option>
+                    ))}
+                  </Select>
+
+                  <div className="flex justify-end gap-3 mt-6 w-full">
+                    <Button color="purple" onClick={addTimezoneModalOk}>Add</Button>
+                    <Button color="gray" onClick={addTimezoneModalCancel}>Cancel</Button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
