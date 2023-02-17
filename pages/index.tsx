@@ -94,7 +94,7 @@ export default function Home() {
                   </div>
                   <Select id="timezones" required={true} onChange={onTimezoneSelected}>
                     {timezones.map((timezone) => (
-                      <option>{timezone}</option>
+                      <option value={timezone} key={timezone}>{timezone}</option>
                     ))}
                   </Select>
 
