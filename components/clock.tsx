@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
-import { Card } from 'flowbite-react';
 
 interface Props {
   name: string;
