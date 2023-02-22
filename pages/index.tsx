@@ -5,8 +5,13 @@ import { Label, Select } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getTimezones } from '@/lib/timezones';
 
+interface ClockData {
+  timezone: string;
+  title?: string;
+}
+
 export default function Home() {
-  const [clocks, setClocks] = useState<string[]>([]);
+  const [clocks, setClocks] = useState<ClockData[]>([]);
   const [timezones, setTimezones] = useState<string[]>([]);
   const [selectedTimezone, setSelectedTimezone] = useState<string>('');
 
@@ -14,8 +19,14 @@ export default function Home() {
     setSelectedTimezone(event.currentTarget.value);
   }
 
+  function tzToClock(timezone: string): ClockData {
+    return {
+      timezone: timezone
+    };
+  };
+
   function addTimezone() {
-    setClocks([...clocks, selectedTimezone]);
+    setClocks([...clocks, tzToClock(selectedTimezone)]);
   }
 
   useEffect(
@@ -23,7 +34,13 @@ export default function Home() {
       const timezones = getTimezones();
 
       setTimezones(timezones);
-      setClocks(timezones.slice(0, 2));
+
+      const local = {
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        title: "Local Time"
+      };
+
+      setClocks([local, ...timezones.slice(0, 2).map(tz => tzToClock(tz))]);
     },
     []
   );
@@ -53,9 +70,8 @@ export default function Home() {
         </ModalContainer>
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
-        <Clock name="Local Time" />
-        {clocks.map((timezone) => (
-          <Clock name={timezone} timezone={timezone} key={timezone} />
+        {clocks.map(clock => (
+          <Clock name={clock.title} timezone={clock.timezone} key={clock.timezone} />
         ))}
       </main>
     </>
