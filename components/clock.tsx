@@ -56,7 +56,7 @@ export function Clock({ data }: Props) {
         </Menu.Button>
         <Menu.Items className="absolute mt-2 divide-y right-0 divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           {menuItems.map(item => (
-            <Menu.Item>
+            <Menu.Item key={item.label}>
             {({ active }) => (
               <a
                 className={`${active && 'bg-slate-100'} w-full block py-1 px-4 whitespace-nowrap ${item.className}`}
