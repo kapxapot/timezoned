@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Clock, ClockData } from '@/components/clock';
 import ModalContainer from '@/components/modal-container';
-import { Label, Select, TextInput } from 'flowbite-react';
+import { DeepPartial, FlowbiteTextInputTheme, Label, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getTimezones } from '@/lib/timezones';
 
@@ -84,6 +84,14 @@ export default function Home() {
     []
   );
 
+  const textInputTheme: DeepPartial<FlowbiteTextInputTheme> = {
+    field: {
+      input: {
+        base: 'focus:outline-blue-500 block w-full border disabled:cursor-not-allowed disabled:opacity-50'
+      }
+    }
+  };
+
   return (
     <>
       <Head>
@@ -122,6 +130,7 @@ export default function Home() {
             <TextInput
               id="title"
               onChange={onTitleChanged}
+              theme={textInputTheme}
             />
           </div>
         </ModalContainer>
