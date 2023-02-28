@@ -1,32 +1,61 @@
 import Head from 'next/head';
-import Clock from '@/components/clock';
+import { Clock, ClockData } from '@/components/clock';
 import ModalContainer from '@/components/modal-container';
-import { Label, Select } from 'flowbite-react';
+import { Label, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getTimezones } from '@/lib/timezones';
-
-interface ClockData {
-  timezone: string;
-  title?: string;
-}
 
 export default function Home() {
   const [clocks, setClocks] = useState<ClockData[]>([]);
   const [timezones, setTimezones] = useState<string[]>([]);
-  const [selectedTimezone, setSelectedTimezone] = useState<string>('');
 
-  function onTimezoneSelected(event: React.ChangeEvent<HTMLSelectElement>) {
-    setSelectedTimezone(event.currentTarget.value);
+  const [modalTimezone, setModalTimezone] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<string>("");
+
+  function onTimezoneChanged(event: React.ChangeEvent<HTMLSelectElement>) {
+    setModalTimezone(event.currentTarget.value);
   }
 
-  function tzToClock(timezone: string): ClockData {
+  function onTitleChanged(event: React.ChangeEvent<HTMLInputElement>) {
+    setModalTitle(event.target.value);
+  }
+
+  function tzToClock(timezone: string, title?: string): ClockData {
     return {
-      timezone: timezone
+      timezone: timezone,
+      title: title ? title : timezone
     };
   };
 
-  function addTimezone() {
-    setClocks([...clocks, tzToClock(selectedTimezone)]);
+  function addClock() {
+    const newClocks = [
+      ...clocks,
+      tzToClock(modalTimezone, modalTitle)
+    ];
+
+    saveClocks(newClocks);
+    setClocks(newClocks);
+
+    updateModalTimezone(timezones, newClocks);
+  }
+
+  function filterTimezones(timezones: string[], clocks: ClockData[]): string[] {
+    return timezones.filter(tz => !clocks.some(clock => clock.timezone === tz));
+  }
+
+  function updateModalTimezone(timezones: string[], clocks: ClockData[]) {
+    const tz = filterTimezones(timezones, clocks)[0] ?? "";
+    setModalTimezone(tz);
+  }
+
+  function saveClocks(clocks: ClockData[]) {
+    localStorage.setItem("clocks", JSON.stringify(clocks));
+  }
+
+  function loadClocks(): ClockData[] {
+    const rawClocks = localStorage.getItem("clocks");
+
+    return rawClocks ? JSON.parse(rawClocks) : [];
   }
 
   useEffect(
@@ -35,12 +64,21 @@ export default function Home() {
 
       setTimezones(timezones);
 
-      const local = {
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        title: "Local Time"
-      };
+      const storedClocks = loadClocks();
 
-      setClocks([local, ...timezones.slice(0, 2).map(tz => tzToClock(tz))]);
+      if (storedClocks.length) {
+        setClocks(storedClocks);
+      } else {
+        const defClocks = [{
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          title: "Local Time"
+        }];
+
+        saveClocks(defClocks);
+        setClocks(defClocks);
+      }
+
+      updateModalTimezone(timezones, clocks);
     },
     []
   );
@@ -55,23 +93,38 @@ export default function Home() {
       </Head>
       <nav className="flex space-x-2 justify-center mt-5">
         <ModalContainer
-          buttonLabel="Add timezone"
+          buttonLabel="Add clock"
           submitLabel="Add"
-          onSubmit={addTimezone}
+          onSubmit={addClock}
         >
-          <div className="mb-2 block">
-            <Label htmlFor="timezones" value="Timezone" />
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="timezones" value="Timezone" />
+            </div>
+            <Select
+              id="timezones"
+              onChange={onTimezoneChanged}
+              required={true}
+            >
+              {filterTimezones(timezones, clocks).map((timezone) => (
+                <option key={timezone} value={timezone}>
+                  {timezone}
+                </option>
+              ))}
+            </Select>
           </div>
-          <Select id="timezones" required={true} onChange={onTimezoneSelected}>
-            {timezones.map((timezone) => (
-              <option value={timezone} key={timezone}>{timezone}</option>
-            ))}
-          </Select>
+
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="title" value="Title" />
+            </div>
+            <TextInput id="title" onChange={onTitleChanged} />
+          </div>
         </ModalContainer>
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         {clocks.map(clock => (
-          <Clock name={clock.title} timezone={clock.timezone} key={clock.timezone} />
+          <Clock data={clock} key={clock.timezone} />
         ))}
       </main>
     </>

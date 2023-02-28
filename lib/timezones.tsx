@@ -27,7 +27,7 @@ export function localOffset(date: Date, timezone: string): string {
     ? '+' + offset.toString()
     : offset.toString();
 
-  return offsetStr + 'h diff';
+  return offsetStr + 'h';
 }
 
 export function tzDate(timezone: string): Date {
