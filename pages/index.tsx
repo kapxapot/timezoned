@@ -71,7 +71,8 @@ export default function Home() {
       } else {
         const defClocks = [{
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          title: "Local Time"
+          title: "Local Time",
+          default: true
         }];
 
         saveClocks(defClocks);
@@ -118,7 +119,10 @@ export default function Home() {
             <div className="mb-2 block">
               <Label htmlFor="title" value="Title" />
             </div>
-            <TextInput id="title" onChange={onTitleChanged} />
+            <TextInput
+              id="title"
+              onChange={onTitleChanged}
+            />
           </div>
         </ModalContainer>
       </nav>

@@ -8,6 +8,13 @@ import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
 export interface ClockData {
   timezone: string;
   title?: string;
+  default?: boolean;
+}
+
+interface MenuItemData {
+  label: string;
+  action: () => void;
+  className?: string;
 }
 
 interface Props {
@@ -27,18 +34,25 @@ export function Clock({ data }: Props) {
     []
   );
 
-  const menuItems = [
-    {
+  function getMenuItems(): MenuItemData[] {
+    const menuItems = [];
+
+    menuItems.push({
       label: "Edit clock",
       action: () => console.log('edit'),
       className: ""
-    },
-    {
-      label: "Delete clock",
-      action: () => console.log('delete'),
-      className: "text-red-500"
+    });
+
+    if (!data.default) {
+      menuItems.push({
+        label: "Delete clock",
+        action: () => console.log('delete'),
+        className: "text-red-500"
+      });
     }
-  ];
+
+    return menuItems;
+  }
 
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md bg-slate-50 p-4">
@@ -55,11 +69,11 @@ export function Clock({ data }: Props) {
           </h3>
         </Menu.Button>
         <Menu.Items className="absolute mt-2 divide-y right-0 divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          {menuItems.map(item => (
+          {getMenuItems().map(item => (
             <Menu.Item key={item.label}>
             {({ active }) => (
               <a
-                className={`${active && 'bg-slate-100'} w-full block py-1 px-4 whitespace-nowrap ${item.className}`}
+                className={`${active && 'bg-slate-100'} w-full block py-1 px-4 whitespace-nowrap ${item.className ?? ""}`}
                 onClick={item.action}
                 href="#"
               >
