@@ -14,6 +14,8 @@ export default function Home() {
   const [modalTimezone, setModalTimezone] = useState<string>("");
   const [modalTitle, setModalTitle] = useState<string>("");
 
+  const localTime: string = "Local Time";
+
   function addClock() {
     const newClocks = [
       ...clocks,
@@ -35,7 +37,7 @@ export default function Home() {
   }
 
   function saveAndSetClocks(clocks: ClockData[]) {
-    save("clocks", clocks);
+    save("clocks", noDefaultClocks(clocks));
 
     setClocks(clocks);
 
@@ -46,16 +48,8 @@ export default function Home() {
     return load("clocks");
   }
 
-  function validateClocks(clocks: ClockData[]): ClockData[] {
-      if (clocks.length) {
-        const firstClock = clocks[0];
-
-        if (!firstClock.default) {
-          return [];
-        }
-      }
-
-      return clocks;
+  function noDefaultClocks(clocks: ClockData[]): ClockData[] {
+    return clocks.filter(clock => !clock.default);
   }
 
   function onClockEdit(clock: ClockData) {
@@ -74,22 +68,20 @@ export default function Home() {
 
       setTimezones(timezones);
 
-      const storedClocks = validateClocks(
+      const storedClocks = noDefaultClocks(
         loadClocks() ?? []
       );
 
-      if (storedClocks.length) {
-        setClocks(storedClocks);
-        updateModalTimezone(timezones, storedClocks);
-      } else {
-        const defClocks = [{
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          title: "Local Time",
-          default: true
-        }];
+      const localClock = {
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        title: localTime,
+        default: true
+      };
 
-        saveAndSetClocks(defClocks);
-      }
+      const clocks = [localClock, ...storedClocks];
+
+      setClocks(clocks);
+      updateModalTimezone(timezones, clocks);
     },
     []
   );
@@ -131,6 +123,7 @@ export default function Home() {
             </div>
             <TextInput
               id="title"
+              maxLength={15}
               onChange={event => setModalTitle(event.target.value)}
             />
           </div>
