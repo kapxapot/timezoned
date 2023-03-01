@@ -19,9 +19,11 @@ interface MenuItemData {
 
 interface Props {
   data: ClockData;
+  onEdit?: (clock: ClockData) => void;
+  onDelete?: (clock: ClockData) => void;
 }
 
-export function Clock({ data }: Props) {
+export function Clock(props: Props) {
   const [now, setNow] = useState(new Date());
 
   useEffect(
@@ -39,14 +41,14 @@ export function Clock({ data }: Props) {
 
     menuItems.push({
       label: "Edit clock",
-      action: () => console.log('edit'),
+      action: () => props.onEdit?.(props.data),
       className: ""
     });
 
-    if (!data.default) {
+    if (!props.data.default) {
       menuItems.push({
         label: "Delete clock",
-        action: () => console.log('delete'),
+        action: () => props.onDelete?.(props.data),
         className: "text-red-500"
       });
     }
@@ -54,13 +56,15 @@ export function Clock({ data }: Props) {
     return menuItems;
   }
 
+  const timezone: string = props.data.timezone;
+
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md bg-slate-50 p-4">
       <Menu as="div" className="relative inline-block">
         <Menu.Button>
           <h3 className="inline-flex w-full pl-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
             <span className="font-bold">
-              {data.title ?? data.timezone}
+              {props.data.title ?? timezone}
             </span>
             <ChevronDownIcon
               className="ml-1 -mb-1 w-5 hover:opacity-50"
@@ -85,15 +89,15 @@ export function Clock({ data }: Props) {
         </Menu.Items>
       </Menu>
       <div className="text-indigo-500 text-5xl -mt-1">
-        {format(tzDate(data.timezone), 'HH:mm')}
+        {format(tzDate(timezone), 'HH:mm')}
       </div>
-      <div>{data.timezone}</div>
+      <div>{timezone}</div>
       <div className="flex flex-wrap gap-1">
         <Badge color="indigo">
-          {localOffset(now, data.timezone)}
+          {localOffset(now, timezone)}
         </Badge>
         <Badge color="success">
-          GMT{gmtOffset(now, data.timezone)}
+          GMT{gmtOffset(now, timezone)}
         </Badge>
       </div>
     </div>

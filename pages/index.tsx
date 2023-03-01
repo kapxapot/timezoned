@@ -33,10 +33,7 @@ export default function Home() {
       tzToClock(modalTimezone, modalTitle)
     ];
 
-    saveClocks(newClocks);
-    setClocks(newClocks);
-
-    updateModalTimezone(timezones, newClocks);
+    saveAndSetClocks(newClocks);
   }
 
   function filterTimezones(timezones: string[], clocks: ClockData[]): string[] {
@@ -48,8 +45,12 @@ export default function Home() {
     setModalTimezone(tz);
   }
 
-  function saveClocks(clocks: ClockData[]) {
+  function saveAndSetClocks(clocks: ClockData[]) {
     localStorage.setItem("clocks", JSON.stringify(clocks));
+
+    setClocks(clocks);
+
+    updateModalTimezone(timezones, clocks);
   }
 
   function loadClocks(): ClockData[] {
@@ -58,16 +59,41 @@ export default function Home() {
     return rawClocks ? JSON.parse(rawClocks) : [];
   }
 
+  function validateClocks(clocks: ClockData[]): ClockData[] {
+      if (clocks.length) {
+        const firstClock = clocks[0];
+
+        if (!firstClock.default) {
+          return [];
+        }
+      }
+
+      return clocks;
+  }
+
+  function onClockEdit(clock: ClockData) {
+    console.log("edit clock: " + clock.timezone);
+  }
+
+  function onClockDelete(clockToDelete: ClockData) {
+    const newClocks = clocks.filter(clock => clock !== clockToDelete);
+
+    saveAndSetClocks(newClocks);
+  }
+
   useEffect(
     () => {
       const timezones = getTimezones();
 
       setTimezones(timezones);
 
-      const storedClocks = loadClocks();
+      const storedClocks = validateClocks(
+        loadClocks()
+      );
 
       if (storedClocks.length) {
         setClocks(storedClocks);
+        updateModalTimezone(timezones, storedClocks);
       } else {
         const defClocks = [{
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -75,11 +101,8 @@ export default function Home() {
           default: true
         }];
 
-        saveClocks(defClocks);
-        setClocks(defClocks);
+        saveAndSetClocks(defClocks);
       }
-
-      updateModalTimezone(timezones, clocks);
     },
     []
   );
@@ -137,7 +160,12 @@ export default function Home() {
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         {clocks.map(clock => (
-          <Clock data={clock} key={clock.timezone} />
+          <Clock
+            data={clock}
+            key={clock.timezone}
+            onDelete={onClockDelete}
+            onEdit={onClockEdit}
+          />
         ))}
       </main>
     </>
