@@ -1,9 +1,11 @@
 import Head from 'next/head';
-import { Clock, ClockData } from '@/components/clock';
-import ModalContainer from '@/components/modal-container';
-import { DeepPartial, FlowbiteTextInputTheme, Label, Select, TextInput } from 'flowbite-react';
+import { Flowbite, Label, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getTimezones } from '@/lib/timezones';
+import { save, load } from '@/lib/storage';
+import { Clock, ClockData, tzToClock } from '@/components/clock';
+import ModalContainer from '@/components/modal-container';
+import Theme from '@/components/flowbite-theme';
 
 export default function Home() {
   const [clocks, setClocks] = useState<ClockData[]>([]);
@@ -12,21 +14,6 @@ export default function Home() {
   const [modalTimezone, setModalTimezone] = useState<string>("");
   const [modalTitle, setModalTitle] = useState<string>("");
 
-  function onTimezoneChanged(event: React.ChangeEvent<HTMLSelectElement>) {
-    setModalTimezone(event.currentTarget.value);
-  }
-
-  function onTitleChanged(event: React.ChangeEvent<HTMLInputElement>) {
-    setModalTitle(event.target.value);
-  }
-
-  function tzToClock(timezone: string, title?: string): ClockData {
-    return {
-      timezone: timezone,
-      title: title ? title : timezone
-    };
-  };
-
   function addClock() {
     const newClocks = [
       ...clocks,
@@ -34,6 +21,8 @@ export default function Home() {
     ];
 
     saveAndSetClocks(newClocks);
+
+    setModalTitle("");
   }
 
   function filterTimezones(timezones: string[], clocks: ClockData[]): string[] {
@@ -46,17 +35,15 @@ export default function Home() {
   }
 
   function saveAndSetClocks(clocks: ClockData[]) {
-    localStorage.setItem("clocks", JSON.stringify(clocks));
+    save("clocks", clocks);
 
     setClocks(clocks);
 
     updateModalTimezone(timezones, clocks);
   }
 
-  function loadClocks(): ClockData[] {
-    const rawClocks = localStorage.getItem("clocks");
-
-    return rawClocks ? JSON.parse(rawClocks) : [];
+  function loadClocks(): ClockData[] | undefined {
+    return load("clocks");
   }
 
   function validateClocks(clocks: ClockData[]): ClockData[] {
@@ -88,7 +75,7 @@ export default function Home() {
       setTimezones(timezones);
 
       const storedClocks = validateClocks(
-        loadClocks()
+        loadClocks() ?? []
       );
 
       if (storedClocks.length) {
@@ -107,16 +94,8 @@ export default function Home() {
     []
   );
 
-  const textInputTheme: DeepPartial<FlowbiteTextInputTheme> = {
-    field: {
-      input: {
-        base: 'focus:outline-blue-500 block w-full border disabled:cursor-not-allowed disabled:opacity-50'
-      }
-    }
-  };
-
   return (
-    <>
+    <Flowbite theme={Theme()}>
       <Head>
         <title>Timezoned</title>
         <meta name="description" content="Timezone helper" />
@@ -135,7 +114,7 @@ export default function Home() {
             </div>
             <Select
               id="timezones"
-              onChange={onTimezoneChanged}
+              onChange={event => setModalTimezone(event.currentTarget.value)}
               required={true}
             >
               {filterTimezones(timezones, clocks).map((timezone) => (
@@ -152,8 +131,7 @@ export default function Home() {
             </div>
             <TextInput
               id="title"
-              onChange={onTitleChanged}
-              theme={textInputTheme}
+              onChange={event => setModalTitle(event.target.value)}
             />
           </div>
         </ModalContainer>
@@ -168,6 +146,6 @@ export default function Home() {
           />
         ))}
       </main>
-    </>
+    </Flowbite>
   )
 }

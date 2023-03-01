@@ -59,7 +59,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
                 <div className="flex flex-col gap-4">
                   {props.children}
 
-                  <div className="flex justify-end gap-3 mt-6 w-full">
+                  <div className="flex justify-end gap-3 mt-4 w-full">
                     <Button
                       color="purple"
                       onClick={submit}

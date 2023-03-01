@@ -23,6 +23,13 @@ interface Props {
   onDelete?: (clock: ClockData) => void;
 }
 
+export function tzToClock(timezone: string, title?: string): ClockData {
+  return {
+    timezone: timezone,
+    title: title ? title : timezone
+  };
+}
+
 export function Clock(props: Props) {
   const [now, setNow] = useState(new Date());
 
