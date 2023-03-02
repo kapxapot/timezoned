@@ -4,6 +4,7 @@ import { PropsWithChildren, useState } from 'react';
 
 interface Props {
   buttonLabel?: string;
+  buttonDisabled?: boolean;
   modalTitle?: string;
   submitLabel?: string;
   cancelLabel?: string;
@@ -34,6 +35,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     <>
       <Button
         color="purple"
+        disabled={props.buttonDisabled}
         onClick={open}
       >
         {props.buttonLabel ?? "Open modal"}

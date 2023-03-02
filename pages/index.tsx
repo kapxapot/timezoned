@@ -1,12 +1,12 @@
 import Head from 'next/head';
-import { Flowbite, Label, Select, TextInput } from 'flowbite-react';
+import { Flowbite } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
 import { Clock, ClockData, tzToClock } from '@/components/clock';
 import ModalContainer from '@/components/modal-container';
 import { flowbiteTheme } from '@/components/flowbite-theme';
-import { tzStr } from '@/lib/timezones';
+import ClockForm from '@/components/clock-form';
 
 export default function Home() {
   const [clocks, setClocks] = useState<ClockData[]>([]);
@@ -16,16 +16,10 @@ export default function Home() {
   const [modalTitle, setModalTitle] = useState<string>("");
 
   const localTime: string = "Local Time";
+  const filteredTimeZones: TimeZone[] = filterTimeZones(timeZones, clocks);
 
-  function addClock() {
-    const newClocks = [
-      ...clocks,
-      tzToClock(modalTimeZone, modalTitle)
-    ];
-
-    saveAndSetClocks(newClocks);
-
-    setModalTitle("");
+  function filterClocks(clocks: ClockData[]): ClockData[] {
+    return clocks.filter(clock => !clock.default);
   }
 
   function filterTimeZones(timeZones: TimeZone[], clocks: ClockData[]): TimeZone[] {
@@ -34,25 +28,27 @@ export default function Home() {
     );
   }
 
+  function addClock() {
+    saveAndSetClocks([
+      ...clocks,
+      tzToClock(modalTimeZone, modalTitle)
+    ]);
+
+    setModalTitle("");
+  }
+
   function updateModalTimeZone(timeZones: TimeZone[], clocks: ClockData[]) {
-    const tz = filterTimeZones(timeZones, clocks)[0];
-    setModalTimeZone(tz?.name);
+    setModalTimeZone(
+      filterTimeZones(timeZones, clocks)[0]?.name
+    );
   }
 
   function saveAndSetClocks(clocks: ClockData[]) {
-    save("clocks", noDefaultClocks(clocks));
+    save("clocks", filterClocks(clocks));
 
     setClocks(clocks);
 
     updateModalTimeZone(timeZones, clocks);
-  }
-
-  function loadClocks(): ClockData[] | undefined {
-    return load("clocks");
-  }
-
-  function noDefaultClocks(clocks: ClockData[]): ClockData[] {
-    return clocks.filter(clock => !clock.default);
   }
 
   function onClockEdit(clock: ClockData) {
@@ -60,9 +56,9 @@ export default function Home() {
   }
 
   function onClockDelete(clockToDelete: ClockData) {
-    const newClocks = clocks.filter(clock => clock !== clockToDelete);
-
-    saveAndSetClocks(newClocks);
+    saveAndSetClocks(
+      clocks.filter(clock => clock !== clockToDelete)
+    );
   }
 
   useEffect(
@@ -73,8 +69,8 @@ export default function Home() {
 
       setTimeZones(timeZones);
 
-      const storedClocks = noDefaultClocks(
-        loadClocks() ?? []
+      const storedClocks = filterClocks(
+        load("clocks") ?? []
       );
 
       const localClock: ClockData = {
@@ -102,36 +98,15 @@ export default function Home() {
       <nav className="flex space-x-2 justify-center mt-5">
         <ModalContainer
           buttonLabel="Add clock"
+          buttonDisabled={!filteredTimeZones.length}
           submitLabel="Add"
           onSubmit={addClock}
         >
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="timezones" value="Timezone" />
-            </div>
-            <Select
-              id="timezones"
-              onChange={event => setModalTimeZone(event.currentTarget.value)}
-              required={true}
-            >
-              {filterTimeZones(timeZones, clocks).map((timeZone) => (
-                <option key={timeZone.name} value={timeZone.name}>
-                  {tzStr(timeZone)}
-                </option>
-              ))}
-            </Select>
-          </div>
-
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="title" value="Title" />
-            </div>
-            <TextInput
-              id="title"
-              maxLength={20}
-              onChange={event => setModalTitle(event.target.value)}
-            />
-          </div>
+          <ClockForm
+            timeZones={filteredTimeZones}
+            onTimeZoneChange={timeZone => setModalTimeZone(timeZone)}
+            onTitleChange={title => setModalTitle(title)}
+          />
         </ModalContainer>
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
