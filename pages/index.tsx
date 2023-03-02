@@ -128,7 +128,7 @@ export default function Home() {
             </div>
             <TextInput
               id="title"
-              maxLength={15}
+              maxLength={20}
               onChange={event => setModalTitle(event.target.value)}
             />
           </div>
