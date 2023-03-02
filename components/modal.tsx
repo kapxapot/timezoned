@@ -13,15 +13,15 @@ interface Props {
 }
 
 export default function Modal(props: PropsWithChildren<Props>) {
-    function submit() {
-      props.onSubmit?.();
-    }
+  function submit() {
+    props.onSubmit?.();
+  }
 
-    function cancel() {
-      props.onCancel?.();
-    }
+  function cancel() {
+    props.onCancel?.();
+  }
 
-    return (
+  return (
     <Transition appear show={props.show} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={cancel}>
         <Transition.Child

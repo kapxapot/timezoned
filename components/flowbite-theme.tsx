@@ -8,10 +8,8 @@ const textInputTheme: DeepPartial<FlowbiteTextInputTheme> = {
   }
 };
 
-export default function Theme(): ThemeProps {
-  return {
-    theme: {
-      textInput: textInputTheme
-    }
+export const flowbiteTheme: ThemeProps = {
+  theme: {
+    textInput: textInputTheme
   }
-}
+};

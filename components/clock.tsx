@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
 
 export interface ClockData {
-  timezone: string;
+  timeZone: string;
   title?: string;
   default?: boolean;
 }
@@ -23,10 +23,10 @@ interface Props {
   onDelete?: (clock: ClockData) => void;
 }
 
-export function tzToClock(timezone: string, title?: string): ClockData {
+export function tzToClock(timeZone: string, title?: string): ClockData {
   return {
-    timezone: timezone,
-    title: title ? title : timezone
+    timeZone: timeZone,
+    title: title ? title : timeZone
   };
 }
 
@@ -34,8 +34,8 @@ export function Clock(props: Props) {
   const [now, setNow] = useState(new Date());
 
   const data: ClockData = props.data;
-  const timezone: string = data.timezone;
-  const title: string = data.title ?? timezone;
+  const timeZone: string = data.timeZone;
+  const title: string = data.title ?? timeZone;
   const isDefault: boolean = data.default ?? false;
 
   useEffect(
@@ -110,15 +110,15 @@ export function Clock(props: Props) {
     <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-4 bg-white">
       {isDefault ? staticTitle() : menu()}
       <div className="text-indigo-500 text-5xl -mt-1">
-        {format(tzDate(timezone), 'HH:mm')}
+        {format(tzDate(timeZone), 'HH:mm')}
       </div>
-      <div>{timezone}</div>
+      <div>{timeZone}</div>
       <div className="flex flex-wrap gap-1">
         <Badge color="indigo">
-          {localOffset(now, timezone)}
+          {localOffset(now, timeZone)}
         </Badge>
         <Badge color="success">
-          GMT{gmtOffset(now, timezone)}
+          GMT{gmtOffset(now, timeZone)}
         </Badge>
       </div>
     </div>

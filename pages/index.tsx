@@ -1,17 +1,18 @@
 import Head from 'next/head';
 import { Flowbite, Label, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { getTimezones } from '@/lib/timezones';
+import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
 import { Clock, ClockData, tzToClock } from '@/components/clock';
 import ModalContainer from '@/components/modal-container';
-import Theme from '@/components/flowbite-theme';
+import { flowbiteTheme } from '@/components/flowbite-theme';
+import { tzStr } from '@/lib/timezones';
 
 export default function Home() {
   const [clocks, setClocks] = useState<ClockData[]>([]);
-  const [timezones, setTimezones] = useState<string[]>([]);
+  const [timeZones, setTimeZones] = useState<TimeZone[]>([]);
 
-  const [modalTimezone, setModalTimezone] = useState<string>("");
+  const [modalTimeZone, setModalTimeZone] = useState<string>("");
   const [modalTitle, setModalTitle] = useState<string>("");
 
   const localTime: string = "Local Time";
@@ -19,7 +20,7 @@ export default function Home() {
   function addClock() {
     const newClocks = [
       ...clocks,
-      tzToClock(modalTimezone, modalTitle)
+      tzToClock(modalTimeZone, modalTitle)
     ];
 
     saveAndSetClocks(newClocks);
@@ -27,13 +28,15 @@ export default function Home() {
     setModalTitle("");
   }
 
-  function filterTimezones(timezones: string[], clocks: ClockData[]): string[] {
-    return timezones.filter(tz => !clocks.some(clock => clock.timezone === tz));
+  function filterTimeZones(timeZones: TimeZone[], clocks: ClockData[]): TimeZone[] {
+    return timeZones.filter(
+      tz => !clocks.some(clock => clock.timeZone === tz.name)
+    );
   }
 
-  function updateModalTimezone(timezones: string[], clocks: ClockData[]) {
-    const tz = filterTimezones(timezones, clocks)[0] ?? "";
-    setModalTimezone(tz);
+  function updateModalTimeZone(timeZones: TimeZone[], clocks: ClockData[]) {
+    const tz = filterTimeZones(timeZones, clocks)[0];
+    setModalTimeZone(tz?.name);
   }
 
   function saveAndSetClocks(clocks: ClockData[]) {
@@ -41,7 +44,7 @@ export default function Home() {
 
     setClocks(clocks);
 
-    updateModalTimezone(timezones, clocks);
+    updateModalTimeZone(timeZones, clocks);
   }
 
   function loadClocks(): ClockData[] | undefined {
@@ -53,7 +56,7 @@ export default function Home() {
   }
 
   function onClockEdit(clock: ClockData) {
-    console.log("edit clock: " + clock.timezone);
+    console.log("edit clock: " + clock.timeZone);
   }
 
   function onClockDelete(clockToDelete: ClockData) {
@@ -64,16 +67,18 @@ export default function Home() {
 
   useEffect(
     () => {
-      const timezones = getTimezones();
+      const timeZones = getTimeZones({ includeUtc: true }).sort(
+        (tzA, tzB) => tzA.name.localeCompare(tzB.name)
+      );
 
-      setTimezones(timezones);
+      setTimeZones(timeZones);
 
       const storedClocks = noDefaultClocks(
         loadClocks() ?? []
       );
 
-      const localClock = {
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      const localClock: ClockData = {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         title: localTime,
         default: true
       };
@@ -81,16 +86,16 @@ export default function Home() {
       const clocks = [localClock, ...storedClocks];
 
       setClocks(clocks);
-      updateModalTimezone(timezones, clocks);
+      updateModalTimeZone(timeZones, clocks);
     },
     []
   );
 
   return (
-    <Flowbite theme={Theme()}>
+    <Flowbite theme={flowbiteTheme}>
       <Head>
-        <title>Timezoned</title>
-        <meta name="description" content="Timezone helper" />
+        <title>TimeZoned</title>
+        <meta name="description" content="Time zone helper" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -106,12 +111,12 @@ export default function Home() {
             </div>
             <Select
               id="timezones"
-              onChange={event => setModalTimezone(event.currentTarget.value)}
+              onChange={event => setModalTimeZone(event.currentTarget.value)}
               required={true}
             >
-              {filterTimezones(timezones, clocks).map((timezone) => (
-                <option key={timezone} value={timezone}>
-                  {timezone}
+              {filterTimeZones(timeZones, clocks).map((timeZone) => (
+                <option key={timeZone.name} value={timeZone.name}>
+                  {tzStr(timeZone)}
                 </option>
               ))}
             </Select>
@@ -133,7 +138,7 @@ export default function Home() {
         {clocks.map(clock => (
           <Clock
             data={clock}
-            key={clock.timezone}
+            key={clock.timeZone}
             onDelete={onClockDelete}
             onEdit={onClockEdit}
           />
