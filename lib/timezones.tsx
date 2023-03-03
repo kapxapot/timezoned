@@ -1,4 +1,8 @@
-import { TimeZone } from "@vvo/tzdb";
+import { getTimeZones, TimeZone } from "@vvo/tzdb";
+
+export const sortedTimeZones = getTimeZones({ includeUtc: true }).sort(
+  (tzA, tzB) => tzA.name.localeCompare(tzB.name)
+);
 
 export function gmtOffset(date: Date, timeZone: string): string {
   const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));

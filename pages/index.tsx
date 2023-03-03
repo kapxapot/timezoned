@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { Flowbite } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { getTimeZones, TimeZone } from "@vvo/tzdb";
+import { TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
+import { sortedTimeZones } from '@/lib/timezones';
 import { Clock, ClockData, tzToClock } from '@/components/clock';
 import ModalContainer from '@/components/modal-container';
 import { flowbiteTheme } from '@/components/flowbite-theme';
@@ -63,9 +64,7 @@ export default function Home() {
 
   useEffect(
     () => {
-      const timeZones = getTimeZones({ includeUtc: true }).sort(
-        (tzA, tzB) => tzA.name.localeCompare(tzB.name)
-      );
+      const timeZones = sortedTimeZones;
 
       setTimeZones(timeZones);
 
