@@ -1,14 +1,16 @@
-import { Menu } from '@headlessui/react';
-import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
+import { format } from 'date-fns';
+import {v4 as uuidv4} from 'uuid';
 import { Badge } from 'flowbite-react';
 import { ReactNode, useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import { Menu } from '@headlessui/react';
+import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
 
 export interface ClockData {
   timeZone: string;
   title?: string;
   default?: boolean;
+  id?: string;
 }
 
 interface MenuItemData {
@@ -23,10 +25,12 @@ interface Props {
   onDelete?: (clock: ClockData) => void;
 }
 
-export function tzToClock(timeZone: string, title?: string): ClockData {
+export function createClock(timeZone: string, title?: string, def?: boolean): ClockData {
   return {
     timeZone: timeZone,
-    title: title ? title : timeZone
+    title: title ? title : timeZone,
+    default: def,
+    id: uuidv4()
   };
 }
 

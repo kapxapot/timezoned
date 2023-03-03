@@ -4,43 +4,33 @@ import { useEffect, useState } from 'react';
 import { TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
-import { Clock, ClockData, tzToClock } from '@/components/clock';
-import ModalContainer from '@/components/modal-container';
+import { Clock, ClockData, createClock } from '@/components/clock';
 import { flowbiteTheme } from '@/components/flowbite-theme';
-import ClockForm from '@/components/clock-form';
+import AddClock from '@/components/add-clock';
 
 export default function Home() {
   const [clocks, setClocks] = useState<ClockData[]>([]);
-  const [timeZones, setTimeZones] = useState<TimeZone[]>([]);
+  const [timeZones] = useState<TimeZone[]>(sortedTimeZones);
 
-  const [modalTimeZone, setModalTimeZone] = useState<string>("");
-  const [modalTitle, setModalTitle] = useState<string>("");
-
-  const localTime: string = "Local Time";
-  const filteredTimeZones: TimeZone[] = filterTimeZones(timeZones, clocks);
+  const filteredTimeZones = timeZones.filter(
+    tz => !clocks.some(clock => clock.timeZone === tz.name)
+  );
 
   function filterClocks(clocks: ClockData[]): ClockData[] {
     return clocks.filter(clock => !clock.default);
   }
 
-  function filterTimeZones(timeZones: TimeZone[], clocks: ClockData[]): TimeZone[] {
-    return timeZones.filter(
-      tz => !clocks.some(clock => clock.timeZone === tz.name)
-    );
+  function addClock(clock: ClockData) {
+    saveAndSetClocks([...clocks, clock]);
   }
 
-  function addClock() {
-    saveAndSetClocks([
-      ...clocks,
-      tzToClock(modalTimeZone, modalTitle)
-    ]);
-
-    setModalTitle("");
+  function editClock(clock: ClockData) {
+    console.log("edit clock: " + clock.timeZone);
   }
 
-  function updateModalTimeZone(timeZones: TimeZone[], clocks: ClockData[]) {
-    setModalTimeZone(
-      filterTimeZones(timeZones, clocks)[0]?.name
+  function deleteClock(clockToDelete: ClockData) {
+    saveAndSetClocks(
+      clocks.filter(clock => clock !== clockToDelete)
     );
   }
 
@@ -48,40 +38,21 @@ export default function Home() {
     save("clocks", filterClocks(clocks));
 
     setClocks(clocks);
-
-    updateModalTimeZone(timeZones, clocks);
-  }
-
-  function onClockEdit(clock: ClockData) {
-    console.log("edit clock: " + clock.timeZone);
-  }
-
-  function onClockDelete(clockToDelete: ClockData) {
-    saveAndSetClocks(
-      clocks.filter(clock => clock !== clockToDelete)
-    );
   }
 
   useEffect(
     () => {
-      const timeZones = sortedTimeZones;
-
-      setTimeZones(timeZones);
-
       const storedClocks = filterClocks(
         load("clocks") ?? []
       );
 
-      const localClock: ClockData = {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        title: localTime,
-        default: true
-      };
+      const localClock = createClock(
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        "Local Time",
+        true
+      );
 
-      const clocks = [localClock, ...storedClocks];
-
-      setClocks(clocks);
-      updateModalTimeZone(timeZones, clocks);
+      setClocks([localClock, ...storedClocks]);
     },
     []
   );
@@ -95,26 +66,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <nav className="flex space-x-2 justify-center mt-5">
-        <ModalContainer
-          buttonLabel="Add clock"
-          buttonDisabled={!filteredTimeZones.length}
-          submitLabel="Add"
-          onSubmit={addClock}
-        >
-          <ClockForm
-            timeZones={filteredTimeZones}
-            onTimeZoneChange={timeZone => setModalTimeZone(timeZone)}
-            onTitleChange={title => setModalTitle(title)}
-          />
-        </ModalContainer>
+        <AddClock
+          timeZones={filteredTimeZones}
+          addClock={addClock}
+        />
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         {clocks.map(clock => (
           <Clock
             data={clock}
-            key={clock.timeZone}
-            onDelete={onClockDelete}
-            onEdit={onClockEdit}
+            key={clock.id ?? clock.timeZone}
+            onDelete={deleteClock}
+            onEdit={editClock}
           />
         ))}
       </main>
