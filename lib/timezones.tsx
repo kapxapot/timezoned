@@ -1,8 +1,17 @@
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
 
-export const sortedTimeZones = getTimeZones({ includeUtc: true }).sort(
-  (tzA, tzB) => tzA.name.localeCompare(tzB.name)
-);
+export function sortTimeZones(timeZones: TimeZone[]): TimeZone[] {
+  return timeZones.sort(
+    (tzA, tzB) => tzA.name.localeCompare(tzB.name)
+  );
+}
+
+export const timeZones = getTimeZones({ includeUtc: true });
+export const sortedTimeZones = sortTimeZones(timeZones);
+
+export function getTimeZone(name: string): TimeZone | undefined {
+  return timeZones.find(tz => tz.name === name);
+}
 
 export function gmtOffset(date: Date, timeZone: string): string {
   const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));

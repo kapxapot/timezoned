@@ -7,7 +7,8 @@ import { sortedTimeZones } from '@/lib/timezones';
 import { ClockCard } from '@/components/clock-card';
 import { flowbiteTheme } from '@/components/flowbite-theme';
 import AddClock from '@/components/add-clock';
-import { Clock, IClock } from '@/lib/clock';
+import { Clock, ClockChange, IClock } from '@/lib/clock';
+import { merge } from '@/lib/common';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -22,20 +23,26 @@ export default function Home() {
   }
 
   function addClock(clock: IClock) {
-    saveAndSetClocks([...clocks, clock]);
+    updateClocks([...clocks, clock]);
   }
 
-  function editClock(clock: IClock) {
-    console.log("edit clock: " + clock.timeZone);
+  function editClock(editedClock: IClock, change: ClockChange) {
+    const updatedClocks = clocks.map(clock => {
+      return clock === editedClock
+        ? merge(clock, change)
+        : clock;
+    });
+
+    updateClocks(updatedClocks);
   }
 
-  function deleteClock(clockToDelete: IClock) {
-    saveAndSetClocks(
-      clocks.filter(clock => clock !== clockToDelete)
+  function deleteClock(deletedClock: IClock) {
+    updateClocks(
+      clocks.filter(clock => clock !== deletedClock)
     );
   }
 
-  function saveAndSetClocks(clocks: IClock[]) {
+  function updateClocks(clocks: IClock[]) {
     save("clocks", notDefaultClocks(clocks));
 
     setClocks(clocks);
@@ -67,17 +74,19 @@ export default function Home() {
   return (
     <Flowbite theme={flowbiteTheme}>
       <Head>
-        <title>TimeZoned</title>
-        <meta name="description" content="Time zone helper" />
+        <title>Timezoned</title>
+        <meta name="description" content="Timezone helper" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <nav className="flex space-x-2 justify-center mt-5">
         <AddClock
           timeZones={filteredTimeZones}
           addClock={addClock}
         />
       </nav>
+
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         {clocks.map(clock => (
           <ClockCard
@@ -85,6 +94,7 @@ export default function Home() {
             key={clock.key}
             onDelete={deleteClock}
             onEdit={editClock}
+            timeZones={filteredTimeZones}
           />
         ))}
       </main>

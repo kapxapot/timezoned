@@ -9,6 +9,11 @@ export interface IClock {
   readonly key: string;
 }
 
+export interface ClockChange {
+  timeZone: string;
+  title: string;
+}
+
 export class Clock implements IClock {
   public timeZone: string;
   public title: string;
@@ -26,10 +31,14 @@ export class Clock implements IClock {
     this.id = id ?? uuidv4();
   }
 
-  static deserialize(obj: any) {
+  static deserialize(obj: any): IClock {
     return new Clock(obj.timeZone, obj.title, obj.default, obj.id);
   }
-  
+
+  static fromChange(change: ClockChange): IClock {
+    return new Clock(change.timeZone, change.title);
+  }
+
   get key(): string {
     return this.id ?? this.timeZone;
   }

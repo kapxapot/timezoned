@@ -4,7 +4,9 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
-import { IClock } from '@/lib/clock';
+import { ClockChange, IClock } from '@/lib/clock';
+import { TimeZone } from '@vvo/tzdb';
+import EditClock from './edit-clock';
 
 interface MenuItem {
   label: string;
@@ -14,12 +16,14 @@ interface MenuItem {
 
 interface Props {
   clock: IClock;
-  onEdit?: (clock: IClock) => void;
+  timeZones: TimeZone[];
+  onEdit?: (clock: IClock, change: ClockChange) => void;
   onDelete?: (clock: IClock) => void;
 }
 
 export function ClockCard(props: Props) {
   const [now, setNow] = useState(new Date());
+  const [showEdit, setShowEdit] = useState(false);
 
   const clock: IClock = props.clock;
 
@@ -35,7 +39,7 @@ export function ClockCard(props: Props) {
   const menuItems: MenuItem[] = [
     {
       label: "Edit clock",
-      action: () => props.onEdit?.(clock)
+      action: () => setShowEdit(true)
     },
     {
       label: "Delete clock",
@@ -92,20 +96,30 @@ export function ClockCard(props: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-4 bg-white">
-      {clock.default ? staticTitle() : menu()}
-      <div className="text-indigo-500 text-5xl -mt-1">
-        {format(tzDate(clock.timeZone), 'HH:mm')}
+    <>
+      <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-4 bg-white">
+        {clock.default ? staticTitle() : menu()}
+        <div className="text-indigo-500 text-5xl -mt-1">
+          {format(tzDate(clock.timeZone), 'HH:mm')}
+        </div>
+        <div>{clock.timeZone}</div>
+        <div className="flex flex-wrap gap-1">
+          <Badge color="indigo">
+            {localOffset(now, clock.timeZone)}
+          </Badge>
+          <Badge color="success">
+            GMT{gmtOffset(now, clock.timeZone)}
+          </Badge>
+        </div>
       </div>
-      <div>{clock.timeZone}</div>
-      <div className="flex flex-wrap gap-1">
-        <Badge color="indigo">
-          {localOffset(now, clock.timeZone)}
-        </Badge>
-        <Badge color="success">
-          GMT{gmtOffset(now, clock.timeZone)}
-        </Badge>
-      </div>
-    </div>
+
+      <EditClock
+        clock={clock}
+        show={showEdit}
+        timeZones={props.timeZones}
+        onEdit={change => props.onEdit?.(clock, change)}
+        onClose={() => setShowEdit(false)}
+      />
+    </>
   )
 }
