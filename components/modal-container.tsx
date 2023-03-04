@@ -3,11 +3,13 @@ import { Button } from 'flowbite-react';
 import { PropsWithChildren, useState } from 'react';
 
 interface Props {
+  formId: string;
   buttonLabel?: string;
   buttonDisabled?: boolean;
   modalTitle?: string;
   submitLabel?: string;
   cancelLabel?: string;
+  onOpen?: () => void;
   onSubmit?: () => void;
   onCancel?: () => void;
 }
@@ -17,6 +19,8 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
 
   function open() {
     setShow(true);
+
+    props.onOpen?.();
   }
 
   function submit() {
@@ -41,6 +45,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         {props.buttonLabel ?? "Open modal"}
       </Button>
       <Modal
+        formId={props.formId}
         show={show}
         title={props.modalTitle ?? props.buttonLabel ?? "No title"}
         submitLabel={props.submitLabel}

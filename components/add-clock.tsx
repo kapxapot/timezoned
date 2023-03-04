@@ -1,15 +1,16 @@
-import { TimeZone } from "@vvo/tzdb";
 import { useState } from "react";
-import { ClockData, createClock } from "./clock";
+import { TimeZone } from "@vvo/tzdb";
+import { IClock, Clock } from "@/lib/clock";
 import ClockForm from "./clock-form";
 import ModalContainer from "./modal-container";
 
 interface Props {
   timeZones: TimeZone[];
-  addClock: (clock: ClockData) => void;
+  addClock: (clock: IClock) => void;
 }
 
 export default function AddClock(props: Props) {
+  const id = "addClock";
   const firstTimeZone = props.timeZones[0].name;
 
   const [timeZone, setTimeZone] = useState<string>(firstTimeZone);
@@ -17,7 +18,7 @@ export default function AddClock(props: Props) {
 
   function addClock() {
     props.addClock(
-      createClock(timeZone, title)
+      new Clock(timeZone, title)
     );
   }
 
@@ -28,16 +29,18 @@ export default function AddClock(props: Props) {
 
   return (
     <ModalContainer
+      formId={id}
       buttonLabel="Add clock"
       buttonDisabled={!props.timeZones.length}
       submitLabel="Add"
-      onSubmit={addClock}
-      onCancel={reset}
+      onOpen={reset}
     >
       <ClockForm
+        id={id}
         timeZones={props.timeZones}
         onTimeZoneChange={timeZone => setTimeZone(timeZone)}
         onTitleChange={title => setTitle(title)}
+        onSubmit={addClock}
       />
     </ModalContainer>
   )

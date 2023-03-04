@@ -4,6 +4,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 
 interface Props {
+  formId: string;
   show: boolean;
   title: string;
   submitLabel?: string;
@@ -75,6 +76,8 @@ export default function Modal(props: PropsWithChildren<Props>) {
                     <Button
                       color="purple"
                       onClick={submit}
+                      form={props.formId}
+                      type="submit"
                     >
                       {props.submitLabel ?? 'Submit'}
                     </Button>

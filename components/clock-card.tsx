@@ -1,46 +1,27 @@
 import { format } from 'date-fns';
-import {v4 as uuidv4} from 'uuid';
 import { Badge } from 'flowbite-react';
 import { ReactNode, useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
 import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
+import { IClock } from '@/lib/clock';
 
-export interface ClockData {
-  timeZone: string;
-  title?: string;
-  default?: boolean;
-  id?: string;
-}
-
-interface MenuItemData {
+interface MenuItem {
   label: string;
   action: () => void;
   className?: string;
 }
 
 interface Props {
-  data: ClockData;
-  onEdit?: (clock: ClockData) => void;
-  onDelete?: (clock: ClockData) => void;
+  clock: IClock;
+  onEdit?: (clock: IClock) => void;
+  onDelete?: (clock: IClock) => void;
 }
 
-export function createClock(timeZone: string, title?: string, def?: boolean): ClockData {
-  return {
-    timeZone: timeZone,
-    title: title ? title : timeZone,
-    default: def,
-    id: uuidv4()
-  };
-}
-
-export function Clock(props: Props) {
+export function ClockCard(props: Props) {
   const [now, setNow] = useState(new Date());
 
-  const data: ClockData = props.data;
-  const timeZone: string = data.timeZone;
-  const title: string = data.title ?? timeZone;
-  const isDefault: boolean = data.default ?? false;
+  const clock: IClock = props.clock;
 
   useEffect(
     () => {
@@ -51,14 +32,14 @@ export function Clock(props: Props) {
     []
   );
 
-  const menuItems: MenuItemData[] = [
+  const menuItems: MenuItem[] = [
     {
       label: "Edit clock",
-      action: () => props.onEdit?.(data)
+      action: () => props.onEdit?.(clock)
     },
     {
       label: "Delete clock",
-      action: () => props.onDelete?.(data),
+      action: () => props.onDelete?.(clock),
       className: "text-red-500"
     }
   ];
@@ -67,7 +48,7 @@ export function Clock(props: Props) {
     return (
       <h3 className="inline-flex w-full pl-2">
         <span className="font-bold">
-          {title}
+          {clock.title}
         </span>
         <LockClosedIcon
           className="ml-1 w-4 opacity-40"
@@ -83,7 +64,7 @@ export function Clock(props: Props) {
         <Menu.Button>
           <h3 className="inline-flex w-full pl-2">
             <span className="font-bold">
-              {title}
+              {clock.title}
             </span>
             <ChevronDownIcon
               className="ml-1 -mb-1 w-5 hover:opacity-50"
@@ -112,17 +93,17 @@ export function Clock(props: Props) {
 
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-4 bg-white">
-      {isDefault ? staticTitle() : menu()}
+      {clock.default ? staticTitle() : menu()}
       <div className="text-indigo-500 text-5xl -mt-1">
-        {format(tzDate(timeZone), 'HH:mm')}
+        {format(tzDate(clock.timeZone), 'HH:mm')}
       </div>
-      <div>{timeZone}</div>
+      <div>{clock.timeZone}</div>
       <div className="flex flex-wrap gap-1">
         <Badge color="indigo">
-          {localOffset(now, timeZone)}
+          {localOffset(now, clock.timeZone)}
         </Badge>
         <Badge color="success">
-          GMT{gmtOffset(now, timeZone)}
+          GMT{gmtOffset(now, clock.timeZone)}
         </Badge>
       </div>
     </div>

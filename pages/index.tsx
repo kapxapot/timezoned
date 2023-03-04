@@ -4,49 +4,56 @@ import { useEffect, useState } from 'react';
 import { TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
-import { Clock, ClockData, createClock } from '@/components/clock';
+import { ClockCard } from '@/components/clock-card';
 import { flowbiteTheme } from '@/components/flowbite-theme';
 import AddClock from '@/components/add-clock';
+import { Clock, IClock } from '@/lib/clock';
 
 export default function Home() {
-  const [clocks, setClocks] = useState<ClockData[]>([]);
+  const [clocks, setClocks] = useState<IClock[]>([]);
   const [timeZones] = useState<TimeZone[]>(sortedTimeZones);
 
   const filteredTimeZones = timeZones.filter(
     tz => !clocks.some(clock => clock.timeZone === tz.name)
   );
 
-  function filterClocks(clocks: ClockData[]): ClockData[] {
+  function notDefaultClocks(clocks: IClock[]): IClock[] {
     return clocks.filter(clock => !clock.default);
   }
 
-  function addClock(clock: ClockData) {
+  function addClock(clock: IClock) {
     saveAndSetClocks([...clocks, clock]);
   }
 
-  function editClock(clock: ClockData) {
+  function editClock(clock: IClock) {
     console.log("edit clock: " + clock.timeZone);
   }
 
-  function deleteClock(clockToDelete: ClockData) {
+  function deleteClock(clockToDelete: IClock) {
     saveAndSetClocks(
       clocks.filter(clock => clock !== clockToDelete)
     );
   }
 
-  function saveAndSetClocks(clocks: ClockData[]) {
-    save("clocks", filterClocks(clocks));
+  function saveAndSetClocks(clocks: IClock[]) {
+    save("clocks", notDefaultClocks(clocks));
 
     setClocks(clocks);
   }
 
+  function loadClocks(): IClock[] {
+    const clocks = load<any[]>("clocks") ?? [];
+
+    return clocks.map(obj => Clock.deserialize(obj));
+  }
+
   useEffect(
     () => {
-      const storedClocks = filterClocks(
-        load("clocks") ?? []
+      const storedClocks = notDefaultClocks(
+        loadClocks()
       );
 
-      const localClock = createClock(
+      const localClock = new Clock(
         Intl.DateTimeFormat().resolvedOptions().timeZone,
         "Local Time",
         true
@@ -73,9 +80,9 @@ export default function Home() {
       </nav>
       <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
         {clocks.map(clock => (
-          <Clock
-            data={clock}
-            key={clock.id ?? clock.timeZone}
+          <ClockCard
+            clock={clock}
+            key={clock.key}
             onDelete={deleteClock}
             onEdit={editClock}
           />
