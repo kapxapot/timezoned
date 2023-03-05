@@ -54,22 +54,19 @@ export default function Home() {
     return clocks.map(obj => Clock.deserialize(obj));
   }
 
-  useEffect(
-    () => {
-      const storedClocks = notDefaultClocks(
-        loadClocks()
-      );
+  useEffect(() => {
+    const storedClocks = notDefaultClocks(
+      loadClocks()
+    );
 
-      const localClock = new Clock(
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-        "Local Time",
-        true
-      );
+    const localClock = new Clock(
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      "Local",
+      true
+    );
 
-      setClocks([localClock, ...storedClocks]);
-    },
-    []
-  );
+    setClocks([localClock, ...storedClocks]);
+  }, []);
 
   return (
     <Flowbite theme={flowbiteTheme}>
@@ -91,7 +88,7 @@ export default function Home() {
         {clocks.map(clock => (
           <ClockCard
             clock={clock}
-            key={clock.key}
+            key={clock.id}
             onDelete={deleteClock}
             onEdit={editClock}
             timeZones={filteredTimeZones}

@@ -69,25 +69,23 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   </button>
                 </Dialog.Title>
 
-                <div className="flex flex-col gap-4">
-                  {props.children}
+                {props.children}
 
-                  <div className="flex justify-end gap-3 mt-4 w-full">
-                    <Button
-                      color="purple"
-                      onClick={submit}
-                      form={props.formId}
-                      type="submit"
-                    >
-                      {props.submitLabel ?? 'Submit'}
-                    </Button>
-                    <Button
-                      color="gray"
-                      onClick={cancel}
-                    >
-                      {props.cancelLabel ?? 'Cancel'}
-                    </Button>
-                  </div>
+                <div className="flex justify-end gap-3 mt-6 w-full">
+                  <Button
+                    color="purple"
+                    onClick={submit}
+                    form={props.formId}
+                    type="submit"
+                  >
+                    {props.submitLabel ?? 'Submit'}
+                  </Button>
+                  <Button
+                    color="gray"
+                    onClick={cancel}
+                  >
+                    {props.cancelLabel ?? 'Cancel'}
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

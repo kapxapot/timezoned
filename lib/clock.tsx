@@ -1,12 +1,11 @@
 import {v4 as uuidv4} from 'uuid';
+import { extractCity } from './timezones';
 
 export interface IClock {
   timeZone: string;
   title: string;
   default: boolean;
   id: string;
-
-  readonly key: string;
 }
 
 export interface ClockChange {
@@ -36,10 +35,10 @@ export class Clock implements IClock {
   }
 
   static fromChange(change: ClockChange): IClock {
-    return new Clock(change.timeZone, change.title);
-  }
+    const title = change.title
+      ? change.title
+      : extractCity(change.timeZone);
 
-  get key(): string {
-    return this.id ?? this.timeZone;
+    return new Clock(change.timeZone, title);
   }
 }

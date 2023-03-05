@@ -1,9 +1,9 @@
-import { Label, Select, TextInput } from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 import { FormEvent } from 'react';
 import { TimeZone } from '@vvo/tzdb';
-import { tzStr } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import { cast } from '@/lib/common';
+import TimeZoneAutocomplete from './timezone-autocomplete';
 
 interface Props {
   id: string;
@@ -13,6 +13,8 @@ interface Props {
 }
 
 export default function ClockForm(props: Props) {
+  const timeZoneNames = props.timeZones.map(tz => tz.name);
+
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -25,32 +27,24 @@ export default function ClockForm(props: Props) {
   }
 
   return (
-    <form id={props.id} onSubmit={onSubmit}>
+    <form id={props.id} onSubmit={onSubmit} className="flex flex-col gap-4">
       <div>
         <div className="mb-2 block">
-          <Label htmlFor="timezones" value="Timezone" />
+          <Label htmlFor="timeZone" value="Timezone" />
         </div>
-        <Select
-          name="timeZone"
-          defaultValue={props.clock ? props.clock.timeZone : ""}
-          required={true}
-        >
-          {props.timeZones.map(timeZone => (
-            <option
-              key={timeZone.name}
-              value={timeZone.name}
-            >
-              {tzStr(timeZone)}
-            </option>
-          ))}
-        </Select>
+        <TimeZoneAutocomplete
+          id="timeZone"
+          timeZones={timeZoneNames}
+          defaultValue={props.clock?.timeZone}
+        />
       </div>
 
       <div>
         <div className="mb-2 block">
-          <Label htmlFor="title" value="Title" />
+          <Label htmlFor="clockTitle" value="Title" />
         </div>
         <TextInput
+          id="clockTitle"
           name="title"
           maxLength={20}
           defaultValue={props.clock ? props.clock.title : ""}

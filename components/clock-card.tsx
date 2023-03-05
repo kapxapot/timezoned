@@ -27,14 +27,11 @@ export function ClockCard(props: Props) {
 
   const clock: IClock = props.clock;
 
-  useEffect(
-    () => {
-      setInterval(() => {
-        setNow(new Date());
-      }, 100); // 100ms
-    },
-    []
-  );
+  useEffect(() => {
+    setInterval(() => {
+      setNow(new Date());
+    }, 100);
+  }, []);
 
   const menuItems: MenuItem[] = [
     {
@@ -50,7 +47,7 @@ export function ClockCard(props: Props) {
 
   function staticTitle(): ReactNode {
     return (
-      <h3 className="inline-flex w-full pl-2">
+      <h3 className="inline-flex pl-3">
         <span className="font-bold">
           {clock.title}
         </span>
@@ -66,7 +63,7 @@ export function ClockCard(props: Props) {
     return (
       <Menu as="div" className="relative inline-block">
         <Menu.Button>
-          <h3 className="inline-flex w-full pl-2">
+          <h3 className="inline-flex pl-3">
             <span className="font-bold">
               {clock.title}
             </span>
