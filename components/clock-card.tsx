@@ -94,7 +94,7 @@ export function ClockCard(props: Props) {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-4 bg-white">
+      <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-3 bg-white">
         {clock.default ? staticTitle() : menu()}
         <div className="text-indigo-500 text-5xl -mt-1">
           {format(tzDate(clock.timeZone), 'HH:mm')}

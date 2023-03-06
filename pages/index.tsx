@@ -84,7 +84,7 @@ export default function Home() {
         />
       </nav>
 
-      <main className="flex flex-wrap justify-center items-start p-5 gap-6 mt-2">
+      <main className="flex flex-wrap justify-center items-start p-5 gap-5 mt-2">
         {clocks.map(clock => (
           <ClockCard
             clock={clock}

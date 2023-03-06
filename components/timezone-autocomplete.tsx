@@ -1,4 +1,4 @@
-import { Fragment, useState, FocusEvent } from 'react'
+import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { getTimeZone, tzStr } from '@/lib/timezones';
