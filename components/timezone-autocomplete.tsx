@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, FocusEvent } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { getTimeZone, tzStr } from '@/lib/timezones';
@@ -27,6 +27,10 @@ export default function TimeZoneAutocomplete(props: Props) {
     return tzObj ? tzStr(tzObj) : timeZone;
   }
 
+  function handleFocus(event: any) {
+    event.target.select();
+  }
+
   return (
     <div>
       <Combobox
@@ -38,7 +42,8 @@ export default function TimeZoneAutocomplete(props: Props) {
               className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 rounded-lg p-2.5 text-sm"
               id={props.id}
               name={props.id}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={event => setQuery(event.target.value)}
+              onFocus={handleFocus}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
