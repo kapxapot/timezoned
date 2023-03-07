@@ -35,7 +35,7 @@ export default function Timeline(props: Props) {
       <div className="mb-4">
         <strong>Time difference:</strong> {localOffset(props.clock.timeZone)}
       </div>
-      <div className="flex flex-wrap gap-y-2">
+      <div className="flex flex-wrap gap-y-2 mb-4">
         <Cell
           value1={props.baseClock.title + " hour"}
           value2={props.clock.title + " hour"}
@@ -48,6 +48,9 @@ export default function Timeline(props: Props) {
             red={diffHours < 0 && offsetHour(hour) > hour}
           />
         ))}
+      </div>
+      <div>
+        <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
       </div>
     </>
   )
