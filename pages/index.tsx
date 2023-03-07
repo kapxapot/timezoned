@@ -22,6 +22,8 @@ export default function Home() {
     return clocks.filter(clock => !clock.default);
   }
 
+  const defaultClock = clocks.find(clock => clock.default);
+
   function addClock(clock: IClock) {
     updateClocks([...clocks, clock]);
   }
@@ -88,6 +90,7 @@ export default function Home() {
         {clocks.map(clock => (
           <ClockCard
             clock={clock}
+            defaultClock={defaultClock}
             key={clock.id}
             onDelete={deleteClock}
             onEdit={editClock}

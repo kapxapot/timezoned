@@ -3,10 +3,11 @@ import { Badge } from 'flowbite-react';
 import { ReactNode, useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
-import { gmtOffset, localOffset, tzDate } from '@/lib/timezones';
+import { utcOffset, localOffset, tzNow } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 import EditClock from './edit-clock';
+import TimelineContainer from './timeline-container';
 
 interface MenuItem {
   label: string;
@@ -16,6 +17,7 @@ interface MenuItem {
 
 interface Props {
   clock: IClock;
+  defaultClock?: IClock;
   timeZones: TimeZone[];
   onEdit?: (clock: IClock, change: ClockChange) => void;
   onDelete?: (clock: IClock) => void;
@@ -97,17 +99,25 @@ export function ClockCard(props: Props) {
       <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-3 bg-white">
         {clock.default ? staticTitle() : menu()}
         <div className="text-indigo-500 text-5xl -mt-1">
-          {format(tzDate(clock.timeZone), 'HH:mm')}
+          {format(tzNow(clock.timeZone), 'HH:mm')}
         </div>
         <div>{clock.timeZone}</div>
         <div className="flex flex-wrap gap-1">
           <Badge color="indigo">
-            {localOffset(now, clock.timeZone)}
+            {localOffset(clock.timeZone)}
           </Badge>
           <Badge color="success">
-            GMT{gmtOffset(now, clock.timeZone)}
+            GMT{utcOffset(clock.timeZone)}
           </Badge>
         </div>
+        {(props.defaultClock && clock !== props.defaultClock) ? (
+          <div className="mt-2">
+            <TimelineContainer
+              clock={clock}
+              defaultClock={props.defaultClock}
+            />
+          </div>
+        ) : null }
       </div>
 
       <EditClock

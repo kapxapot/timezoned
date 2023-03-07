@@ -19,34 +19,62 @@ export function extractCity(timeZone: string): string {
   return chunks[chunks.length - 1].replace("_", " ");
 }
 
-export function gmtOffset(date: Date, timeZone: string): string {
-  const utcDate = new Date(date.toLocaleString("en-US", { timeZone: "UTC" }));
-  const tzDate = new Date(date.toLocaleString("en-US", { timeZone: timeZone }));
-  const offset = (tzDate.getTime() - utcDate.getTime()) / 60 / 1000 / 60;
+export function utcOffset(timeZone: string): string {
+  return signedOffset(
+    tzDiffHours(timeZone, "UTC")
+  );
+}
 
-  return offset >= 0
+export function localOffset(timeZone: string): string {
+  const offset = tzDiffHours(timeZone);
+
+  return (offset === 0)
+    ? "local"
+    : signedOffset(offset, true) + "h";
+}
+
+function signedOffset(offset: number, strict?: boolean): string {
+  return (strict && offset > 0 || offset >= 0)
     ? "+" + offset.toString()
     : offset.toString();
 }
 
-export function localOffset(date: Date, timeZone: string): string {
-  const utcDate = new Date(date.toLocaleString("en-US"));
-  const tzDate = new Date(date.toLocaleString("en-US", { timeZone: timeZone }));
-  const offset = (tzDate.getTime() - utcDate.getTime()) / 60 / 1000 / 60;
-
-  if (offset === 0) {
-    return "local";
-  }
-
-  const offsetStr = offset > 0
-    ? "+" + offset.toString()
-    : offset.toString();
-
-  return offsetStr + "h";
+/**
+ * Returns timezone diff in hours.
+ *
+ * @param baseTimeZone Local if not specified.
+ */
+export function tzDiffHours(timeZone: string, baseTimeZone?: string): number {
+  return toHours(
+    tzDiff(timeZone, baseTimeZone)
+  );
 }
 
-export function tzDate(timeZone: string): Date {
-  const dateStr = new Date().toLocaleString("en-US", { timeZone: timeZone });
+/**
+ * Returns timezone diff in milliseconds.
+ *
+ * @param baseTimeZone Local if not specified.
+ */
+export function tzDiff(timeZone: string, baseTimeZone?: string): number {
+  const tz = tzNow(timeZone);
+  const base = tzNow(baseTimeZone);
+
+  return tz.getTime() - base.getTime();
+}
+
+function toHours(ms: number) : number {
+  return ms / 60 / 1000 / 60;
+}
+
+export function tzNow(timeZone?: string): Date {
+  return tzDate(new Date(), timeZone);
+}
+
+export function tzDate(date: Date, timeZone?: string): Date {
+  const dateStr = timeZone
+    ? date.toLocaleString("en-US", { timeZone: timeZone })
+    : date.toLocaleString("en-US");
+
   return new Date(dateStr);
 }
 

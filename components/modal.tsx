@@ -4,13 +4,14 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 
 interface Props {
-  formId: string;
+  formId?: string;
   show: boolean;
   title: string;
   submitLabel?: string;
   cancelLabel?: string;
   onSubmit?: () => void;
   onCancel?: () => void;
+  noCancelButton?: boolean;
 }
 
 export default function Modal(props: PropsWithChildren<Props>) {
@@ -80,12 +81,14 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   >
                     {props.submitLabel ?? 'Submit'}
                   </Button>
-                  <Button
-                    color="gray"
-                    onClick={cancel}
-                  >
-                    {props.cancelLabel ?? 'Cancel'}
-                  </Button>
+                  {props.noCancelButton ? null : (
+                    <Button
+                      color="gray"
+                      onClick={cancel}
+                    >
+                      {props.cancelLabel ?? 'Cancel'}
+                    </Button>
+                  )}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
