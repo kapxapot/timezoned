@@ -40,6 +40,7 @@ export default function Timeline(props: Props) {
       />
       {hours.map(hour => (
         <Cell
+          key={hour}
           value1={hour}
           value2={justifyHours(hour + diffHours())}
         />
