@@ -15,6 +15,7 @@ interface Props {
   onSubmit?: () => void;
   onCancel?: () => void;
   noCancelButton?: boolean;
+  width?: string;
 }
 
 export default function ModalContainer(props: PropsWithChildren<Props>) {
@@ -46,12 +47,9 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         onClick={open}
         size="sm"
       >
-        {props.buttonIcon
-          ? (
-            <span className="mr-1.5">{props.buttonIcon}</span>
-          )
-          : null
-        }
+        {props.buttonIcon && (
+          <span className="mr-1.5">{props.buttonIcon}</span>
+        )}
         {props.buttonLabel ?? "Open modal"}
       </Button>
       <Modal
@@ -63,6 +61,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         onSubmit={submit}
         onCancel={cancel}
         noCancelButton={props.noCancelButton}
+        width={props.width}
       >
         {props.children}
       </Modal>

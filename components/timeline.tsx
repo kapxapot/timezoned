@@ -1,5 +1,5 @@
 import { IClock } from "@/lib/clock";
-import { localOffset, tzDiffHours } from "@/lib/timezones";
+import { localOffset, toMinutes, tzDiff, tzDiffHours } from "@/lib/timezones";
 
 interface Props {
   clock: IClock;
@@ -27,7 +27,21 @@ export default function Timeline(props: Props) {
   const diffHours = tzDiffHours(props.clock.timeZone, props.baseClock.timeZone);
 
   function offsetHour(hour: number): number {
-    return (hour + diffHours + 24) % 24;
+    return (hour + 24) % 24;
+  }
+
+  function offsetStr(hour: number): string {
+    const offset = diffHours;
+
+    const hours = Math.trunc(offset);
+    const diff = tzDiff(props.clock.timeZone, props.baseClock.timeZone);
+    const minutes = toMinutes(diff) - hours * 60;
+
+    return `${offsetHour(hour + hours)}${minutes ? `:${minutes}` : ""}`;
+  }
+
+  function isRedHour(hour: number): boolean {
+    return diffHours < 0 && offsetHour(hour + diffHours) > hour;
   }
 
   return (
@@ -37,21 +51,23 @@ export default function Timeline(props: Props) {
       </div>
       <div className="flex flex-wrap gap-y-2 mb-4">
         <Cell
-          value1={props.baseClock.title + " hour"}
-          value2={props.clock.title + " hour"}
+          value1={props.baseClock.title + " time"}
+          value2={props.clock.title + " time"}
         />
         {hours.map(hour => (
           <Cell
             key={hour}
             value1={hour}
-            value2={offsetHour(hour)}
-            red={diffHours < 0 && offsetHour(hour) > hour}
+            value2={offsetStr(hour)}
+            red={isRedHour(hour)}
           />
         ))}
       </div>
-      <div>
-        <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
-      </div>
+      {hours.some(hour => isRedHour(hour)) && (
+        <div>
+          <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
+        </div>
+      )}
     </>
   )
 }

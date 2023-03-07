@@ -17,6 +17,7 @@ export default function TimelineContainer(props: Props) {
       modalTitle={props.clock.title + " Timeline"}
       submitLabel="Close"
       noCancelButton={true}
+      width="max-w-2xl"
     >
       <Timeline
         clock={props.clock}

@@ -12,6 +12,7 @@ interface Props {
   onSubmit?: () => void;
   onCancel?: () => void;
   noCancelButton?: boolean;
+  width?: string;
 }
 
 export default function Modal(props: PropsWithChildren<Props>) {
@@ -49,7 +50,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-md bg-white p-4 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className={`w-full ${props.width ?? "max-w-md"} transform overflow-hidden rounded-md bg-white p-4 text-left align-middle shadow-xl transition-all`}>
                 <Dialog.Title
                   as="div"
                   className="flex items-start justify-between mb-4"
@@ -81,7 +82,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   >
                     {props.submitLabel ?? 'Submit'}
                   </Button>
-                  {props.noCancelButton ? null : (
+                  {!props.noCancelButton ?? (
                     <Button
                       color="gray"
                       onClick={cancel}
