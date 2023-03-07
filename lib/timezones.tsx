@@ -28,9 +28,11 @@ export function utcOffset(timeZone: string): string {
 export function localOffset(timeZone: string): string {
   const offset = tzDiffHours(timeZone);
 
-  return (offset === 0)
+  const offsetStr = (offset === 0)
     ? "local"
     : signedOffset(offset, true) + "h";
+
+  return offsetStr;
 }
 
 function signedOffset(offset: number, strict?: boolean): string {
@@ -63,7 +65,7 @@ export function tzDiff(timeZone: string, baseTimeZone?: string): number {
 }
 
 function toHours(ms: number) : number {
-  return ms / 60 / 1000 / 60;
+  return Math.round(ms / 60 / 60) / 1000;
 }
 
 export function tzNow(timeZone?: string): Date {
