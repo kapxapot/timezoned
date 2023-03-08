@@ -22,6 +22,9 @@ export function StaticClockCard(props: Props) {
 
   return (
     <Card>
+      <h3 className="inline-flex font-bold">
+        {clock.title}
+      </h3>
       <div className="text-indigo-500 text-5xl -mt-1">
         {format(tzNow(clock.timeZone), 'HH:mm')}
       </div>

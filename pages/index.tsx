@@ -1,15 +1,15 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Flowbite } from 'flowbite-react';
-import { useEffect, useState } from 'react';
-import { TimeZone } from "@vvo/tzdb";
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
-import { ClockCard } from '@/components/clock-card';
 import { flowbiteTheme } from '@/components/config/flowbite-theme';
+import { ClockCard } from '@/components/clock-card';
 import AddClock from '@/components/add-clock';
-import { Clock, ClockChange, IClock } from '@/lib/clock';
-import { merge } from '@/lib/common';
 import { StaticClockCard } from '@/components/static-clock-card';
+import { merge } from '@/lib/common';
+import { Clock, ClockChange, IClock } from '@/lib/clock';
+import { TimeZone } from "@vvo/tzdb";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -19,6 +19,7 @@ export default function Home() {
     tz => !clocks.some(clock => clock.timeZone === tz.name)
   );
 
+  const localClockLabel = "My time";
   const localClock = clocks.find(clock => clock.default);
   const otherClocks = filterOtherClocks(clocks);
 
@@ -65,7 +66,7 @@ export default function Home() {
 
     const localClock = new Clock(
       Intl.DateTimeFormat().resolvedOptions().timeZone,
-      "Local",
+      localClockLabel,
       true
     );
 

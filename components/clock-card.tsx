@@ -38,11 +38,11 @@ export function ClockCard(props: Props) {
 
   const menuItems: MenuItem[] = [
     {
-      label: "Edit clock",
+      label: "Edit",
       action: () => setShowEdit(true)
     },
     {
-      label: "Delete clock",
+      label: "Delete",
       action: () => props.onDelete?.(clock),
       className: "text-red-500"
     }
