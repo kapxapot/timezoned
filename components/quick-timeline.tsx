@@ -4,6 +4,7 @@ import Timeline from './timeline';
 import { extractCity } from '@/lib/timezones';
 import TimeZoneAutocomplete from './timezone-autocomplete';
 import { Label } from 'flowbite-react';
+import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 interface Props {
   timeZoneNames: string[];
@@ -17,8 +18,10 @@ export default function QuickTimeline(props: Props) {
   return (
     <ModalContainer
       buttonLabel="Quick timeline"
+      buttonIcon={<CalendarDaysIcon className="w-5" />}
       submitLabel="Close"
       noCancelButton={true}
+      width="max-w-2xl"
     >
       <div className="mb-5">
         <div className="mb-2 block">

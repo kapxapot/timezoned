@@ -7,7 +7,7 @@ import { utcOffset, tzNow, tzOffset } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 import EditClock from './edit-clock';
-import TimelineContainer from './timeline-container';
+import ShowTimeline from './show-timeline';
 import { Card } from './core/card';
 
 interface MenuItem {
@@ -113,7 +113,7 @@ export function ClockCard(props: Props) {
         </div>
         {(props.defaultClock && clock !== props.defaultClock) && (
           <div className="mt-2">
-            <TimelineContainer
+            <ShowTimeline
               clock={clock}
               defaultClock={props.defaultClock}
             />
