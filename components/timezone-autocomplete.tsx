@@ -6,8 +6,9 @@ import { TimeZone } from '@vvo/tzdb';
 
 interface Props {
   id: string;
-  timeZones: string[];
+  timeZoneNames: string[];
   defaultValue?: string;
+  onChange?: (string) => void;
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
@@ -34,8 +35,8 @@ export default function TimeZoneAutocomplete(props: Props) {
   }
 
   const filteredTimeZones = !query
-    ? props.timeZones
-    : props.timeZones.filter(timeZone =>
+    ? props.timeZoneNames
+    : props.timeZoneNames.filter(timeZone =>
         matches(query, timeZone) ||
         timeZoneMatches(query, getTimeZone(timeZone))
       );
@@ -53,7 +54,8 @@ export default function TimeZoneAutocomplete(props: Props) {
   return (
     <div>
       <Combobox
-        defaultValue={props.defaultValue ?? props.timeZones[0]}
+        defaultValue={props.defaultValue ?? props.timeZoneNames[0]}
+        onChange={value => props.onChange?.(value)}
       >
         <div className="relative mt-1">
           <div>

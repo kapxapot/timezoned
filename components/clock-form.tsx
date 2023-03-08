@@ -34,7 +34,7 @@ export default function ClockForm(props: Props) {
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          timeZones={timeZoneNames}
+          timeZoneNames={timeZoneNames}
           defaultValue={props.clock?.timeZone}
         />
       </div>

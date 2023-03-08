@@ -20,8 +20,10 @@ export default function TimelineContainer(props: Props) {
       width="max-w-2xl"
     >
       <Timeline
-        clock={props.clock}
-        baseClock={props.defaultClock}
+        timeZone={props.clock.timeZone}
+        baseTimeZone={props.defaultClock.timeZone}
+        title={props.clock.title + " time"}
+        baseTitle={props.defaultClock.title}
       />
     </ModalContainer>
   );

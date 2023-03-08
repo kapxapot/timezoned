@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from 'flowbite-react';
-import { ReactNode, useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
-import { utcOffset, localOffset, tzNow } from '@/lib/timezones';
+import { utcOffset, tzNow, tzOffset } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 import EditClock from './edit-clock';
@@ -48,7 +48,7 @@ export function ClockCard(props: Props) {
     }
   ];
 
-  function staticTitle(): ReactNode {
+  function staticTitle() {
     return (
       <h3 className="inline-flex pl-3">
         <span className="font-bold">
@@ -62,7 +62,7 @@ export function ClockCard(props: Props) {
     );
   }
 
-  function menu(): ReactNode {
+  function menu() {
     return (
       <Menu as="div" className="relative inline-block">
         <Menu.Button>
@@ -105,7 +105,7 @@ export function ClockCard(props: Props) {
         <div>{clock.timeZone}</div>
         <div className="flex flex-wrap gap-1">
           <Badge color="indigo">
-            {localOffset(clock.timeZone)}
+            {tzOffset(clock.timeZone)}
           </Badge>
           <Badge color="success">
             GMT{utcOffset(clock.timeZone)}

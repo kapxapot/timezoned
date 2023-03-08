@@ -10,6 +10,7 @@ import { StaticClockCard } from '@/components/static-clock-card';
 import { merge } from '@/lib/common';
 import { Clock, ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from "@vvo/tzdb";
+import QuickTimeline from '@/components/quick-timeline';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -82,11 +83,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <nav className="flex justify-center my-5">
+      <nav className="flex justify-center space-x-3 my-5">
         <AddClock
           timeZones={filteredTimeZones}
           addClock={addClock}
         />
+        {localClock && (
+          <QuickTimeline
+            timeZoneNames={timeZones.map(tz => tz.name)}
+            baseTimeZone={localClock.timeZone}
+            baseTitle={localClock.title}
+          />
+        )}
       </nav>
 
       <main>

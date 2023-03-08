@@ -26,14 +26,18 @@ export function utcOffset(timeZone: string): string {
 }
 
 export function localOffset(timeZone: string): string {
-  const offset = tzDiffHours(timeZone);
+  return tzOffset(timeZone);
+}
+
+export function tzOffset(timeZone: string, baseTimeZone?: string): string {
+  const offset = tzDiffHours(timeZone, baseTimeZone);
 
   if (offset === 0) {
     return "local";
   }
 
   const hours = Math.trunc(offset);
-  const minutes = toMinutes(tzDiff(timeZone)) - hours * 60;
+  const minutes = toMinutes(tzDiff(timeZone, baseTimeZone)) - hours * 60;
 
   return `${signedOffset(hours, true)}h${minutes ? ` ${minutes}m` : ""}`;
 }
