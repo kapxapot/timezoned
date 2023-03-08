@@ -18,6 +18,7 @@ export default function QuickTimeline(props: Props) {
     <ModalContainer
       buttonLabel="Quick timeline"
       submitLabel="Close"
+      noCancelButton={true}
     >
       <div className="mb-5">
         <div className="mb-2 block">
