@@ -97,7 +97,7 @@ export function ClockCard(props: Props) {
 
   return (
     <>
-      <Card width="min-w-[175px]">
+      <Card className="sm:grow md:grow-0 md:min-w-[175px]">
         {clock.default ? staticTitle() : menu()}
         <div className="text-indigo-500 text-5xl -mt-1">
           {format(tzNow(clock.timeZone), 'HH:mm')}
