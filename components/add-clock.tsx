@@ -1,5 +1,5 @@
 import ClockForm from './clock-form';
-import ModalContainer from './modal-container';
+import ModalContainer from './core/modal-container';
 import { IClock, Clock, ClockChange } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 

@@ -8,6 +8,7 @@ import { ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 import EditClock from './edit-clock';
 import TimelineContainer from './timeline-container';
+import { Card } from './core/card';
 
 interface MenuItem {
   label: string;
@@ -96,7 +97,7 @@ export function ClockCard(props: Props) {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-2 rounded-lg border border-gray-200 shadow-md p-3 bg-white">
+      <Card width="min-w-[175px]">
         {clock.default ? staticTitle() : menu()}
         <div className="text-indigo-500 text-5xl -mt-1">
           {format(tzNow(clock.timeZone), 'HH:mm')}
@@ -110,15 +111,15 @@ export function ClockCard(props: Props) {
             GMT{utcOffset(clock.timeZone)}
           </Badge>
         </div>
-        {(props.defaultClock && clock !== props.defaultClock) ? (
+        {(props.defaultClock && clock !== props.defaultClock) && (
           <div className="mt-2">
             <TimelineContainer
               clock={clock}
               defaultClock={props.defaultClock}
             />
           </div>
-        ) : null }
-      </div>
+        )}
+      </Card>
 
       <EditClock
         clock={clock}

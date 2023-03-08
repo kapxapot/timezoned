@@ -1,4 +1,4 @@
-import Modal from '@/components/modal';
+import Modal from '@/components/core/modal';
 import { Button } from 'flowbite-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 

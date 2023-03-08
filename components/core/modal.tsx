@@ -82,7 +82,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   >
                     {props.submitLabel ?? 'Submit'}
                   </Button>
-                  {!props.noCancelButton ?? (
+                  {!props.noCancelButton && (
                     <Button
                       color="gray"
                       onClick={cancel}

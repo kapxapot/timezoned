@@ -1,5 +1,6 @@
 import { IClock } from "@/lib/clock";
 import { localOffset, toMinutes, tzDiff, tzDiffHours } from "@/lib/timezones";
+import { useEffect, useState } from "react";
 
 interface Props {
   clock: IClock;
@@ -25,6 +26,14 @@ function Cell(props: CellProps) {
 }
 
 export default function Timeline(props: Props) {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    setInterval(() => {
+      setNow(new Date());
+    }, 100);
+  }, []);
+
   const diffHours = tzDiffHours(props.clock.timeZone, props.baseClock.timeZone);
 
   function offsetHour(hour: number): number {

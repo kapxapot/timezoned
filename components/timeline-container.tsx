@@ -1,6 +1,6 @@
 import { IClock } from "@/lib/clock";
 import { CalendarDaysIcon } from "@heroicons/react/20/solid";
-import ModalContainer from "./modal-container";
+import ModalContainer from "./core/modal-container";
 import Timeline from "./timeline";
 
 interface Props {
