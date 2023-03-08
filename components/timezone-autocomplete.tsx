@@ -8,7 +8,7 @@ interface Props {
   id: string;
   timeZoneNames: string[];
   defaultValue?: string;
-  onChange?: (string) => void;
+  onChange?: (value: string) => void;
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
