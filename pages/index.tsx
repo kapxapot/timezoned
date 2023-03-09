@@ -11,6 +11,7 @@ import { merge } from '@/lib/common';
 import { Clock, ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from "@vvo/tzdb";
 import QuickTimeline from '@/components/quick-timeline';
+import TimeParser from '@/components/time-parser';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -26,6 +27,10 @@ export default function Home() {
 
   function filterOtherClocks(clocks: IClock[]): IClock[] {
     return clocks.filter(clock => !clock.default);
+  }
+
+  function addParsedClock(timeZone: string) {
+    addClock(new Clock(timeZone));
   }
 
   function addClock(clock: IClock) {
@@ -83,17 +88,25 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <nav className="flex justify-center space-x-3 my-5">
+      <nav className="flex flex-wrap justify-center gap-3 m-5">
         <AddClock
           timeZones={filteredTimeZones}
           addClock={addClock}
         />
         {localClock && (
-          <QuickTimeline
-            timeZoneNames={timeZones.map(tz => tz.name)}
-            baseTimeZone={localClock.timeZone}
-            baseTitle={localClock.title}
-          />
+          <>
+            <QuickTimeline
+              timeZoneNames={timeZones.map(tz => tz.name)}
+              baseTimeZone={localClock.timeZone}
+              baseTitle={localClock.title}
+            />
+
+            <TimeParser
+              timeZones={filteredTimeZones}
+              baseTimeZone={localClock.timeZone}
+              onAddClock={addParsedClock}
+            />
+          </>
         )}
       </nav>
 

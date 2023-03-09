@@ -10,8 +10,10 @@ interface Props {
   buttonDisabled?: boolean;
   modalTitle?: string;
   submitLabel?: string;
+  submitDisabled?: boolean;
   cancelLabel?: string;
   onOpen?: () => void;
+  onClose?: () => void;
   onSubmit?: () => void;
   onCancel?: () => void;
   noCancelButton?: boolean;
@@ -31,12 +33,14 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     setShow(false);
 
     props.onSubmit?.();
+    props.onClose?.();
   }
 
   function cancel() {
     setShow(false);
 
     props.onCancel?.();
+    props.onClose?.();
   }
 
   return (
@@ -48,15 +52,20 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         size="sm"
       >
         {props.buttonIcon && (
-          <span className="mr-1.5">{props.buttonIcon}</span>
+          <span className="mr-1.5">
+            {props.buttonIcon}
+          </span>
         )}
-        {props.buttonLabel ?? "Open modal"}
+        <span>
+          {props.buttonLabel ?? "Open modal"}
+        </span>
       </Button>
       <Modal
         formId={props.formId}
         show={show}
         title={props.modalTitle ?? props.buttonLabel ?? "No title"}
         submitLabel={props.submitLabel}
+        submitDisabled={props.submitDisabled}
         cancelLabel={props.cancelLabel}
         onSubmit={submit}
         onCancel={cancel}

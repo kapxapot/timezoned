@@ -8,6 +8,7 @@ interface Props {
   show: boolean;
   title: string;
   submitLabel?: string;
+  submitDisabled?: boolean;
   cancelLabel?: string;
   onSubmit?: () => void;
   onCancel?: () => void;
@@ -76,8 +77,9 @@ export default function Modal(props: PropsWithChildren<Props>) {
                 <div className="flex justify-end gap-3 mt-6 w-full">
                   <Button
                     color="purple"
-                    onClick={submit}
+                    disabled={props.submitDisabled}
                     form={props.formId}
+                    onClick={submit}
                     type="submit"
                   >
                     {props.submitLabel ?? 'Submit'}

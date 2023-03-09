@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { tzOffset, toMinutes, tzDiff, tzDiffHours, extractCity } from "@/lib/timezones";
+import { justifyBy } from "@/lib/common";
 
 interface Props {
   timeZone: string;
@@ -37,10 +38,6 @@ export default function Timeline(props: Props) {
 
   const diffHours = tzDiffHours(props.timeZone, props.baseTimeZone);
 
-  function offsetHour(hour: number): number {
-    return (hour + 24) % 24;
-  }
-
   function offsetStr(hour: number): string {
     const offset = diffHours;
 
@@ -48,11 +45,11 @@ export default function Timeline(props: Props) {
     const diff = tzDiff(props.timeZone, props.baseTimeZone);
     const minutes = toMinutes(diff) - hours * 60;
 
-    return `${offsetHour(hour + hours)}${minutes ? `:${minutes}` : ""}`;
+    return `${justifyBy(hour + hours, 24)}${minutes ? `:${minutes}` : ""}`;
   }
 
   function isRedHour(hour: number): boolean {
-    return diffHours < 0 && offsetHour(hour + diffHours) > hour;
+    return diffHours < 0 && justifyBy(hour + diffHours, 24) > hour;
   }
 
   function isCurrentHour(hour: number): boolean {
@@ -62,7 +59,7 @@ export default function Timeline(props: Props) {
   return (
     <>
       <div className="mb-4">
-        <strong>Time difference:</strong> {tzOffset(props.timeZone, props.baseTimeZone)}
+        <span className="font-bold text-gray-600">Time difference:</span> {tzOffset(props.timeZone, props.baseTimeZone)}
       </div>
       <div className="flex flex-wrap gap-y-2 mb-4">
         <Cell

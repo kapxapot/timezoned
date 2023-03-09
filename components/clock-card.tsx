@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import { useState } from 'react';
 import { Badge } from 'flowbite-react';
-import { Menu } from '@headlessui/react';
-import { ChevronDownIcon, LockClosedIcon } from '@heroicons/react/20/solid';
-import { utcOffset, tzNow, tzOffset } from '@/lib/timezones';
+import { utcOffset, tzOffset } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from '@vvo/tzdb';
 import EditClock from './edit-clock';
 import ShowTimeline from './show-timeline';
 import { Card } from './core/card';
-
-interface MenuItem {
-  label: string;
-  action: () => void;
-  className?: string;
-}
+import { DropdownMenu, MenuItem } from './core/dropdown-menu';
+import TimeDisplay from './time-display';
 
 interface Props {
   clock: IClock;
@@ -25,16 +18,9 @@ interface Props {
 }
 
 export function ClockCard(props: Props) {
-  const [now, setNow] = useState(new Date());
   const [showEdit, setShowEdit] = useState(false);
 
   const clock: IClock = props.clock;
-
-  useEffect(() => {
-    setInterval(() => {
-      setNow(new Date());
-    }, 100);
-  }, []);
 
   const menuItems: MenuItem[] = [
     {
@@ -48,59 +34,19 @@ export function ClockCard(props: Props) {
     }
   ];
 
-  function staticTitle() {
-    return (
-      <h3 className="inline-flex pl-3">
-        <span className="font-bold">
-          {clock.title}
-        </span>
-        <LockClosedIcon
-          className="ml-1 w-4 opacity-40"
-          aria-hidden="true"
-        />
-      </h3>
-    );
-  }
-
-  function menu() {
-    return (
-      <Menu as="div" className="relative inline-block">
-        <Menu.Button>
-          <h3 className="inline-flex pl-3">
-            <span className="font-bold">
-              {clock.title}
-            </span>
-            <ChevronDownIcon
-              className="ml-1 -mb-1 w-5 hover:opacity-50"
-              aria-hidden="true"
-            />
-          </h3>
-        </Menu.Button>
-        <Menu.Items className="absolute mt-2 divide-y right-0 divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          {menuItems.map(item => (
-            <Menu.Item key={item.label}>
-            {({ active }) => (
-              <a
-                className={`${active && 'bg-slate-100'} w-full block py-1 px-4 whitespace-nowrap ${item.className ?? ""}`}
-                onClick={item.action}
-                href="#"
-              >
-                {item.label}
-              </a>
-            )}
-          </Menu.Item>
-          ))}
-        </Menu.Items>
-      </Menu>
-    );
-  }
-
   return (
     <>
       <Card className="min-w-[160px]">
-        {clock.default ? staticTitle() : menu()}
-        <div className="text-indigo-500 text-5xl -mt-1">
-          {format(tzNow(clock.timeZone), 'HH:mm')}
+        <div className="-mt-0.5">
+          <DropdownMenu
+            label={clock.title}
+            items={menuItems}
+          />
+        </div>
+        <div className="-mt-1">
+          <TimeDisplay
+            timeZone={clock.timeZone}
+          />
         </div>
         <div>{clock.timeZone}</div>
         <div className="flex flex-wrap gap-1">

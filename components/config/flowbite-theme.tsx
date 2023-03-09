@@ -1,15 +1,23 @@
-import { DeepPartial, FlowbiteTextInputTheme, ThemeProps } from "flowbite-react";
-
-const textInputTheme: DeepPartial<FlowbiteTextInputTheme> = {
-  field: {
-    input: {
-      base: 'focus:outline-blue-500 block w-full border disabled:cursor-not-allowed disabled:opacity-50'
-    }
-  }
-};
+import { ThemeProps } from "flowbite-react";
 
 export const flowbiteTheme: ThemeProps = {
   theme: {
-    textInput: textInputTheme
+    badge: {
+      root: {
+        size: {
+          xs: 'text-xs'
+        }
+      },
+      icon: {
+        off: 'rounded px-1.5 py-0.5'
+      }
+    },
+    textInput: {
+      field: {
+        input: {
+          base: 'focus:outline-blue-500 block w-full border disabled:cursor-not-allowed disabled:opacity-50'
+        }
+      }
+    }
   }
 };
