@@ -103,11 +103,7 @@ export default function TimeParser(props: Props) {
         </div>
         <TextInput
           id="rawTime"
-          helperText={(
-            <span>
-              Type a time string with a timezone, e.g.: &quot;12:00PM UTC&quot;
-            </span>
-          )}
+          placeholder="12:00PM UTC"
           value={rawTime}
           onChange={rawTimeChanged}
         />
