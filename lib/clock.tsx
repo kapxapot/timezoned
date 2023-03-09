@@ -21,7 +21,7 @@ export class Clock implements IClock {
 
   constructor(timeZone: string, title?: string, def?: boolean, id?: string) {
     this.timeZone = timeZone;
-    this.title = title ? title : timeZone;
+    this.title = title ? title : extractCity(timeZone);
 
     if (def) {
       this.default = def;
@@ -35,10 +35,6 @@ export class Clock implements IClock {
   }
 
   static fromChange(change: ClockChange): IClock {
-    const title = change.title
-      ? change.title
-      : extractCity(change.timeZone);
-
-    return new Clock(change.timeZone, title);
+    return new Clock(change.timeZone, change.title);
   }
 }
