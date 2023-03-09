@@ -105,7 +105,7 @@ export default function TimeParser(props: Props) {
           id="rawTime"
           helperText={(
             <span>
-              Type a time string with a timezone, e.g.: "12:00PM UTC"
+              Type a time string with a timezone, e.g.: &quot;12:00PM UTC&quot;
             </span>
           )}
           value={rawTime}
