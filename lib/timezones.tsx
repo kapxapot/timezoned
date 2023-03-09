@@ -9,12 +9,12 @@ export function sortTimeZones(timeZones: TimeZone[]): TimeZone[] {
 export const timeZones = getTimeZones({ includeUtc: true });
 export const sortedTimeZones = sortTimeZones(timeZones);
 
-export function getTimeZone(name: string): TimeZone | null {
-  return timeZones.find(tz => tz.name === name) ?? null;
+export function getTimeZone(name: string): TimeZone | undefined {
+  return timeZones.find(tz => tz.name === name);
 }
 
-export function getTimeZoneByAbbr(abbr: string): TimeZone | null {
-  return timeZones.find(tz => tz.abbreviation.toLowerCase() === abbr.toLowerCase()) ?? null;
+export function getTimeZoneByAbbr(abbr: string): TimeZone | undefined {
+  return timeZones.find(tz => tz.abbreviation.toLowerCase() === abbr.toLowerCase());
 }
 
 export function extractCity(timeZone: string): string {
