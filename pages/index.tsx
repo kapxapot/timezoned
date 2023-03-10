@@ -12,6 +12,8 @@ import { Clock, ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from "@vvo/tzdb";
 import QuickTimeline from '@/components/quick-timeline';
 import TimeParser from '@/components/time-parser';
+import Image from 'next/image';
+import Script from 'next/script';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -95,11 +97,13 @@ export default function Home() {
           <Navbar
           >
             <Navbar.Brand>
-              <img
-                src="/tz.svg"
-                className="mr-3 h-6 sm:h-9"
-                alt="Timezoned Logo"
-              />
+              <picture>
+                <img
+                  src="/tz.svg"
+                  className="mr-3 h-6 sm:h-9"
+                  alt="Timezoned Logo"
+                />
+              </picture>
               <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                 Timezoned
               </span>
@@ -162,12 +166,29 @@ export default function Home() {
           </div>
           <div>
             <a href="https://github.com/kapxapot/timezoned" className="opacity-50 hover:opacity-100">
-              <img src="/github.svg" className="w-6" />
+              <picture>
+                <img
+                  src="/github.svg"
+                  className="w-6"
+                  alt="GitHub link"
+                />
+              </picture>
             </a>
           </div>
         </footer>
       </div>
-      <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="kapxapot" data-description="Support me on Buy me a coffee!" data-message="Thank you for visiting! If you liked this page you can buy me a coffee!" data-color="#BD5FFF" data-position="Right" data-x_margin="10" data-y_margin="75"></script>
+      <Script
+        data-name="BMC-Widget"
+        data-cfasync="false"
+        src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+        data-id="kapxapot"
+        data-description="Support me on Buy me a coffee!"
+        data-message="Thank you for visiting! If you liked this page you can buy me a coffee!"
+        data-color="#BD5FFF"
+        data-position="Right"
+        data-x_margin="10"
+        data-y_margin="75"
+      />
     </Flowbite>
   )
 }
