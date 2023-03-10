@@ -4,6 +4,7 @@ import { tzNow } from "@/lib/timezones";
 
 interface Props {
   timeZone: string;
+  color?: string;
 }
 
 export default function TimeDisplay(props: Props) {
@@ -16,7 +17,7 @@ export default function TimeDisplay(props: Props) {
   }, []);
 
   return (
-    <div className="text-indigo-500 text-5xl">
+    <div className={`${props.color ?? "text-indigo-500"} text-5xl`}>
       {format(tzNow(props.timeZone), 'HH:mm')}
     </div>
   )

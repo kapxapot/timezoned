@@ -5,7 +5,6 @@ import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
 import { filterTimeZones, getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
-import { set } from 'date-fns';
 
 interface Props {
   timeZones: TimeZone[];
@@ -127,7 +126,8 @@ export default function TimeParser(props: Props) {
 
   return (
     <ModalContainer
-      buttonLabel="Time parser"
+      modalTitle="Time converter"
+      buttonLabel="Converter"
       buttonIcon={<CogIcon className="w-5" />}
       submitLabel="Add clock"
       submitDisabled={!canAddClock}

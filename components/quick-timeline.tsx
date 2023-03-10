@@ -5,22 +5,31 @@ import { extractCity } from '@/lib/timezones';
 import TimeZoneAutocomplete from './timezone-autocomplete';
 import { Label } from 'flowbite-react';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
+import { TimeZone } from '@vvo/tzdb';
 
 interface Props {
   timeZoneNames: string[];
+  filteredTimeZones: TimeZone[];
   baseTimeZone: string;
   baseTitle: string;
+  onAddClock: (timeZone: string) => void;
 }
 
 export default function QuickTimeline(props: Props) {
   const [timeZone, setTimeZone] = useState(props.timeZoneNames[0]);
 
+  const canAddClock = props.filteredTimeZones
+    .map(tz => tz.name)
+    .some(tzName => tzName === timeZone);
+
   return (
     <ModalContainer
-      buttonLabel="Quick timeline"
+      modalTitle="Quick timeline"
+      buttonLabel="Timeline"
       buttonIcon={<CalendarDaysIcon className="w-5" />}
-      submitLabel="Close"
-      noCancelButton={true}
+      submitLabel="Add clock"
+      submitDisabled={!canAddClock}
+      onSubmit={() => props.onAddClock(timeZone)}
       width="max-w-2xl"
     >
       <div className="mb-5">

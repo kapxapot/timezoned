@@ -32,7 +32,7 @@ export default function Home() {
     return clocks.filter(clock => !clock.default);
   }
 
-  function addParsedClock(timeZone: string) {
+  function addTimeZoneClock(timeZone: string) {
     addClock(new Clock(timeZone));
   }
 
@@ -117,14 +117,16 @@ export default function Home() {
                 <>
                   <QuickTimeline
                     timeZoneNames={timeZones.map(tz => tz.name)}
+                    filteredTimeZones={filteredTimeZones}
                     baseTimeZone={localClock.timeZone}
                     baseTitle={localClock.title}
+                    onAddClock={addTimeZoneClock}
                   />
 
                   <TimeParser
                     timeZones={filteredTimeZones}
                     baseTimeZone={localClock.timeZone}
-                    onAddClock={addParsedClock}
+                    onAddClock={addTimeZoneClock}
                   />
                 </>
               )}

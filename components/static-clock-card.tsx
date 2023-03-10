@@ -19,6 +19,7 @@ export function StaticClockCard(props: Props) {
       <div className="-mt-1">
         <TimeDisplay
           timeZone={clock.timeZone}
+          color="text-green-500"
         />
       </div>
       <div>{clock.timeZone}</div>
