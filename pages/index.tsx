@@ -13,12 +13,11 @@ import { TimeZone } from "@vvo/tzdb";
 import QuickTimeline from '@/components/quick-timeline';
 import TimeParser from '@/components/time-parser';
 import Script from 'next/script';
+import Footer from '@/components/footer';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
   const [timeZones] = useState<TimeZone[]>(sortedTimeZones);
-
-  const now = new Date();
 
   const filteredTimeZones = timeZones.filter(
     tz => !clocks.some(clock => clock.timeZone === tz.name)
@@ -91,8 +90,8 @@ export default function Home() {
         <link rel="icon" type="image/svg+xml" href="/tz.svg" />
       </Head>
 
-      <div className="flex flex-col h-screen">
-        <nav className="mb-5">
+      <article className="flex flex-col min-h-screen gap-5">
+        <nav>
           <Navbar
           >
             <Navbar.Brand>
@@ -142,7 +141,7 @@ export default function Home() {
               />
             </div>
           )}
-          <div className="flex flex-wrap justify-center mx-5 mb-5 gap-5">
+          <div className="flex flex-wrap justify-center mx-5 gap-5">
             {otherClocks.map(clock => (
               <ClockCard
                 clock={clock}
@@ -156,28 +155,8 @@ export default function Home() {
           </div>
         </main>
 
-        <footer className="w-full p-3 bg-white border-t border-gray-200 shadow flex gap-2 items-center justify-between dark:bg-gray-800 dark:border-gray-600">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            <div>
-              All rights reserved. &copy; 2023{now.getFullYear() > 2023 && (`—${now.getFullYear()}`)} <a href="https://timezoned.vercel.app" className="font-semibold hover:underline">Timezoned</a>
-            </div>
-            <div>
-              Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">Sergey Atroshchenko</a>
-            </div>
-          </div>
-          <div>
-            <a href="https://github.com/kapxapot/timezoned" className="opacity-50 hover:opacity-100">
-              <picture>
-                <img
-                  src="/github.svg"
-                  className="w-6"
-                  alt="GitHub link"
-                />
-              </picture>
-            </a>
-          </div>
-        </footer>
-      </div>
+        <Footer />
+      </article>
 
       <Script
         data-name="BMC-Widget"
