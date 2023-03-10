@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Flowbite, Footer, Navbar } from 'flowbite-react';
+import { Flowbite, Navbar } from 'flowbite-react';
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
 import { flowbiteTheme } from '@/components/config/flowbite-theme';
@@ -12,7 +12,6 @@ import { Clock, ClockChange, IClock } from '@/lib/clock';
 import { TimeZone } from "@vvo/tzdb";
 import QuickTimeline from '@/components/quick-timeline';
 import TimeParser from '@/components/time-parser';
-import Image from 'next/image';
 import Script from 'next/script';
 
 export default function Home() {
@@ -177,8 +176,8 @@ export default function Home() {
           </div>
         </footer>
       </div>
-      <script
-        async
+
+      <Script
         data-name="BMC-Widget"
         data-cfasync="false"
         src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
@@ -189,6 +188,8 @@ export default function Home() {
         data-position="Right"
         data-x_margin="10"
         data-y_margin="75"
+        strategy="beforeInteractive"
+        defer={false}
       />
     </Flowbite>
   )
