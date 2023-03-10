@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Flowbite } from 'flowbite-react';
+import { Flowbite, Footer, Navbar } from 'flowbite-react';
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
 import { flowbiteTheme } from '@/components/config/flowbite-theme';
@@ -16,6 +16,8 @@ import TimeParser from '@/components/time-parser';
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
   const [timeZones] = useState<TimeZone[]>(sortedTimeZones);
+
+  const now = new Date();
 
   const filteredTimeZones = timeZones.filter(
     tz => !clocks.some(clock => clock.timeZone === tz.name)
@@ -88,49 +90,83 @@ export default function Home() {
         <link rel="icon" type="image/svg+xml" href="/tz.svg" />
       </Head>
 
-      <nav className="flex flex-wrap justify-center gap-3 m-5">
-        <AddClock
-          timeZones={filteredTimeZones}
-          addClock={addClock}
-        />
-        {localClock && (
-          <>
-            <QuickTimeline
-              timeZoneNames={timeZones.map(tz => tz.name)}
-              baseTimeZone={localClock.timeZone}
-              baseTitle={localClock.title}
-            />
+      <div className="flex flex-col h-screen">
+        <nav className="mb-5">
+          <Navbar
+          >
+            <Navbar.Brand>
+              <img
+                src="/tz.svg"
+                className="mr-3 h-6 sm:h-9"
+                alt="Timezoned Logo"
+              />
+              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+                Timezoned
+              </span>
+            </Navbar.Brand>
 
-            <TimeParser
-              timeZones={filteredTimeZones}
-              baseTimeZone={localClock.timeZone}
-              onAddClock={addParsedClock}
-            />
-          </>
-        )}
-      </nav>
+            <div className="flex flex-wrap justify-center gap-3 mt-3 sm:mt-0">
+              <AddClock
+                timeZones={filteredTimeZones}
+                addClock={addClock}
+              />
+              {localClock && (
+                <>
+                  <QuickTimeline
+                    timeZoneNames={timeZones.map(tz => tz.name)}
+                    baseTimeZone={localClock.timeZone}
+                    baseTitle={localClock.title}
+                  />
 
-      <main>
-        {localClock && (
-          <div className="flex justify-center mb-5">
-            <StaticClockCard
-              clock={localClock}
-            />
+                  <TimeParser
+                    timeZones={filteredTimeZones}
+                    baseTimeZone={localClock.timeZone}
+                    onAddClock={addParsedClock}
+                  />
+                </>
+              )}
+            </div>
+          </Navbar>
+        </nav>
+
+        <main className="grow">
+          {localClock && (
+            <div className="flex justify-center mb-5">
+              <StaticClockCard
+                clock={localClock}
+              />
+            </div>
+          )}
+          <div className="flex flex-wrap justify-center mx-5 mb-5 gap-5">
+            {otherClocks.map(clock => (
+              <ClockCard
+                clock={clock}
+                defaultClock={localClock}
+                key={clock.id}
+                onDelete={deleteClock}
+                onEdit={editClock}
+                timeZones={filteredTimeZones}
+              />
+            ))}
           </div>
-        )}
-        <div className="flex flex-wrap justify-center mx-5 mb-5 gap-5">
-          {otherClocks.map(clock => (
-            <ClockCard
-              clock={clock}
-              defaultClock={localClock}
-              key={clock.id}
-              onDelete={deleteClock}
-              onEdit={editClock}
-              timeZones={filteredTimeZones}
-            />
-          ))}
-        </div>
-      </main>
+        </main>
+
+        <footer className="w-full p-3 bg-white border-t border-gray-200 shadow flex gap-2 items-center justify-between dark:bg-gray-800 dark:border-gray-600">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div>
+              All rights reserved. &copy; 2023{now.getFullYear() > 2023 && (`—${now.getFullYear()}`)} <a href="https://timezoned.vercel.app" className="font-semibold hover:underline">Timezoned</a>
+            </div>
+            <div>
+              Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">kapxapot</a>
+            </div>
+          </div>
+          <div>
+            <a href="https://github.com/kapxapot/timezoned" className="opacity-50 hover:opacity-100">
+              <img src="/github.svg" className="w-6" />
+            </a>
+          </div>
+        </footer>
+      </div>
     </Flowbite>
   )
 }
