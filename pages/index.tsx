@@ -85,7 +85,7 @@ export default function Home() {
         <title>Timezoned</title>
         <meta name="description" content="Timezone helper" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/tz.svg" />
       </Head>
 
       <nav className="flex flex-wrap justify-center gap-3 m-5">
