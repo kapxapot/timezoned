@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Script from 'next/script';
 import { Flowbite, Navbar } from 'flowbite-react';
+import { merge } from '@/lib/common';
+import { Clock, ClockChange, IClock } from '@/lib/clock';
 import { save, load } from '@/lib/storage';
 import { sortedTimeZones } from '@/lib/timezones';
 import { flowbiteTheme } from '@/components/config/flowbite-theme';
 import { ClockCard } from '@/components/clock-card';
 import AddClock from '@/components/add-clock';
 import { StaticClockCard } from '@/components/static-clock-card';
-import { merge } from '@/lib/common';
-import { Clock, ClockChange, IClock } from '@/lib/clock';
-import { TimeZone } from "@vvo/tzdb";
 import QuickTimeline from '@/components/quick-timeline';
 import TimeParser from '@/components/time-parser';
-import Script from 'next/script';
 import Footer from '@/components/footer';
+import { TimeZone } from "@vvo/tzdb";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
