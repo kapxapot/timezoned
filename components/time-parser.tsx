@@ -3,8 +3,9 @@ import ModalContainer from './core/modal-container';
 import { Label, TextInput } from 'flowbite-react';
 import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
-import { getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
+import { filterTimeZones, getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
+import { set } from 'date-fns';
 
 interface Props {
   timeZones: TimeZone[];
@@ -16,6 +17,7 @@ export default function TimeParser(props: Props) {
   const [rawTime, setRawTime] = useState("");
   const [time, setTime] = useState("");
   const [timeZone, setTimeZone] = useState("");
+  const [matchingTimeZones, setMatchingTimeZones] = useState("");
   const [localTime, setLocalTime] = useState("");
 
   function padMinutes(minutes: number): string {
@@ -37,8 +39,8 @@ export default function TimeParser(props: Props) {
 
     let hours = Number(match[1]);
     const minutes = match[5] ? Number(match[5]) : 0;
-    const ampm = match[7] ?? "";
-    const tzAbbr = match[11] ?? "";
+    const ampm = match[7] ?? null;
+    const tz = match[11] ?? null;
 
     if (ampm && hours > 12) {
       reset();
@@ -53,29 +55,64 @@ export default function TimeParser(props: Props) {
 
     setTime(String(hours) + ":" + padMinutes(minutes));
 
-    const timeZone = getTimeZoneByAbbr(tzAbbr);
-    const timeZoneStr = timeZone?.name ?? "";
+    const timeZone = checkTimeZone(tz);
 
-    setTimeZone(timeZoneStr);
+    if (!timeZone) {
+      setTimeZone("");
+      setLocalTime("");
+      return;
+    }
+
+    setTimeZone(timeZone.name);
+
+    const offset = tzDiffHours(props.baseTimeZone, timeZone.name);
+    const offsetHours = Math.trunc(offset);
+    const diff = tzDiff(props.baseTimeZone, timeZone.name);
+    const offsetMinutes = toMinutes(diff) - offsetHours * 60;
+
+    const finalMinutes = justifyBy(minutes + offsetMinutes, 60);
+    const finalHours = justifyBy(hours + offsetHours + Math.trunc((minutes + offsetMinutes) / 60), 24);
+
+    setLocalTime(`${finalHours}:${padMinutes(finalMinutes)}`);
+  }
+
+  function checkTimeZone(tz: string): TimeZone | null {
+    setMatchingTimeZones("");
+
+    if (!tz) {
+      return null;
+    }
+
+    const timeZone = getTimeZoneByAbbr(tz);
 
     if (timeZone) {
-      const offset = tzDiffHours(timeZone.name, props.baseTimeZone);
-      const offsetHours = Math.trunc(offset);
-      const diff = tzDiff(timeZone.name, props.baseTimeZone);
-      const offsetMinutes = toMinutes(diff) - offsetHours * 60;
-
-      const finalMinutes = justifyBy(minutes + offsetMinutes, 60);
-      const finalHours = justifyBy(hours + offsetHours + Math.trunc((minutes + offsetMinutes) / 60), 24);
-
-      setLocalTime(`${finalHours}:${padMinutes(finalMinutes)}`);
-    } else {
-      setLocalTime("");
+      return timeZone;
     }
+
+    const matchingTimeZones = filterTimeZones(tz);
+    const tzCount = matchingTimeZones.length;
+
+    if (tzCount < 2) {
+      return tzCount
+        ? matchingTimeZones[0]
+        : null;
+    }
+
+    const names = tzCount < 4
+      ? matchingTimeZones.map(tz => tz.name).join(", ")
+      : "";
+
+    setMatchingTimeZones(
+      `${tzCount} matching timezones${names ? `: ${names}` : ""}`
+    );
+
+    return null;
   }
 
   function reset() {
     setTime("");
     setTimeZone("");
+    setMatchingTimeZones("");
     setLocalTime("");
   }
 
@@ -102,6 +139,7 @@ export default function TimeParser(props: Props) {
           <Label htmlFor="rawTime" value="Time" />
         </div>
         <TextInput
+          autoComplete="off"
           id="rawTime"
           placeholder="12:00PM UTC"
           value={rawTime}
@@ -112,6 +150,9 @@ export default function TimeParser(props: Props) {
             <div>Time: {time}</div>
             {timeZone && (
               <div>Timezone: {timeZone}</div>
+            )}
+            {matchingTimeZones && (
+              <div>{matchingTimeZones}</div>
             )}
             {localTime && (
               <div>My time: {localTime}</div>

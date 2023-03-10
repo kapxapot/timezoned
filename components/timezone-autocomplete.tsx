@@ -1,8 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { getTimeZone, tzStr } from '@/lib/timezones';
-import { TimeZone } from '@vvo/tzdb';
+import { getTimeZone, timeZoneMatches, tzStr } from '@/lib/timezones';
 
 interface Props {
   id: string;
@@ -14,32 +13,9 @@ interface Props {
 export default function TimeZoneAutocomplete(props: Props) {
   const [query, setQuery] = useState("");
 
-  function matches(query: string, value?: string): boolean {
-    if (!value) {
-      return false;
-    }
-
-    return value
-      .toLowerCase()
-      .replace(/(\s|_|\/)+/g, "")
-      .includes(query.toLowerCase().replace(/\s+/g, ""));
-  }
-
-  function timeZoneMatches(query: string, timeZone?: TimeZone): boolean {
-    if (!timeZone) {
-      return false;
-    }
-
-    return matches(query, timeZone.abbreviation)
-      || timeZone.mainCities.some(city => matches(query, city));
-  }
-
   const filteredTimeZones = !query
     ? props.timeZoneNames
-    : props.timeZoneNames.filter(timeZone =>
-        matches(query, timeZone) ||
-        timeZoneMatches(query, getTimeZone(timeZone))
-      );
+    : props.timeZoneNames.filter(tz => timeZoneMatches(query, tz));
 
   function displayStr(timeZone: string): string {
     const tzObj = getTimeZone(timeZone);

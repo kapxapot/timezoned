@@ -9,7 +9,7 @@ export function sortTimeZones(timeZones: TimeZone[]): TimeZone[] {
 export const timeZones = getTimeZones({ includeUtc: true });
 export const sortedTimeZones = sortTimeZones(timeZones);
 
-export function getTimeZone(name: string): TimeZone | undefined {
+export function getTimeZone(name?: string): TimeZone | undefined {
   return timeZones.find(tz => tz.name === name);
 }
 
@@ -17,10 +17,40 @@ export function getTimeZoneByAbbr(abbr: string): TimeZone | undefined {
   return timeZones.find(tz => tz.abbreviation.toLowerCase() === abbr.toLowerCase());
 }
 
+export function filterTimeZones(query: string): TimeZone[] {
+  return timeZones.filter(tz => timeZoneMatches(query, tz.name));
+}
+
 export function extractCity(timeZone: string): string {
   const chunks = timeZone.split("/");
 
   return chunks[chunks.length - 1].replace("_", " ");
+}
+
+function matches(query: string, value?: string): boolean {
+  if (!value) {
+    return false;
+  }
+
+  return value
+    .toLowerCase()
+    .replace(/(\s|_|\/)+/g, "")
+    .includes(query.toLowerCase().replace(/\s+/g, ""));
+}
+
+export function timeZoneMatches(query: string, timeZoneName?: string): boolean {
+  if (matches(query, timeZoneName)) {
+    return true;
+  }
+
+  const timeZone = getTimeZone(timeZoneName);
+
+  if (!timeZone) {
+    return false;
+  }
+
+  return matches(query, timeZone.abbreviation)
+    || timeZone.mainCities.some(city => matches(query, city));
 }
 
 export function utcOffset(timeZone: string): string {
