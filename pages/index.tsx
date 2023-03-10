@@ -161,7 +161,7 @@ export default function Home() {
               All rights reserved. &copy; 2023{now.getFullYear() > 2023 && (`—${now.getFullYear()}`)} <a href="https://timezoned.vercel.app" className="font-semibold hover:underline">Timezoned</a>
             </div>
             <div>
-              Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">Sergey Atroshchenko</a> (<a href="https://www.buymeacoffee.com/kapxapot" className="hover:underline">Buy me a ☕</a>)
+              Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">Sergey Atroshchenko</a> (<a href="https://www.buymeacoffee.com/kapxapot" className="hover:underline">You can buy me a ☕</a>)
             </div>
           </div>
           <div>
