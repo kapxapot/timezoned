@@ -1,34 +1,24 @@
+import { useState } from "react";
 import ClockForm from "./clock-form";
 import Modal from "./core/modal";
+import ClockAlreadyAdded from "./clock-already-added";
 import { ClockChange, IClock } from "@/lib/clock";
-import { getTimeZone, sortTimeZones } from "@/lib/timezones";
-import { TimeZone } from "@vvo/tzdb";
 
 interface Props {
   show: boolean;
-  timeZones: TimeZone[];
   clock: IClock;
-  onEdit: (change: ClockChange) => void;
+  timeZones: string[];
+  addedTimeZones: string[];
   onClose: () => void;
+  onEdit: (change: ClockChange) => void;
 }
 
 export default function EditClock(props: Props) {
   const formId = "editClock";
-  const timeZones = getTimeZones();
+  const [timeZone, setTimeZone] = useState("");
 
-  /**
-   * Concatenates filtered timezones with the clock's timezone.
-   */
-  function getTimeZones(): TimeZone[] {
-    const timeZones = [...props.timeZones];
-    const clockTimeZone = getTimeZone(props.clock.timeZone);
-
-    if (clockTimeZone) {
-      timeZones.push(clockTimeZone);
-    }
-
-    return sortTimeZones(timeZones);
-  }
+  const alreadyAdded = timeZone !== props.clock.timeZone
+    && props.addedTimeZones.some(tz => tz === timeZone);
 
   function saveClock(change: ClockChange) {
     props.onEdit(change);
@@ -46,9 +36,13 @@ export default function EditClock(props: Props) {
       <ClockForm
         id={formId}
         clock={props.clock}
-        timeZones={timeZones}
+        timeZones={props.timeZones}
+        addedTimeZones={props.addedTimeZones}
+        onTimeZoneChange={setTimeZone}
         onSubmit={saveClock}
       />
+
+      {alreadyAdded && <ClockAlreadyAdded />}
     </Modal>
   )
 }

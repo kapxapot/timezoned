@@ -1,17 +1,17 @@
 import { ChangeEvent, useState } from 'react';
-import ModalContainer from './core/modal-container';
 import { Label, TextInput } from 'flowbite-react';
-import { CogIcon } from '@heroicons/react/20/solid';
-import { TimeZone } from '@vvo/tzdb';
+import ModalContainer from './core/modal-container';
+import ClockAlreadyAdded from './clock-already-added';
 import { filterTimeZones, getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
-import ClockAlreadyAdded from './clock-already-added';
+import { CogIcon } from '@heroicons/react/20/solid';
+import { TimeZone } from '@vvo/tzdb';
 
 interface Props {
-  timeZones: TimeZone[];
+  addedTimeZones: string[];
   baseTimeZone: string;
-  onAddClock: (timeZone: string) => void;
   inNavbar?: boolean;
+  onAddClock: (timeZone: string) => void;
 }
 
 export default function TimeConverter(props: Props) {
@@ -122,9 +122,7 @@ export default function TimeConverter(props: Props) {
     setRawTime("");
   }
 
-  const canAddClock = props.timeZones
-    .map(tz => tz.name)
-    .some(tzName => tzName === timeZone);
+  const alreadyAdded = props.addedTimeZones.some(tz => tz === timeZone);
 
   return (
     <ModalContainer
@@ -132,10 +130,10 @@ export default function TimeConverter(props: Props) {
       buttonLabel="Converter"
       buttonIcon={<CogIcon className="w-5" />}
       submitLabel="Add clock"
-      submitDisabled={!canAddClock}
-      onSubmit={() => props.onAddClock(timeZone)}
-      onClose={fullReset}
+      submitDisabled={alreadyAdded}
       inNavbar={true}
+      onClose={fullReset}
+      onSubmit={() => props.onAddClock(timeZone)}
     >
       <div>
         <div className="mb-2 block">
@@ -149,8 +147,8 @@ export default function TimeConverter(props: Props) {
           onChange={rawTimeChanged}
         />
         {time && (
-          <div className="mt-5">
-            <div>Time: {time}</div>
+          <>
+            <div className="mt-5">Time: {time}</div>
             {timeZone && (
               <div>Timezone: {timeZone}</div>
             )}
@@ -160,10 +158,8 @@ export default function TimeConverter(props: Props) {
             {localTime && (
               <div className="mt-2">My time: {localTime}</div>
             )}
-            {timeZone && !canAddClock && (
-              <ClockAlreadyAdded />
-            )}
-          </div>
+            {timeZone && alreadyAdded && <ClockAlreadyAdded />}
+          </>
         )}
       </div>
     </ModalContainer>

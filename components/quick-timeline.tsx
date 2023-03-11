@@ -1,28 +1,25 @@
 import { useState } from 'react';
+import { Label } from 'flowbite-react';
 import ModalContainer from './core/modal-container';
 import Timeline from './timeline';
-import { extractCity } from '@/lib/timezones';
 import TimeZoneAutocomplete from './timezone-autocomplete';
-import { Label } from 'flowbite-react';
-import { CalendarDaysIcon } from '@heroicons/react/20/solid';
-import { TimeZone } from '@vvo/tzdb';
 import ClockAlreadyAdded from './clock-already-added';
+import { extractCity } from '@/lib/timezones';
+import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 interface Props {
-  timeZoneNames: string[];
-  filteredTimeZones: TimeZone[];
+  timeZones: string[];
+  addedTimeZones: string[];
   baseTimeZone: string;
   baseTitle: string;
-  onAddClock: (timeZone: string) => void;
   inNavbar?: boolean;
+  onAddClock: (timeZone: string) => void;
 }
 
 export default function QuickTimeline(props: Props) {
-  const [timeZone, setTimeZone] = useState(props.timeZoneNames[0]);
+  const [timeZone, setTimeZone] = useState(props.timeZones[0]);
 
-  const canAddClock = props.filteredTimeZones
-    .map(tz => tz.name)
-    .some(tzName => tzName === timeZone);
+  const alreadyAdded = props.addedTimeZones.some(tz => tz === timeZone);
 
   return (
     <ModalContainer
@@ -30,7 +27,7 @@ export default function QuickTimeline(props: Props) {
       buttonLabel="Timeline"
       buttonIcon={<CalendarDaysIcon className="w-5" />}
       submitLabel="Add clock"
-      submitDisabled={!canAddClock}
+      submitDisabled={alreadyAdded}
       onSubmit={() => props.onAddClock(timeZone)}
       width="max-w-2xl"
       inNavbar={props.inNavbar}
@@ -41,7 +38,7 @@ export default function QuickTimeline(props: Props) {
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          timeZoneNames={props.timeZoneNames}
+          timeZones={props.timeZones}
           defaultValue={timeZone}
           onChange={setTimeZone}
         />
@@ -54,9 +51,7 @@ export default function QuickTimeline(props: Props) {
         baseTitle={props.baseTitle}
       />
 
-      {timeZone && !canAddClock && (
-        <ClockAlreadyAdded />
-      )}
+      {alreadyAdded && <ClockAlreadyAdded />}
     </ModalContainer>
   )
 }

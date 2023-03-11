@@ -8,7 +8,7 @@ interface Props {
   clock: IClock;
 }
 
-export function StaticClockCard(props: Props) {
+export function DefaultClockCard(props: Props) {
   const clock: IClock = props.clock;
 
   return (

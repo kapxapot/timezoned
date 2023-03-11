@@ -1,12 +1,12 @@
 import { Fragment, useState } from 'react'
+import { getTimeZone, timeZoneMatches, tzStr } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { getTimeZone, timeZoneMatches, tzStr } from '@/lib/timezones';
 
 interface Props {
   id: string;
-  timeZoneNames: string[];
   defaultValue?: string;
+  timeZones: string[];
   onChange?: (value: string) => void;
 }
 
@@ -14,8 +14,8 @@ export default function TimeZoneAutocomplete(props: Props) {
   const [query, setQuery] = useState("");
 
   const filteredTimeZones = !query
-    ? props.timeZoneNames
-    : props.timeZoneNames.filter(tz => timeZoneMatches(query, tz));
+    ? props.timeZones
+    : props.timeZones.filter(tz => timeZoneMatches(query, tz));
 
   function displayStr(timeZone: string): string {
     const tzObj = getTimeZone(timeZone);
@@ -30,7 +30,7 @@ export default function TimeZoneAutocomplete(props: Props) {
   return (
     <div>
       <Combobox
-        defaultValue={props.defaultValue ?? props.timeZoneNames[0]}
+        defaultValue={props.defaultValue ?? props.timeZones[0]}
         onChange={value => props.onChange?.(value)}
       >
         <div className="relative mt-1">

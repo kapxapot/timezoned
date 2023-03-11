@@ -1,24 +1,25 @@
+import { FormEvent, useState } from 'react';
 import { Label, TextInput } from 'flowbite-react';
-import { FormEvent } from 'react';
-import { TimeZone } from '@vvo/tzdb';
+import TimeZoneAutocomplete from './timezone-autocomplete';
 import { ClockChange, IClock } from '@/lib/clock';
 import { cast } from '@/lib/common';
-import TimeZoneAutocomplete from './timezone-autocomplete';
 
 interface Props {
   id: string;
-  timeZones: TimeZone[];
   clock?: IClock;
+  timeZones: string[];
+  addedTimeZones: string[];
+  onTimeZoneChange?: (timeZone: string) => void;
   onSubmit: (change: ClockChange) => void;
 }
 
 export default function ClockForm(props: Props) {
-  const timeZoneNames = props.timeZones.map(tz => tz.name);
+  const [timeZone, setTimeZone] = useState(props.clock?.timeZone);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
 
     props.onSubmit(
@@ -26,16 +27,26 @@ export default function ClockForm(props: Props) {
     );
   }
 
+  function onTimeZoneChange(timeZone: string) {
+    setTimeZone(timeZone);
+    props.onTimeZoneChange?.(timeZone);
+  }
+
   return (
-    <form id={props.id} onSubmit={onSubmit} className="flex flex-col gap-4">
+    <form
+      className="flex flex-col gap-4"
+      id={props.id}
+      onSubmit={onSubmit}
+    >
       <div>
         <div className="mb-2 block">
           <Label htmlFor="timeZone" value="Timezone" />
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          timeZoneNames={timeZoneNames}
-          defaultValue={props.clock?.timeZone}
+          timeZones={props.timeZones}
+          defaultValue={timeZone}
+          onChange={onTimeZoneChange}
         />
       </div>
 

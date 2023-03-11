@@ -9,31 +9,41 @@ import { sortedTimeZones } from '@/lib/timezones';
 import { flowbiteTheme } from '@/components/config/flowbite-theme';
 import { ClockCard } from '@/components/clock-card';
 import AddClock from '@/components/add-clock';
-import { StaticClockCard } from '@/components/static-clock-card';
+import { DefaultClockCard } from '@/components/default-clock-card';
 import QuickTimeline from '@/components/quick-timeline';
 import TimeConverter from '@/components/time-converter';
 import Footer from '@/components/footer';
-import { TimeZone } from "@vvo/tzdb";
-import { ClockIcon } from '@heroicons/react/20/solid';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
-  const [timeZones] = useState<TimeZone[]>(sortedTimeZones);
 
-  const filteredTimeZones = timeZones.filter(
-    tz => !clocks.some(clock => clock.timeZone === tz.name)
+  // all timezones
+  const timeZones = sortedTimeZones;
+
+  // timezones of the clocks on the dashboard
+  const dashboardTimeZones = timeZones.filter(
+    tz => clocks.some(c => c.timeZone === tz.name)
   );
 
-  const localClockLabel = "My time";
-  const localClock = clocks.find(clock => clock.default);
-  const otherClocks = filterOtherClocks(clocks);
+  const timeZoneNames = timeZones.map(tz => tz.name);
+  const dashboardTimeZoneNames = dashboardTimeZones.map(tz => tz.name);
 
-  function filterOtherClocks(clocks: IClock[]): IClock[] {
-    return clocks.filter(clock => !clock.default);
+  const defaultClockLabel = "My time";
+
+  // aka local clock
+  const defaultClock = clocks.find(c => c.default);
+
+  // all other clocks on the dashboard other than default
+  const customClocks = filterCustomClocks(clocks);
+
+  function filterCustomClocks(clocks: IClock[]): IClock[] {
+    return clocks.filter(c => c !== defaultClock);
   }
 
-  function addTimeZoneClock(timeZone: string) {
-    addClock(new Clock(timeZone));
+  function addClockByTimeZone(timeZone: string) {
+    addClock(
+      new Clock(timeZone)
+    );
   }
 
   function addClock(clock: IClock) {
@@ -52,12 +62,12 @@ export default function Home() {
 
   function deleteClock(deletedClock: IClock) {
     updateClocks(
-      clocks.filter(clock => clock !== deletedClock)
+      clocks.filter(c => c !== deletedClock)
     );
   }
 
   function updateClocks(clocks: IClock[]) {
-    save("clocks", filterOtherClocks(clocks));
+    save("clocks", filterCustomClocks(clocks));
 
     setClocks(clocks);
   }
@@ -69,17 +79,13 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const storedClocks = filterOtherClocks(
-      loadClocks()
-    );
-
-    const localClock = new Clock(
+    const defaultClock = new Clock(
       Intl.DateTimeFormat().resolvedOptions().timeZone,
-      localClockLabel,
+      defaultClockLabel,
       true
     );
 
-    setClocks([localClock, ...storedClocks]);
+    setClocks([defaultClock, ...loadClocks()]);
   }, []);
 
   return (
@@ -93,8 +99,7 @@ export default function Home() {
 
       <article className="flex flex-col min-h-screen gap-5">
         <nav>
-          <Navbar
-          >
+          <Navbar>
             <Navbar.Brand>
               <picture>
                 <img
@@ -113,28 +118,29 @@ export default function Home() {
               className="items-center"
             >
               <AddClock
-                timeZones={filteredTimeZones}
-                addClock={addClock}
+                timeZones={timeZoneNames}
+                addedTimeZones={dashboardTimeZoneNames}
                 inNavbar={true}
+                addClock={addClock}
               />
 
-              {localClock && (
+              {defaultClock && (
                 <QuickTimeline
-                  timeZoneNames={timeZones.map(tz => tz.name)}
-                  filteredTimeZones={filteredTimeZones}
-                  baseTimeZone={localClock.timeZone}
-                  baseTitle={localClock.title}
-                  onAddClock={addTimeZoneClock}
+                  timeZones={timeZoneNames}
+                  addedTimeZones={dashboardTimeZoneNames}
+                  baseTimeZone={defaultClock.timeZone}
+                  baseTitle={defaultClock.title}
                   inNavbar={true}
+                  onAddClock={addClockByTimeZone}
                 />
               )}
 
-              {localClock && (
+              {defaultClock && (
                 <TimeConverter
-                  timeZones={filteredTimeZones}
-                  baseTimeZone={localClock.timeZone}
-                  onAddClock={addTimeZoneClock}
+                  addedTimeZones={dashboardTimeZoneNames}
+                  baseTimeZone={defaultClock.timeZone}
                   inNavbar={true}
+                  onAddClock={addClockByTimeZone}
                 />
               )}
             </Navbar.Collapse>
@@ -142,25 +148,28 @@ export default function Home() {
         </nav>
 
         <main className="grow">
-          {localClock && (
+          {defaultClock && (
             <div className="flex justify-center mb-5">
-              <StaticClockCard
-                clock={localClock}
+              <DefaultClockCard
+                clock={defaultClock}
               />
             </div>
           )}
-          <div className="flex flex-wrap justify-center mx-5 gap-5">
-            {otherClocks.map(clock => (
-              <ClockCard
-                clock={clock}
-                defaultClock={localClock}
-                key={clock.id}
-                onDelete={deleteClock}
-                onEdit={editClock}
-                timeZones={filteredTimeZones}
-              />
-            ))}
-          </div>
+          {defaultClock && (
+            <div className="flex flex-wrap justify-center mx-5 gap-5">
+              {customClocks.map(clock => (
+                <ClockCard
+                  clock={clock}
+                  defaultClock={defaultClock}
+                  key={clock.id}
+                  timeZones={timeZoneNames}
+                  addedTimeZones={dashboardTimeZoneNames}
+                  onDelete={deleteClock}
+                  onEdit={editClock}
+                />
+              ))}
+            </div>
+          )}
         </main>
 
         <Footer />
