@@ -11,9 +11,10 @@ import { ClockCard } from '@/components/clock-card';
 import AddClock from '@/components/add-clock';
 import { StaticClockCard } from '@/components/static-clock-card';
 import QuickTimeline from '@/components/quick-timeline';
-import TimeParser from '@/components/time-parser';
+import TimeConverter from '@/components/time-converter';
 import Footer from '@/components/footer';
 import { TimeZone } from "@vvo/tzdb";
+import { ClockIcon } from '@heroicons/react/20/solid';
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -107,29 +108,36 @@ export default function Home() {
               </span>
             </Navbar.Brand>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-3 sm:mt-0">
+            <Navbar.Toggle />
+            <Navbar.Collapse
+              className="items-center"
+            >
               <AddClock
                 timeZones={filteredTimeZones}
                 addClock={addClock}
+                inNavbar={true}
               />
-              {localClock && (
-                <>
-                  <QuickTimeline
-                    timeZoneNames={timeZones.map(tz => tz.name)}
-                    filteredTimeZones={filteredTimeZones}
-                    baseTimeZone={localClock.timeZone}
-                    baseTitle={localClock.title}
-                    onAddClock={addTimeZoneClock}
-                  />
 
-                  <TimeParser
-                    timeZones={filteredTimeZones}
-                    baseTimeZone={localClock.timeZone}
-                    onAddClock={addTimeZoneClock}
-                  />
-                </>
+              {localClock && (
+                <QuickTimeline
+                  timeZoneNames={timeZones.map(tz => tz.name)}
+                  filteredTimeZones={filteredTimeZones}
+                  baseTimeZone={localClock.timeZone}
+                  baseTitle={localClock.title}
+                  onAddClock={addTimeZoneClock}
+                  inNavbar={true}
+                />
               )}
-            </div>
+
+              {localClock && (
+                <TimeConverter
+                  timeZones={filteredTimeZones}
+                  baseTimeZone={localClock.timeZone}
+                  onAddClock={addTimeZoneClock}
+                  inNavbar={true}
+                />
+              )}
+            </Navbar.Collapse>
           </Navbar>
         </nav>
 

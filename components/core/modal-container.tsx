@@ -1,5 +1,5 @@
 import Modal from '@/components/core/modal';
-import { Button } from 'flowbite-react';
+import { Button, Navbar } from 'flowbite-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
   onCancel?: () => void;
   noCancelButton?: boolean;
   width?: string;
+  inNavbar?: boolean;
 }
 
 export default function ModalContainer(props: PropsWithChildren<Props>) {
@@ -43,23 +44,44 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     props.onClose?.();
   }
 
-  return (
-    <>
+  function buttonContent() {
+    return (
+      <div className="flex gap-1.5">
+        {props.buttonIcon}
+        <span>
+          {props.buttonLabel ?? "Open modal"}
+        </span>
+      </div>
+    )
+  }
+
+  function button() {
+    return (
       <Button
-        color={props.buttonColor ?? "purple"}
+        color={props.buttonColor ?? "light"}
         disabled={props.buttonDisabled}
         onClick={open}
         size="sm"
       >
-        {props.buttonIcon && (
-          <span className="mr-1.5">
-            {props.buttonIcon}
-          </span>
-        )}
-        <span>
-          {props.buttonLabel ?? "Open modal"}
-        </span>
+        {buttonContent()}
       </Button>
+    )
+  }
+
+  function navbarLink() {
+    return (
+      <Navbar.Link
+        href="#"
+        onClick={open}
+      >
+        {buttonContent()}
+      </Navbar.Link>
+    )
+  }
+
+  return (
+    <>
+      {props.inNavbar ? navbarLink() : button()}
       <Modal
         formId={props.formId}
         show={show}

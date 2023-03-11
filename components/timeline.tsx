@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { tzOffset, toMinutes, tzDiff, tzDiffHours, extractCity } from "@/lib/timezones";
 import { justifyBy } from "@/lib/common";
+import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
 interface Props {
   timeZone: string;
@@ -77,8 +78,11 @@ export default function Timeline(props: Props) {
         ))}
       </div>
       {hours.some(hour => isRedHour(hour)) && (
-        <div>
-          <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
+        <div className="mt-3 flex gap-1">
+          <ExclamationCircleIcon className="w-5 text-blue-500" />
+          <span>
+            <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
+          </span>
         </div>
       )}
     </>

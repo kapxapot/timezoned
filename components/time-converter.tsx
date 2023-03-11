@@ -5,14 +5,16 @@ import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
 import { filterTimeZones, getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
+import ClockAlreadyAdded from './clock-already-added';
 
 interface Props {
   timeZones: TimeZone[];
   baseTimeZone: string;
   onAddClock: (timeZone: string) => void;
+  inNavbar?: boolean;
 }
 
-export default function TimeParser(props: Props) {
+export default function TimeConverter(props: Props) {
   const [rawTime, setRawTime] = useState("");
   const [time, setTime] = useState("");
   const [timeZone, setTimeZone] = useState("");
@@ -133,6 +135,7 @@ export default function TimeParser(props: Props) {
       submitDisabled={!canAddClock}
       onSubmit={() => props.onAddClock(timeZone)}
       onClose={fullReset}
+      inNavbar={true}
     >
       <div>
         <div className="mb-2 block">
@@ -155,7 +158,10 @@ export default function TimeParser(props: Props) {
               <div>{matchingTimeZones}</div>
             )}
             {localTime && (
-              <div>My time: {localTime}</div>
+              <div className="mt-2">My time: {localTime}</div>
+            )}
+            {timeZone && !canAddClock && (
+              <ClockAlreadyAdded />
             )}
           </div>
         )}

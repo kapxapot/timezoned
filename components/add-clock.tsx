@@ -7,6 +7,7 @@ import { ClockIcon } from '@heroicons/react/20/solid';
 interface Props {
   timeZones: TimeZone[];
   addClock: (clock: IClock) => void;
+  inNavbar?: boolean;
 }
 
 export default function AddClock(props: Props) {
@@ -25,6 +26,7 @@ export default function AddClock(props: Props) {
       buttonIcon={<ClockIcon className="w-5" />}
       buttonDisabled={!props.timeZones.length}
       submitLabel="Add"
+      inNavbar={props.inNavbar}
     >
       <ClockForm
         id={formId}

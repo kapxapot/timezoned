@@ -6,6 +6,7 @@ import TimeZoneAutocomplete from './timezone-autocomplete';
 import { Label } from 'flowbite-react';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
+import ClockAlreadyAdded from './clock-already-added';
 
 interface Props {
   timeZoneNames: string[];
@@ -13,6 +14,7 @@ interface Props {
   baseTimeZone: string;
   baseTitle: string;
   onAddClock: (timeZone: string) => void;
+  inNavbar?: boolean;
 }
 
 export default function QuickTimeline(props: Props) {
@@ -31,6 +33,7 @@ export default function QuickTimeline(props: Props) {
       submitDisabled={!canAddClock}
       onSubmit={() => props.onAddClock(timeZone)}
       width="max-w-2xl"
+      inNavbar={props.inNavbar}
     >
       <div className="mb-5">
         <div className="mb-2 block">
@@ -50,6 +53,10 @@ export default function QuickTimeline(props: Props) {
         title={extractCity(timeZone) + " time"}
         baseTitle={props.baseTitle}
       />
+
+      {timeZone && !canAddClock && (
+        <ClockAlreadyAdded />
+      )}
     </ModalContainer>
   )
 }
