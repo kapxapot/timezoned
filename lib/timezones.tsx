@@ -50,6 +50,7 @@ export function timeZoneMatches(query: string, timeZoneName?: string): boolean {
   }
 
   return matches(query, timeZone.abbreviation)
+    || matches(query, timeZone.countryName)
     || timeZone.mainCities.some(city => matches(query, city));
 }
 
