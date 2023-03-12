@@ -14,9 +14,11 @@ import { DefaultClockCard } from "@/components/default-clock-card";
 import QuickTimeline from "@/components/quick-timeline";
 import TimeConverter from "@/components/time-converter";
 import Footer from "@/components/footer";
+import { STATUS } from "react-joyride";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
+  const [showTour, setShowTour] = useState(true);
 
   // all timezones
   const timeZones = sortedTimeZones;
@@ -87,6 +89,8 @@ export default function Home() {
     );
 
     setClocks([defaultClock, ...loadClocks()]);
+
+    setShowTour(!load("tourDone", false));
   }, []);
 
   const JoyrideClientSide = dynamic(
@@ -128,7 +132,7 @@ export default function Home() {
               timeZones={timeZoneNames}
               addedTimeZones={dashboardTimeZoneNames}
               inNavbar={true}
-              className="tour-step-3"
+              buttonClassName="tour-step-3"
               addClock={addClock}
             />
 
@@ -139,6 +143,7 @@ export default function Home() {
                 baseTimeZone={defaultClock.timeZone}
                 baseTitle={defaultClock.title}
                 inNavbar={true}
+                buttonClassName="tour-step-4"
                 onAddClock={addClockByTimeZone}
               />
             )}
@@ -148,6 +153,7 @@ export default function Home() {
                 addedTimeZones={dashboardTimeZoneNames}
                 baseTimeZone={defaultClock.timeZone}
                 inNavbar={true}
+                buttonClassName="tour-step-5"
                 onAddClock={addClockByTimeZone}
               />
             )}
@@ -183,40 +189,60 @@ export default function Home() {
         <Footer />
       </article>
 
-      <JoyrideClientSide
-        steps={[
-          {
-            target: ".tour-step-1",
-            content: "Welcome to Timezoned, a simple page that allows you to track your current timezone and compare it to other timezones.",
-            disableBeacon: true,
-          },
-          {
-            target: ".tour-step-2",
-            content: "This is your local time and timezone. It is detected automatically.",
-            disableBeacon: true,
-          },
-          {
-            target: ".tour-step-3",
-            content: "Add clocks for other timezones to track their time.",
-            disableBeacon: true,
-          },
-        ]}
-        continuous={true}
-        showProgress={true}
-        showSkipButton={true}
-        styles={{
-          tooltipContainer: {
-            textAlign: "left"
-          },
-          buttonNext: {
-            backgroundColor: "#0e9f6e"
-          },
-          buttonBack: {
-            color: "black",
-            marginRight: 10
-          }
-        }}
-      />
+      {showTour && (
+        <JoyrideClientSide
+          steps={[
+            {
+              target: ".tour-step-1",
+              content: "Welcome to Timezoned, a simple page that allows you to track your current timezone and compare it to other timezones.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-2",
+              content: "This is your local time and timezone. It is detected automatically.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-3",
+              content: "Add clocks for other timezones to track their time.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-4",
+              content: "Compare timelines of other timezones with your local timezone.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-5",
+              content: "Parse times with a timezone abbreviation like UTC and convert them to your local timezone.",
+              disableBeacon: true,
+            },
+          ]}
+          callback={({ status }) => {
+            if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
+              save("tourDone", true);
+            }
+          }}
+          continuous={true}
+          showProgress={true}
+          showSkipButton={true}
+          styles={{
+            tooltipContainer: {
+              textAlign: "left"
+            },
+            buttonNext: {
+              backgroundColor: "#0e9f6e"
+            },
+            buttonBack: {
+              color: "black",
+              marginRight: 10
+            }
+          }}
+          locale={{
+            last: "End tour"
+          }}
+        />
+      )}
 
       <Script
         data-name="BMC-Widget"

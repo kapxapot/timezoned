@@ -8,18 +8,18 @@ interface Props {
   buttonColor?: string;
   buttonIcon?: ReactNode;
   buttonDisabled?: boolean;
+  buttonClassName?: string;
   modalTitle?: string;
   submitLabel?: string;
   submitDisabled?: boolean;
   cancelLabel?: string;
+  noCancelButton?: boolean;
+  inNavbar?: boolean;
+  modalWidth?: string;
   onOpen?: () => void;
   onClose?: () => void;
   onSubmit?: () => void;
   onCancel?: () => void;
-  noCancelButton?: boolean;
-  width?: string;
-  inNavbar?: boolean;
-  className?: string;
 }
 
 export default function ModalContainer(props: PropsWithChildren<Props>) {
@@ -45,9 +45,9 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     props.onClose?.();
   }
 
-  function buttonContent() {
+  function ButtonContent() {
     return (
-      <div className={`flex gap-1.5 ${props.className}`}>
+      <div className="flex gap-1.5">
         {props.buttonIcon}
         <span>
           {props.buttonLabel ?? "Open modal"}
@@ -56,34 +56,36 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     )
   }
 
-  function button() {
+  function MCButton() {
     return (
       <Button
         color={props.buttonColor ?? "light"}
         disabled={props.buttonDisabled}
         size="sm"
-        className={props.className}
+        className={props.buttonClassName}
         onClick={open}
       >
-        {buttonContent()}
+        <ButtonContent />
       </Button>
     )
   }
 
-  function navbarLink() {
+  function MCNavbarLink() {
     return (
       <Navbar.Link
         href="#"
+        className={props.buttonClassName}
         onClick={open}
       >
-        {buttonContent()}
+        <ButtonContent />
       </Navbar.Link>
     )
   }
 
   return (
     <>
-      {props.inNavbar ? navbarLink() : button()}
+      {props.inNavbar ? <MCNavbarLink /> : <MCButton />}
+
       <Modal
         formId={props.formId}
         show={show}
@@ -91,10 +93,10 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         submitLabel={props.submitLabel}
         submitDisabled={props.submitDisabled}
         cancelLabel={props.cancelLabel}
+        noCancelButton={props.noCancelButton}
+        width={props.modalWidth}
         onSubmit={submit}
         onCancel={cancel}
-        noCancelButton={props.noCancelButton}
-        width={props.width}
       >
         {props.children}
       </Modal>
