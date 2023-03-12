@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import Script from "next/script";
 import dynamic from "next/dynamic";
 import { Flowbite, Navbar } from "flowbite-react";
 import { merge } from "@/lib/common";
@@ -243,21 +242,6 @@ export default function Home() {
           }}
         />
       )}
-
-      <Script
-        data-name="BMC-Widget"
-        data-cfasync="false"
-        src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
-        data-id="kapxapot"
-        data-description="Support me on Buy me a coffee!"
-        data-message="Thank you for visiting! If you liked this page you can buy me a coffee!"
-        data-color="#BD5FFF"
-        data-position="Right"
-        data-x_margin="10"
-        data-y_margin="75"
-        strategy="beforeInteractive"
-        defer={false}
-      />
     </Flowbite>
   )
 }

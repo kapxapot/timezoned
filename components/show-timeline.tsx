@@ -11,13 +11,13 @@ interface Props {
 export default function ShowTimeline(props: Props) {
   return (
     <ModalContainer
+      modalTitle={props.clock.title + " timeline"}
       buttonLabel="Timeline"
       buttonColor="light"
       buttonIcon={<CalendarDaysIcon className="w-5" />}
-      modalTitle={props.clock.title + " timeline"}
       submitLabel="Close"
       noCancelButton={true}
-      width="max-w-2xl"
+      modalWidth="max-w-2xl"
     >
       <Timeline
         timeZone={props.clock.timeZone}
