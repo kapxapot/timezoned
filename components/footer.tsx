@@ -4,7 +4,7 @@ export default function Footer() {
   const year = now.getFullYear();
 
   return (
-    <footer className="w-full py-2 px-4 bg-white border-t border-gray-200 shadow flex gap-2 items-center justify-between dark:bg-gray-800 dark:border-gray-600">
+    <footer className="w-full py-2 px-3 bg-white border-t border-gray-200 shadow flex gap-2 items-center justify-between dark:bg-gray-800 dark:border-gray-600">
       <div className="text-sm text-gray-500 dark:text-gray-400">
         <div>
           All rights reserved. &copy; {baseYear}{year > baseYear && (`—${year}`)} <a href="https://timezoned.vercel.app" className="font-semibold hover:underline">Timezoned</a>
@@ -18,7 +18,7 @@ export default function Footer() {
           <picture>
             <img
               src="/github.svg"
-              className="w-6"
+              className="w-8"
               alt="GitHub link"
             />
           </picture>

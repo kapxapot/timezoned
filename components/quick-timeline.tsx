@@ -13,6 +13,7 @@ interface Props {
   baseTimeZone: string;
   baseTitle: string;
   inNavbar?: boolean;
+  buttonClassName?: string;
   onAddClock: (timeZone: string) => void;
 }
 
@@ -26,11 +27,12 @@ export default function QuickTimeline(props: Props) {
       modalTitle="Quick timeline"
       buttonLabel="Timeline"
       buttonIcon={<CalendarDaysIcon className="w-5" />}
+      buttonClassName={props.buttonClassName}
       submitLabel="Add clock"
       submitDisabled={alreadyAdded}
-      onSubmit={() => props.onAddClock(timeZone)}
-      width="max-w-2xl"
       inNavbar={props.inNavbar}
+      modalWidth="max-w-2xl"
+      onSubmit={() => props.onAddClock(timeZone)}
     >
       <div className="mb-5">
         <div className="mb-2 block">

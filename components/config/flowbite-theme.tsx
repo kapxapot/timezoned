@@ -14,6 +14,7 @@ export const flowbiteTheme: ThemeProps = {
     },
     navbar: {
       root: {
+        base: "border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800",
         inner: {
           base: "flex flex-wrap items-center justify-between"
         }

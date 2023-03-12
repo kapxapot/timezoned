@@ -11,6 +11,7 @@ interface Props {
   addedTimeZones: string[];
   baseTimeZone: string;
   inNavbar?: boolean;
+  buttonClassName?: string;
   onAddClock: (timeZone: string) => void;
 }
 
@@ -129,6 +130,7 @@ export default function TimeConverter(props: Props) {
       modalTitle="Time converter"
       buttonLabel="Converter"
       buttonIcon={<CogIcon className="w-5" />}
+      buttonClassName={props.buttonClassName}
       submitLabel="Add clock"
       submitDisabled={alreadyAdded}
       inNavbar={true}
