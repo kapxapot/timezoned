@@ -9,6 +9,7 @@ interface Props {
   timeZones: string[];
   addedTimeZones: string[];
   inNavbar?: boolean;
+  className?: string;
   addClock: (clock: IClock) => void;
 }
 
@@ -32,6 +33,7 @@ export default function AddClock(props: Props) {
       submitLabel="Add"
       submitDisabled={alreadyAdded}
       inNavbar={props.inNavbar}
+      className={props.className}
       onCancel={() => setTimeZone("")}
     >
       <ClockForm

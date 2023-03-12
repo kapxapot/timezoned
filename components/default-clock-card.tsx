@@ -6,13 +6,14 @@ import TimeDisplay from './time-display';
 
 interface Props {
   clock: IClock;
+  className?: string;
 }
 
 export function DefaultClockCard(props: Props) {
   const clock: IClock = props.clock;
 
   return (
-    <Card>
+    <Card className={props.className}>
       <h3 className="inline-flex font-bold -mt-0.5">
         {clock.title}
       </h3>

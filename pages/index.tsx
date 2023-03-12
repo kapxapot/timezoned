@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import Script from 'next/script';
-import { Flowbite, Navbar } from 'flowbite-react';
-import { merge } from '@/lib/common';
-import { Clock, ClockChange, IClock } from '@/lib/clock';
-import { save, load } from '@/lib/storage';
-import { sortedTimeZones } from '@/lib/timezones';
-import { flowbiteTheme } from '@/components/config/flowbite-theme';
-import { ClockCard } from '@/components/clock-card';
-import AddClock from '@/components/add-clock';
-import { DefaultClockCard } from '@/components/default-clock-card';
-import QuickTimeline from '@/components/quick-timeline';
-import TimeConverter from '@/components/time-converter';
-import Footer from '@/components/footer';
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import Script from "next/script";
+import dynamic from "next/dynamic";
+import { Flowbite, Navbar } from "flowbite-react";
+import { merge } from "@/lib/common";
+import { Clock, ClockChange, IClock } from "@/lib/clock";
+import { save, load } from "@/lib/storage";
+import { sortedTimeZones } from "@/lib/timezones";
+import { flowbiteTheme } from "@/components/config/flowbite-theme";
+import { ClockCard } from "@/components/clock-card";
+import AddClock from "@/components/add-clock";
+import { DefaultClockCard } from "@/components/default-clock-card";
+import QuickTimeline from "@/components/quick-timeline";
+import TimeConverter from "@/components/time-converter";
+import Footer from "@/components/footer";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -88,6 +89,11 @@ export default function Home() {
     setClocks([defaultClock, ...loadClocks()]);
   }, []);
 
+  const JoyrideClientSide = dynamic(
+    () => import('react-joyride'),
+    { ssr: false }
+  );
+
   return (
     <Flowbite theme={flowbiteTheme}>
       <Head>
@@ -98,60 +104,62 @@ export default function Home() {
       </Head>
 
       <article className="flex flex-col min-h-screen gap-5">
-        <nav>
-          <Navbar>
-            <Navbar.Brand>
-              <picture>
-                <img
-                  src="/tz.svg"
-                  className="mr-3 h-6 sm:h-9"
-                  alt="Timezoned Logo"
-                />
-              </picture>
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                Timezoned
-              </span>
-            </Navbar.Brand>
+        <Navbar
+          fluid={true}
+        >
+          <Navbar.Brand>
+            <picture>
+              <img
+                src="/tz.svg"
+                className="mr-3 h-6 sm:h-9"
+                alt="Timezoned Logo"
+              />
+            </picture>
+            <span className="tour-step-1 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+              Timezoned
+            </span>
+          </Navbar.Brand>
 
-            <Navbar.Toggle />
-            <Navbar.Collapse
-              className="items-center"
-            >
-              <AddClock
+          <Navbar.Toggle />
+          <Navbar.Collapse
+            className="items-center"
+          >
+            <AddClock
+              timeZones={timeZoneNames}
+              addedTimeZones={dashboardTimeZoneNames}
+              inNavbar={true}
+              className="tour-step-3"
+              addClock={addClock}
+            />
+
+            {defaultClock && (
+              <QuickTimeline
                 timeZones={timeZoneNames}
                 addedTimeZones={dashboardTimeZoneNames}
+                baseTimeZone={defaultClock.timeZone}
+                baseTitle={defaultClock.title}
                 inNavbar={true}
-                addClock={addClock}
+                onAddClock={addClockByTimeZone}
               />
+            )}
 
-              {defaultClock && (
-                <QuickTimeline
-                  timeZones={timeZoneNames}
-                  addedTimeZones={dashboardTimeZoneNames}
-                  baseTimeZone={defaultClock.timeZone}
-                  baseTitle={defaultClock.title}
-                  inNavbar={true}
-                  onAddClock={addClockByTimeZone}
-                />
-              )}
-
-              {defaultClock && (
-                <TimeConverter
-                  addedTimeZones={dashboardTimeZoneNames}
-                  baseTimeZone={defaultClock.timeZone}
-                  inNavbar={true}
-                  onAddClock={addClockByTimeZone}
-                />
-              )}
-            </Navbar.Collapse>
-          </Navbar>
-        </nav>
+            {defaultClock && (
+              <TimeConverter
+                addedTimeZones={dashboardTimeZoneNames}
+                baseTimeZone={defaultClock.timeZone}
+                inNavbar={true}
+                onAddClock={addClockByTimeZone}
+              />
+            )}
+          </Navbar.Collapse>
+        </Navbar>
 
         <main className="grow">
           {defaultClock && (
             <div className="flex justify-center mb-5">
               <DefaultClockCard
                 clock={defaultClock}
+                className="tour-step-2"
               />
             </div>
           )}
@@ -174,6 +182,41 @@ export default function Home() {
 
         <Footer />
       </article>
+
+      <JoyrideClientSide
+        steps={[
+          {
+            target: ".tour-step-1",
+            content: "Welcome to Timezoned, a simple page that allows you to track your current timezone and compare it to other timezones.",
+            disableBeacon: true,
+          },
+          {
+            target: ".tour-step-2",
+            content: "This is your local time and timezone. It is detected automatically.",
+            disableBeacon: true,
+          },
+          {
+            target: ".tour-step-3",
+            content: "Add clocks for other timezones to track their time.",
+            disableBeacon: true,
+          },
+        ]}
+        continuous={true}
+        showProgress={true}
+        showSkipButton={true}
+        styles={{
+          tooltipContainer: {
+            textAlign: "left"
+          },
+          buttonNext: {
+            backgroundColor: "#0e9f6e"
+          },
+          buttonBack: {
+            color: "black",
+            marginRight: 10
+          }
+        }}
+      />
 
       <Script
         data-name="BMC-Widget"

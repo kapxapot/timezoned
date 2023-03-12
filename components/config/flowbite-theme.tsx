@@ -12,6 +12,13 @@ export const flowbiteTheme: ThemeProps = {
         off: 'rounded px-1.5 py-0.5'
       }
     },
+    navbar: {
+      root: {
+        inner: {
+          base: "flex flex-wrap items-center justify-between"
+        }
+      }
+    },
     textInput: {
       field: {
         input: {

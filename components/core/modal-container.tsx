@@ -19,6 +19,7 @@ interface Props {
   noCancelButton?: boolean;
   width?: string;
   inNavbar?: boolean;
+  className?: string;
 }
 
 export default function ModalContainer(props: PropsWithChildren<Props>) {
@@ -46,7 +47,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
 
   function buttonContent() {
     return (
-      <div className="flex gap-1.5">
+      <div className={`flex gap-1.5 ${props.className}`}>
         {props.buttonIcon}
         <span>
           {props.buttonLabel ?? "Open modal"}
@@ -60,8 +61,9 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
       <Button
         color={props.buttonColor ?? "light"}
         disabled={props.buttonDisabled}
-        onClick={open}
         size="sm"
+        className={props.className}
+        onClick={open}
       >
         {buttonContent()}
       </Button>
