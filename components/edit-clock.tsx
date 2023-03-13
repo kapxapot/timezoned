@@ -30,6 +30,7 @@ export default function EditClock(props: Props) {
       show={props.show}
       title="Edit clock"
       submitLabel="Save"
+      submitDisabled={alreadyAdded}
       onSubmit={props.onClose}
       onCancel={props.onClose}
     >

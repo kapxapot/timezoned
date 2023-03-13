@@ -123,7 +123,7 @@ export default function TimeConverter(props: Props) {
     setRawTime("");
   }
 
-  const alreadyAdded = props.addedTimeZones.some(tz => tz === timeZone);
+  const alreadyAdded = !!timeZone && props.addedTimeZones.some(tz => tz === timeZone);
 
   return (
     <ModalContainer
@@ -132,7 +132,7 @@ export default function TimeConverter(props: Props) {
       buttonIcon={<CogIcon className="w-5" />}
       buttonClassName={props.buttonClassName}
       submitLabel="Add clock"
-      submitDisabled={alreadyAdded}
+      submitDisabled={!timeZone || alreadyAdded}
       inNavbar={true}
       onClose={fullReset}
       onSubmit={() => props.onAddClock(timeZone)}
@@ -160,7 +160,7 @@ export default function TimeConverter(props: Props) {
             {localTime && (
               <div className="mt-2">My time: {localTime}</div>
             )}
-            {timeZone && alreadyAdded && <ClockAlreadyAdded />}
+            {alreadyAdded && <ClockAlreadyAdded />}
           </>
         )}
       </div>

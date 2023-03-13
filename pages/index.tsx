@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { Flowbite, Navbar } from "flowbite-react";
+import { STATUS } from "react-joyride";
 import { merge } from "@/lib/common";
 import { Clock, ClockChange, IClock } from "@/lib/clock";
 import { save, load } from "@/lib/storage";
@@ -13,7 +14,6 @@ import { DefaultClockCard } from "@/components/default-clock-card";
 import QuickTimeline from "@/components/quick-timeline";
 import TimeConverter from "@/components/time-converter";
 import Footer from "@/components/footer";
-import { STATUS } from "react-joyride";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
@@ -208,7 +208,7 @@ export default function Home() {
             },
             {
               target: ".tour-step-4",
-              content: "Compare timelines of other timezones with your local timezone.",
+              content: "Compare timelines of other timezones to your local timezone.",
               disableBeacon: true,
             },
             {
@@ -220,6 +220,7 @@ export default function Home() {
           callback={({ status }) => {
             if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
               save("tourDone", true);
+              setShowTour(false);
             }
           }}
           continuous={true}

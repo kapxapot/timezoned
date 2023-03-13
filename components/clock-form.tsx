@@ -14,7 +14,9 @@ interface Props {
 }
 
 export default function ClockForm(props: Props) {
-  const [timeZone, setTimeZone] = useState(props.clock?.timeZone);
+  const [timeZone, setTimeZone] = useState(props.clock?.timeZone || props.timeZones[0]);
+
+  props.onTimeZoneChange?.(timeZone);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

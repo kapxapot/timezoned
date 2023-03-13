@@ -25,6 +25,10 @@ export default function AddClock(props: Props) {
     );
   }
 
+  function reset() {
+    setTimeZone("");
+  }
+
   return (
     <ModalContainer
       formId={formId}
@@ -34,7 +38,7 @@ export default function AddClock(props: Props) {
       submitLabel="Add"
       submitDisabled={alreadyAdded}
       inNavbar={props.inNavbar}
-      onCancel={() => setTimeZone("")}
+      onClose={reset}
     >
       <ClockForm
         id={formId}
