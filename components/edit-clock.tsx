@@ -3,6 +3,7 @@ import ClockForm from "./clock-form";
 import Modal from "./core/modal";
 import ClockAlreadyAdded from "./clock-already-added";
 import { ClockChange, IClock } from "@/lib/clock";
+import { extractCity } from "@/lib/timezones";
 
 interface Props {
   show: boolean;
@@ -21,6 +22,10 @@ export default function EditClock(props: Props) {
     && props.addedTimeZones.some(tz => tz === timeZone);
 
   function saveClock(change: ClockChange) {
+    if (!change.title) {
+      change.title = extractCity(change.timeZone);
+    }
+
     props.onEdit(change);
   }
 
