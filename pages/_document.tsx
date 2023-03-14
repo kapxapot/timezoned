@@ -18,7 +18,7 @@ export default function Document() {
           data-color="#BD5FFF"
           data-position="Right"
           data-x_margin="10"
-          data-y_margin="75"
+          data-y_margin="67"
           strategy="beforeInteractive"
           defer={false}
         />

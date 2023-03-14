@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import { Flowbite, Navbar } from "flowbite-react";
+import { Collapse } from "flowbite";
+import { Button, Flowbite, Navbar } from "flowbite-react";
 import { STATUS } from "react-joyride";
 import { merge } from "@/lib/common";
 import { Clock, ClockChange, IClock } from "@/lib/clock";
@@ -97,6 +98,19 @@ export default function Home() {
     { ssr: false }
   );
 
+  // navbar collapse
+  const [collapse, setCollapse] = useState<Collapse | undefined>();
+  const [collapseExpanded, setCollapseExpanded] = useState(false);
+
+  useEffect(() => {
+    const targetEl: HTMLElement | null = document.querySelector('.navbar-collapse-element');
+    const triggerEl: HTMLElement | null = document.querySelector('.navbar-toggle-element');
+
+    setCollapse(
+      new Collapse(targetEl, triggerEl)
+    );
+  }, []);
+
   return (
     <Flowbite theme={flowbiteTheme}>
       <Head>
@@ -118,20 +132,23 @@ export default function Home() {
                 alt="Timezoned Logo"
               />
             </picture>
-            <span className="tour-step-1 self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            <span className="tour-step-intro self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               Timezoned
             </span>
           </Navbar.Brand>
 
-          <Navbar.Toggle />
+          <Navbar.Toggle
+            onClick={() => setCollapseExpanded(!collapseExpanded)}
+            className="navbar-toggle-element"
+          />
           <Navbar.Collapse
-            className="items-center"
+            className="items-center navbar-collapse-element md:mr-1"
           >
             <AddClock
               timeZones={timeZoneNames}
               addedTimeZones={dashboardTimeZoneNames}
               inNavbar={true}
-              buttonClassName="tour-step-3"
+              buttonClassName="tour-step-add-clock"
               addClock={addClock}
             />
 
@@ -142,7 +159,7 @@ export default function Home() {
                 baseTimeZone={defaultClock.timeZone}
                 baseTitle={defaultClock.title}
                 inNavbar={true}
-                buttonClassName="tour-step-4"
+                buttonClassName="tour-step-timeline"
                 onAddClock={addClockByTimeZone}
               />
             )}
@@ -152,7 +169,7 @@ export default function Home() {
                 addedTimeZones={dashboardTimeZoneNames}
                 baseTimeZone={defaultClock.timeZone}
                 inNavbar={true}
-                buttonClassName="tour-step-5"
+                buttonClassName="tour-step-converter"
                 onAddClock={addClockByTimeZone}
               />
             )}
@@ -164,7 +181,7 @@ export default function Home() {
             <div className="flex justify-center mb-5">
               <DefaultClockCard
                 clock={defaultClock}
-                className="tour-step-2"
+                className="tour-step-clock"
               />
             </div>
           )}
@@ -192,35 +209,43 @@ export default function Home() {
         <JoyrideClientSide
           steps={[
             {
-              target: ".tour-step-1",
+              target: ".tour-step-intro",
               content: "Welcome to Timezoned, a simple page that allows you to track your current timezone and compare it to other timezones.",
               disableBeacon: true,
             },
             {
-              target: ".tour-step-2",
+              target: ".tour-step-clock",
               content: "This is your local time and timezone. It is detected automatically.",
               disableBeacon: true,
             },
             {
-              target: ".tour-step-3",
+              target: ".tour-step-add-clock",
               content: "Add clocks for other timezones to track their time.",
               disableBeacon: true,
             },
             {
-              target: ".tour-step-4",
+              target: ".tour-step-timeline",
               content: "Compare timelines of other timezones to your local timezone.",
               disableBeacon: true,
             },
             {
-              target: ".tour-step-5",
+              target: ".tour-step-converter",
               content: "Parse times with a timezone abbreviation like UTC and convert them to your local timezone.",
               disableBeacon: true,
             },
           ]}
-          callback={({ status }) => {
+          callback={data => {
+            const { status, step, type } = data;
+
             if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
               save("tourDone", true);
               setShowTour(false);
+
+              // try to collapse collapse
+              collapse?.collapse();
+            } else if (type === "step:after" && step.target === ".tour-step-clock") {
+              // try to expand collapse
+              collapse?.expand();
             }
           }}
           continuous={true}
