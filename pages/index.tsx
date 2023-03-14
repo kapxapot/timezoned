@@ -100,7 +100,6 @@ export default function Home() {
 
   // navbar collapse
   const [collapse, setCollapse] = useState<Collapse | undefined>();
-  const [collapseExpanded, setCollapseExpanded] = useState(false);
 
   useEffect(() => {
     const targetEl: HTMLElement | null = document.querySelector('.navbar-collapse-element');
@@ -138,7 +137,6 @@ export default function Home() {
           </Navbar.Brand>
 
           <Navbar.Toggle
-            onClick={() => setCollapseExpanded(!collapseExpanded)}
             className="navbar-toggle-element"
           />
           <Navbar.Collapse
@@ -215,22 +213,22 @@ export default function Home() {
             },
             {
               target: ".tour-step-clock",
-              content: "This is your local time and timezone. It is detected automatically.",
+              content: "This is your local time. It is detected automatically.",
               disableBeacon: true,
             },
             {
               target: ".tour-step-add-clock",
-              content: "Add clocks for other timezones to track their time.",
+              content: "You can add clocks for other timezones to track their time and compare their timelines with your local one.",
               disableBeacon: true,
             },
             {
               target: ".tour-step-timeline",
-              content: "Compare timelines of other timezones to your local timezone.",
+              content: "Compare timelines of other timezones to your local timezone without adding them to the dashboard.",
               disableBeacon: true,
             },
             {
               target: ".tour-step-converter",
-              content: "Parse times with a timezone abbreviation like UTC and convert them to your local timezone.",
+              content: "Parse times with a timezone abbreviation like UTC and convert them to your local time.",
               disableBeacon: true,
             },
           ]}
@@ -242,9 +240,11 @@ export default function Home() {
               setShowTour(false);
 
               // try to collapse collapse
+              // this is needed only for mobile
               collapse?.collapse();
             } else if (type === "step:after" && step.target === ".tour-step-clock") {
               // try to expand collapse
+              // this is needed only for mobile
               collapse?.expand();
             }
           }}
