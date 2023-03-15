@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { tzNow } from "@/lib/timezones";
 
 interface Props {
@@ -18,7 +18,7 @@ export default function TimeDisplay(props: Props) {
 
   return (
     <div className={`${props.color ?? "text-indigo-500"} text-5xl`}>
-      {format(tzNow(props.timeZone), 'HH:mm')}
+      {format(tzNow(props.timeZone), "HH:mm")}
     </div>
   )
 }

@@ -14,6 +14,7 @@ interface CellProps {
   value1: string | number;
   value2: string | number;
   red?: boolean;
+  green?: boolean;
   current?: boolean;
 }
 
@@ -21,9 +22,9 @@ const hours = Array.from(Array(24).keys());
 
 function Cell(props: CellProps) {
   return (
-    <div className={`border ${props.current && "border-indigo-500"} flex flex-col items-center gap-1`}>
+    <div className={`border ${props.current && "border-indigo-500"} flex flex-col items-center`}>
       <div className="py-1 px-3 bg-teal-50 w-full text-center">{props.value1}</div>
-      <div className={`py-1 px-3 w-full text-center ${props.red && "text-red-500"}`}>{props.value2}</div>
+      <div className={`py-1 px-3 w-full text-center ${props.red && "text-red-500"} ${props.green && "text-green-500"}`}>{props.value2}</div>
     </div>
   )
 }
@@ -53,9 +54,16 @@ export default function Timeline(props: Props) {
     return diffHours < 0 && justifyBy(hour + diffHours, 24) > hour;
   }
 
+  function isGreenHour(hour: number): boolean {
+    return diffHours > 0 && justifyBy(hour + diffHours, 24) < hour;
+  }
+
   function isCurrentHour(hour: number): boolean {
     return new Date().getHours() === hour;
   }
+
+  const hasRedHour = hours.some(hour => isRedHour(hour));
+  const hasGreenHour = hours.some(hour => isGreenHour(hour));
 
   return (
     <>
@@ -73,16 +81,26 @@ export default function Timeline(props: Props) {
             value1={hour}
             value2={offsetStr(hour)}
             red={isRedHour(hour)}
+            green={isGreenHour(hour)}
             current={isCurrentHour(hour)}
           />
         ))}
       </div>
-      {hours.some(hour => isRedHour(hour)) && (
+      {(hasRedHour || hasGreenHour) && (
         <div className="mt-3 flex gap-1">
           <ExclamationCircleIcon className="w-5 text-blue-500" />
-          <span>
-            <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
-          </span>
+
+          {hasRedHour && (
+            <span>
+              <span className="text-red-500">Red</span> means <strong>yesterday</strong>.
+            </span>
+          )}
+
+          {hasGreenHour && (
+            <span>
+              <span className="text-green-500">Green</span> means <strong>tomorrow</strong>.
+            </span>
+          )}
         </div>
       )}
     </>

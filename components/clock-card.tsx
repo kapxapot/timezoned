@@ -7,6 +7,7 @@ import ShowTimeline from './show-timeline';
 import { Card } from './core/card';
 import { DropdownMenu, MenuItem } from './core/dropdown-menu';
 import TimeDisplay from './time-display';
+import DateDisplay from './date-display';
 
 interface Props {
   clock: IClock;
@@ -48,7 +49,16 @@ export function ClockCard(props: Props) {
             timeZone={clock.timeZone}
           />
         </div>
-        <div>{clock.timeZone}</div>
+        <div className="mb-1">
+          <DateDisplay
+            timeZone={clock.timeZone}
+          />
+        </div>
+        <div>
+          <Badge color="gray">
+            {clock.timeZone}
+          </Badge>
+        </div>
         <div className="flex flex-wrap gap-1">
           <Badge color="indigo">
             {tzOffset(clock.timeZone)}

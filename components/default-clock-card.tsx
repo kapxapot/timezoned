@@ -3,6 +3,7 @@ import { utcOffset } from '@/lib/timezones';
 import { IClock } from '@/lib/clock';
 import { Card } from './core/card';
 import TimeDisplay from './time-display';
+import DateDisplay from './date-display';
 
 interface Props {
   clock: IClock;
@@ -23,8 +24,15 @@ export function DefaultClockCard(props: Props) {
           color="text-green-500"
         />
       </div>
-      <div>{clock.timeZone}</div>
+      <div className="mb-1">
+        <DateDisplay
+          timeZone={clock.timeZone}
+        />
+      </div>
       <div className="flex flex-wrap gap-1">
+        <Badge color="gray">
+          {clock.timeZone}
+        </Badge>
         <Badge color="success">
           GMT{utcOffset(clock.timeZone)}
         </Badge>
