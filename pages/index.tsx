@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { Collapse } from "flowbite";
-import { Button, Flowbite, Navbar } from "flowbite-react";
+import { Flowbite, Navbar } from "flowbite-react";
 import { STATUS } from "react-joyride";
 import { merge } from "@/lib/common";
 import { Clock, ClockChange, IClock } from "@/lib/clock";
@@ -114,7 +114,7 @@ export default function Home() {
     <Flowbite theme={flowbiteTheme}>
       <Head>
         <title>Timezoned</title>
-        <meta name="description" content="Timezone helper" />
+        <meta name="description" content="TimeZoned - the best timezone helper! Allows tracking different timezones, compare them to the local timezone, displays and compares timelines and helps to convert times to your local timezone." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/svg+xml" href="/tz.svg" />
       </Head>
