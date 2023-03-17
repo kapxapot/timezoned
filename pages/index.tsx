@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import Head from "next/head";
-import dynamic from "next/dynamic";
-import { Collapse } from "flowbite";
 import { Flowbite, Navbar } from "flowbite-react";
-import { STATUS } from "react-joyride";
 import { merge } from "@/lib/common";
 import { Clock, ClockChange, IClock } from "@/lib/clock";
 import { save, load } from "@/lib/storage";
@@ -15,10 +11,11 @@ import { DefaultClockCard } from "@/components/default-clock-card";
 import QuickTimeline from "@/components/quick-timeline";
 import TimeConverter from "@/components/time-converter";
 import Footer from "@/components/footer";
+import PageHead from "@/components/page-head";
+import Tour from "@/components/tour";
 
 export default function Home() {
   const [clocks, setClocks] = useState<IClock[]>([]);
-  const [showTour, setShowTour] = useState(true);
 
   // all timezones
   const timeZones = sortedTimeZones;
@@ -89,35 +86,11 @@ export default function Home() {
     );
 
     setClocks([defaultClock, ...loadClocks()]);
-
-    setShowTour(!load("tourDone", false));
-  }, []);
-
-  const JoyrideClientSide = dynamic(
-    () => import('react-joyride'),
-    { ssr: false }
-  );
-
-  // navbar collapse
-  const [collapse, setCollapse] = useState<Collapse | undefined>();
-
-  useEffect(() => {
-    const targetEl: HTMLElement | null = document.querySelector('.navbar-collapse-element');
-    const triggerEl: HTMLElement | null = document.querySelector('.navbar-toggle-element');
-
-    setCollapse(
-      new Collapse(targetEl, triggerEl)
-    );
   }, []);
 
   return (
     <Flowbite theme={flowbiteTheme}>
-      <Head>
-        <title>Timezoned</title>
-        <meta name="description" content="TimeZoned - the best timezone helper! Allows tracking different timezones, compare them to the local timezone, displays and compares timelines and helps to convert times to your local timezone." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/svg+xml" href="/tz.svg" />
-      </Head>
+      <PageHead />
 
       <article className="flex flex-col min-h-screen gap-5">
         <Navbar
@@ -203,71 +176,7 @@ export default function Home() {
         <Footer />
       </article>
 
-      {showTour && (
-        <JoyrideClientSide
-          steps={[
-            {
-              target: ".tour-step-intro",
-              content: "Welcome to Timezoned, a simple page that allows you to track your current timezone and compare it to other timezones.",
-              disableBeacon: true,
-            },
-            {
-              target: ".tour-step-clock",
-              content: "This is your local time. It is detected automatically.",
-              disableBeacon: true,
-            },
-            {
-              target: ".tour-step-add-clock",
-              content: "You can add clocks for other timezones to track their time and compare their timelines with your local one.",
-              disableBeacon: true,
-            },
-            {
-              target: ".tour-step-timeline",
-              content: "Compare timelines of other timezones to your local timezone without adding them to the dashboard.",
-              disableBeacon: true,
-            },
-            {
-              target: ".tour-step-converter",
-              content: "Parse times with a timezone abbreviation like UTC and convert them to your local time.",
-              disableBeacon: true,
-            },
-          ]}
-          callback={data => {
-            const { status, step, type } = data;
-
-            if (([STATUS.FINISHED, STATUS.SKIPPED] as string[]).includes(status)) {
-              save("tourDone", true);
-              setShowTour(false);
-
-              // try to collapse collapse
-              // this is needed only for mobile
-              collapse?.collapse();
-            } else if (type === "step:after" && step.target === ".tour-step-clock") {
-              // try to expand collapse
-              // this is needed only for mobile
-              collapse?.expand();
-            }
-          }}
-          continuous={true}
-          showProgress={true}
-          showSkipButton={true}
-          styles={{
-            tooltipContainer: {
-              textAlign: "left"
-            },
-            buttonNext: {
-              backgroundColor: "#0e9f6e"
-            },
-            buttonBack: {
-              color: "black",
-              marginRight: 10
-            }
-          }}
-          locale={{
-            last: "End tour"
-          }}
-        />
-      )}
+      <Tour />
     </Flowbite>
   )
 }
