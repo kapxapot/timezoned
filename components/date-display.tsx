@@ -12,11 +12,11 @@ export default function DateDisplay(props: Props) {
   const date = tzNow(props.timeZone);
 
   function color() {
-    if (date.getDay() < now.getDay()) {
+    if (date.getDate() < now.getDate()) {
       return "text-red-500";
     }
 
-    if (date.getDay() > now.getDay()) {
+    if (date.getDate() > now.getDate()) {
       return "text-green-500";
     }
 
