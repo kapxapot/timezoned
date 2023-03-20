@@ -73,7 +73,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
   function MCNavbarLink() {
     return (
       <Navbar.Link
-        href="#"
+        as="button"
         className={props.buttonClassName}
         onClick={open}
       >

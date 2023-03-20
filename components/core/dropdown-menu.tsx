@@ -30,13 +30,12 @@ export function DropdownMenu(props: Props) {
         {props.items.map(item => (
           <Menu.Item key={item.label}>
           {({ active }) => (
-            <a
-              className={`${active && 'bg-slate-100'} w-full block py-1 px-4 whitespace-nowrap ${item.className ?? ""}`}
+            <button
+              className={`${active && "bg-slate-100"} w-full text-left block py-1 px-4 whitespace-nowrap ${item.className ?? ""}`}
               onClick={item.action}
-              href="#"
             >
               {item.label}
-            </a>
+            </button>
           )}
         </Menu.Item>
         ))}
