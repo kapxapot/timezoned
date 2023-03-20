@@ -15,6 +15,8 @@ import PageHead from "@/components/page-head";
 import Tour from "@/components/tour";
 
 export default function Home() {
+  const host = "https://timezoned.vercel.app";
+
   const [clocks, setClocks] = useState<IClock[]>([]);
 
   // all timezones
@@ -90,7 +92,9 @@ export default function Home() {
 
   return (
     <Flowbite theme={flowbiteTheme}>
-      <PageHead />
+      <PageHead
+        host={host}
+      />
 
       <article className="flex flex-col min-h-screen gap-5">
         <Navbar
@@ -173,7 +177,9 @@ export default function Home() {
           )}
         </main>
 
-        <Footer />
+        <Footer
+          host={host}
+        />
       </article>
 
       <Tour />

@@ -1,4 +1,8 @@
-export default function Footer() {
+interface Props {
+  host: string;
+}
+
+export default function Footer({ host }: Props) {
   const baseYear = 2023;
   const now = new Date();
   const year = now.getFullYear();
@@ -8,7 +12,7 @@ export default function Footer() {
       <div className="flex flex-grow md:items-center flex-col md:flex-row md:justify-between">
         <div>
           <div>
-            All rights reserved. &copy; {baseYear}{year > baseYear && (`—${year}`)} <a href="https://timezoned.vercel.app" className="font-semibold hover:underline">Timezoned</a>
+            All rights reserved. &copy; {baseYear}{year > baseYear && (`—${year}`)} <a href={host} className="font-semibold hover:underline">Timezoned</a>
           </div>
           <div>
             Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">Sergey Atroshchenko</a>
