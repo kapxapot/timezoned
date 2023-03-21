@@ -15,7 +15,7 @@ interface Props {
   cancelLabel?: string;
   noCancelButton?: boolean;
   inNavbar?: boolean;
-  modalWidth?: string;
+  flexWidth?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
   onSubmit?: () => void;
@@ -94,7 +94,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
         submitDisabled={props.submitDisabled}
         cancelLabel={props.cancelLabel}
         noCancelButton={props.noCancelButton}
-        width={props.modalWidth}
+        flexWidth={props.flexWidth}
         onSubmit={submit}
         onCancel={cancel}
       >

@@ -17,7 +17,7 @@ export default function ShowTimeline(props: Props) {
       buttonIcon={<CalendarDaysIcon className="w-5" />}
       submitLabel="Close"
       noCancelButton={true}
-      modalWidth="max-w-2xl"
+      flexWidth={true}
     >
       <Timeline
         timeZone={props.clock.timeZone}

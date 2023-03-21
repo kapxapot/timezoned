@@ -31,7 +31,7 @@ export default function QuickTimeline(props: Props) {
       submitLabel="Add clock"
       submitDisabled={alreadyAdded}
       inNavbar={props.inNavbar}
-      modalWidth="max-w-2xl"
+      flexWidth={true}
       onSubmit={() => props.onAddClock(timeZone)}
     >
       <div className="mb-5">

@@ -23,8 +23,8 @@ const hours = Array.from(Array(24).keys());
 function Cell(props: CellProps) {
   return (
     <div className={`border ${props.current && "border-indigo-500"} flex flex-col items-center`}>
-      <div className="py-1 px-3 bg-teal-50 w-full text-center">{props.value1}</div>
-      <div className={`py-1 px-3 w-full text-center ${props.red && "text-red-500"} ${props.green && "text-green-500"}`}>{props.value2}</div>
+      <div className="py-1 px-2 bg-teal-50 w-full text-center">{props.value1}</div>
+      <div className={`py-1 px-2 w-full text-center ${props.red && "text-red-500"} ${props.green && "text-green-500"}`}>{props.value2}</div>
     </div>
   )
 }
