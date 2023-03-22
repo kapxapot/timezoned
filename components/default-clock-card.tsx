@@ -1,5 +1,5 @@
 import { Badge } from 'flowbite-react';
-import { utcOffset } from '@/lib/timezones';
+import { gmtStr } from '@/lib/timezones';
 import { IClock } from '@/lib/clock';
 import { Card } from './core/card';
 import TimeDisplay from './time-display';
@@ -11,7 +11,8 @@ interface Props {
 }
 
 export function DefaultClockCard(props: Props) {
-  const clock: IClock = props.clock;
+  const clock = props.clock;
+  const timeZone = clock.timeZone;
 
   return (
     <Card className={props.className}>
@@ -20,21 +21,21 @@ export function DefaultClockCard(props: Props) {
       </h3>
       <div className="-mt-1">
         <TimeDisplay
-          timeZone={clock.timeZone}
+          timeZone={timeZone}
           color="text-green-500"
         />
       </div>
       <div className="mb-1">
         <DateDisplay
-          timeZone={clock.timeZone}
+          timeZone={timeZone}
         />
       </div>
       <div className="flex flex-wrap gap-1">
         <Badge color="gray">
-          {clock.timeZone}
+          {timeZone}
         </Badge>
         <Badge color="success">
-          GMT{utcOffset(clock.timeZone)}
+          {gmtStr(timeZone)}
         </Badge>
       </div>
     </Card>

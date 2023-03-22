@@ -1,4 +1,5 @@
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
+import { ITime, Time } from "./time";
 
 export function sortTimeZones(timeZones: TimeZone[]): TimeZone[] {
   return timeZones.sort(
@@ -56,9 +57,12 @@ export function timeZoneMatches(query: string, timeZoneName?: string): boolean {
 }
 
 export function utcOffset(timeZone: string): string {
-  return signedOffset(
-    tzDiffHours(timeZone, "UTC")
-  );
+  const time = tzDiffTime(timeZone, "UTC");
+
+  const hours = `${plus(time.hours)}${time.hours}`;
+  const minutes = time.minutes ? `:${Math.abs(time.minutes)}` : "";
+
+  return `${hours}${minutes}`;
 }
 
 export function localOffset(timeZone: string): string {
@@ -66,22 +70,18 @@ export function localOffset(timeZone: string): string {
 }
 
 export function tzOffset(timeZone: string, baseTimeZone?: string): string {
-  const offset = tzDiffHours(timeZone, baseTimeZone);
+  const time = tzDiffTime(timeZone, baseTimeZone);
 
-  if (offset === 0) {
+  if (time.isEmpty) {
     return "local";
   }
 
-  const hours = Math.trunc(offset);
-  const minutes = toMinutes(tzDiff(timeZone, baseTimeZone)) - hours * 60;
+  const sign = plus(time.hours + time.minutes, true);
+  const hours = time.hours ? `${time.hours}h` : "";
+  const delimiter = time.hours ? " " : "";
+  const minutes = time.minutes ? `${delimiter}${Math.abs(time.minutes)}m` : "";
 
-  return `${signedOffset(hours, true)}h${minutes ? ` ${minutes}m` : ""}`;
-}
-
-function signedOffset(offset: number, strict?: boolean): string {
-  return (strict && offset > 0 || offset >= 0)
-    ? "+" + offset.toString()
-    : offset.toString();
+  return `${sign}${hours}${minutes}`;
 }
 
 /**
@@ -93,6 +93,31 @@ export function tzDiffHours(timeZone: string, baseTimeZone?: string): number {
   return toHours(
     tzDiff(timeZone, baseTimeZone)
   );
+}
+
+/**
+ * Returns timezone diff in minutes.
+ *
+ * @param baseTimeZone Local if not specified.
+ */
+export function tzDiffMinutes(timeZone: string, baseTimeZone?: string): number {
+  return toMinutes(
+    tzDiff(timeZone, baseTimeZone)
+  );
+}
+
+/**
+ * Returns timezone diff as ITime.
+ *
+ * @param baseTimeZone Local if not specified.
+ */
+export function tzDiffTime(timeZone: string, baseTimeZone?: string): ITime {
+  const offset = tzDiffHours(timeZone, baseTimeZone);
+  const hours = Math.trunc(offset);
+  const diffMin = tzDiffMinutes(timeZone, baseTimeZone);
+  const minutes = diffMin - hours * 60;
+
+  return new Time(hours, minutes);
 }
 
 /**
@@ -128,12 +153,10 @@ export function tzDate(date: Date, timeZone?: string): Date {
   return new Date(dateStr);
 }
 
-export function tzStr(timeZone: TimeZone): string {
-  const offset = timeZone.rawOffsetInMinutes / 60;
+export function gmtStr(timeZone: string): string {
+  return `GMT${utcOffset(timeZone)}`;
+}
 
-  const offsetStr = offset >= 0
-    ? "+" + offset.toString()
-    : offset.toString()
-
-  return timeZone.name + " (GMT" + offsetStr + ")";
+function plus(n: number, emptyForZero: boolean = false): string {
+  return (n > 0 || !emptyForZero && n === 0) ? "+" : "";
 }

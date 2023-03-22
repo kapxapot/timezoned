@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tzOffset, toMinutes, tzDiff, tzDiffHours, extractCity } from "@/lib/timezones";
+import { tzOffset, tzDiffHours, extractCity, tzDiffTime } from "@/lib/timezones";
 import { justifyBy } from "@/lib/common";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
@@ -41,13 +41,12 @@ export default function Timeline(props: Props) {
   const diffHours = tzDiffHours(props.timeZone, props.baseTimeZone);
 
   function offsetStr(hour: number): string {
-    const offset = diffHours;
+    const time = tzDiffTime(props.timeZone, props.baseTimeZone);
 
-    const hours = Math.trunc(offset);
-    const diff = tzDiff(props.timeZone, props.baseTimeZone);
-    const minutes = toMinutes(diff) - hours * 60;
+    const hours = justifyBy(time.hours + hour, 24);
+    const minutes = time.minutes ? `:${time.minutes}` : "";
 
-    return `${justifyBy(hour + hours, 24)}${minutes ? `:${minutes}` : ""}`;
+    return `${hours}${minutes}`;
   }
 
   function isRedHour(hour: number): boolean {

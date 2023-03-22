@@ -99,6 +99,7 @@ export default function Home() {
       <article className="flex flex-col min-h-screen gap-5">
         <Navbar
           fluid={true}
+          className="shadow"
         >
           <Navbar.Brand>
             <picture>

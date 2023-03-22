@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { Label, TextInput } from 'flowbite-react';
 import ModalContainer from './core/modal-container';
 import ClockAlreadyAdded from './clock-already-added';
-import { filterTimeZones, getTimeZoneByAbbr, toMinutes, tzDiff, tzDiffHours } from '@/lib/timezones';
+import { filterTimeZones, getTimeZoneByAbbr, tzDiffTime } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
 import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
@@ -55,7 +55,9 @@ export default function TimeConverter(props: Props) {
       hours = hours % 12 + 12;
     }
 
-    setTime(String(hours) + ":" + padMinutes(minutes));
+    setTime(
+      formatTime(hours, minutes)
+    );
 
     const timeZone = checkTimeZone(tz);
 
@@ -67,15 +69,21 @@ export default function TimeConverter(props: Props) {
 
     setTimeZone(timeZone.name);
 
-    const offset = tzDiffHours(props.baseTimeZone, timeZone.name);
-    const offsetHours = Math.trunc(offset);
-    const diff = tzDiff(props.baseTimeZone, timeZone.name);
-    const offsetMinutes = toMinutes(diff) - offsetHours * 60;
+    const time = tzDiffTime(props.baseTimeZone, timeZone.name);
 
-    const finalMinutes = justifyBy(minutes + offsetMinutes, 60);
-    const finalHours = justifyBy(hours + offsetHours + Math.trunc((minutes + offsetMinutes) / 60), 24);
+    const totalMinutes = minutes + time.minutes;
+    const minuteHours = Math.trunc(totalMinutes / 60);
 
-    setLocalTime(`${finalHours}:${padMinutes(finalMinutes)}`);
+    const resultMinutes = justifyBy(totalMinutes, 60);
+    const resultHours = justifyBy(hours + time.hours + minuteHours, 24);
+
+    setLocalTime(
+      formatTime(resultHours, resultMinutes)
+    );
+  }
+
+  function formatTime(hours: number, minutes: number): string {
+    return `${hours}:${padMinutes(minutes)}`;
   }
 
   function checkTimeZone(tz: string): TimeZone | null {

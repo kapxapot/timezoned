@@ -74,7 +74,7 @@ export default function ModalContainer(props: PropsWithChildren<Props>) {
     return (
       <Navbar.Link
         as="button"
-        className={props.buttonClassName}
+        className={`w-full ${props.buttonClassName}`}
         onClick={open}
       >
         <ButtonContent />
