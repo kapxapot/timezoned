@@ -1,9 +1,8 @@
 import { ChangeEvent, Fragment, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
-import { timeZoneMatches } from '@/lib/timezones';
+import { getTimeZone, gmtStr, timeZoneMatches } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import TimeZoneDisplay from './timezone-display';
 
 interface Props {
   id: string;
@@ -13,7 +12,6 @@ interface Props {
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
-  const maxResults = 10000;
   const [query, setQuery] = useState("");
 
   const filteredTimeZones = query
@@ -29,8 +27,16 @@ export default function TimeZoneAutocomplete(props: Props) {
   };
 
   const debouncedQueryChangeHandler = useMemo(
-    () => debounce(queryChangeHandler, 500)
+    () => debounce(queryChangeHandler, 100)
   , []);
+
+  function tzDisplay(timeZone: string): string {
+    const tz = getTimeZone(timeZone);
+
+    return tz
+      ? `${tz.name} (${gmtStr(tz.name)})`
+      : timeZone;
+  }
 
   return (
     <div>
@@ -62,13 +68,13 @@ export default function TimeZoneAutocomplete(props: Props) {
             leaveTo="opacity-0"
             afterLeave={() => setQuery("")}
           >
-            <Combobox.Options className="absolute mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20">
+            <Combobox.Options className="absolute mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20">
               {!filteredTimeZones.length && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
               ) : (
-                filteredTimeZones.slice(0, maxResults).map(timeZone => (
+                filteredTimeZones.map(timeZone => (
                   <Combobox.Option
                     key={timeZone}
                     className={({ active }) =>
@@ -85,9 +91,7 @@ export default function TimeZoneAutocomplete(props: Props) {
                             selected ? "font-medium" : "font-normal"
                           }`}
                         >
-                          <TimeZoneDisplay
-                            timeZone={timeZone}
-                          />
+                          {tzDisplay(timeZone)}
                         </span>
                         {selected &&
                           <span
