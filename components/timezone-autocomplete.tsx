@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react'
+import { ChangeEvent, Fragment, useMemo, useState } from 'react'
+import debounce from 'lodash.debounce';
 import { timeZoneMatches } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -12,15 +13,24 @@ interface Props {
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
+  const maxResults = 30;
   const [query, setQuery] = useState("");
 
-  const filteredTimeZones = !query
-    ? props.timeZones
-    : props.timeZones.filter(tz => timeZoneMatches(query, tz));
+  const filteredTimeZones = query
+    ? props.timeZones.filter(tz => timeZoneMatches(query, tz))
+    : props.timeZones;
 
   function handleFocus(event: any) {
     event.target.select();
   }
+
+  const queryChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  const debouncedQueryChangeHandler = useMemo(
+    () => debounce(queryChangeHandler, 500)
+  , []);
 
   return (
     <div>
@@ -34,7 +44,7 @@ export default function TimeZoneAutocomplete(props: Props) {
               className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 rounded-lg p-2.5 text-sm"
               id={props.id}
               name={props.id}
-              onChange={event => setQuery(event.target.value)}
+              onChange={debouncedQueryChangeHandler}
               onFocus={handleFocus}
               autoComplete="off"
             />
@@ -52,13 +62,13 @@ export default function TimeZoneAutocomplete(props: Props) {
             leaveTo="opacity-0"
             afterLeave={() => setQuery("")}
           >
-            <Combobox.Options className="absolute mt-1 max-h-36 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10">
+            <Combobox.Options className="absolute mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20">
               {!filteredTimeZones.length && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
               ) : (
-                filteredTimeZones.map(timeZone => (
+                filteredTimeZones.slice(0, maxResults).map(timeZone => (
                   <Combobox.Option
                     key={timeZone}
                     className={({ active }) =>
