@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
-  const maxResults = 30;
+  const maxResults = 10000;
   const [query, setQuery] = useState("");
 
   const filteredTimeZones = query
