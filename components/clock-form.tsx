@@ -3,18 +3,18 @@ import { Label, TextInput } from 'flowbite-react';
 import TimeZoneAutocomplete from './timezone-autocomplete';
 import { ClockChange, IClock } from '@/lib/clock';
 import { cast } from '@/lib/common';
+import { useAppContext } from './context/app-context';
 
 interface Props {
   id: string;
   clock?: IClock;
-  timeZones: string[];
-  addedTimeZones: string[];
   onTimeZoneChange?: (timeZone: string) => void;
   onSubmit: (change: ClockChange) => void;
 }
 
 export default function ClockForm(props: Props) {
-  const [timeZone, setTimeZone] = useState(props.clock?.timeZone || props.timeZones[0]);
+  const { timeZones } = useAppContext();
+  const [timeZone, setTimeZone] = useState(props.clock?.timeZone || timeZones[0]);
 
   props.onTimeZoneChange?.(timeZone);
 
@@ -46,7 +46,6 @@ export default function ClockForm(props: Props) {
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          timeZones={props.timeZones}
           defaultValue={timeZone}
           onChange={onTimeZoneChange}
         />

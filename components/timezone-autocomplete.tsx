@@ -3,20 +3,22 @@ import debounce from 'lodash.debounce';
 import { getTimeZone, gmtStr, timeZoneMatches } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useAppContext } from './context/app-context';
 
 interface Props {
   id: string;
   defaultValue?: string;
-  timeZones: string[];
   onChange?: (value: string) => void;
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
+  const maxResults = 20;
+  const { timeZones } = useAppContext();
   const [query, setQuery] = useState("");
 
   const filteredTimeZones = query
-    ? props.timeZones.filter(tz => timeZoneMatches(query, tz))
-    : props.timeZones;
+    ? timeZones.filter(tz => timeZoneMatches(query, tz))
+    : timeZones;
 
   function handleFocus(event: any) {
     event.target.select();
@@ -27,7 +29,7 @@ export default function TimeZoneAutocomplete(props: Props) {
   };
 
   const debouncedQueryChangeHandler = useMemo(
-    () => debounce(queryChangeHandler, 100)
+    () => debounce(queryChangeHandler, 200)
   , []);
 
   function tzDisplay(timeZone: string): string {
@@ -41,7 +43,7 @@ export default function TimeZoneAutocomplete(props: Props) {
   return (
     <div>
       <Combobox
-        defaultValue={props.defaultValue ?? props.timeZones[0]}
+        defaultValue={props.defaultValue ?? timeZones[0]}
         onChange={value => props.onChange?.(value)}
       >
         <div className="relative mt-1">
@@ -74,36 +76,43 @@ export default function TimeZoneAutocomplete(props: Props) {
                   Nothing found.
                 </div>
               ) : (
-                filteredTimeZones.map(timeZone => (
-                  <Combobox.Option
-                    key={timeZone}
-                    className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-slate-100" : "text-gray-900"
-                      }`
-                    }
-                    value={timeZone}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <span
-                          className={`block truncate ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
-                        >
-                          {tzDisplay(timeZone)}
-                        </span>
-                        {selected &&
+                <>
+                  {filteredTimeZones.slice(0, maxResults).map(timeZone => (
+                    <Combobox.Option
+                      key={timeZone}
+                      className={({ active }) =>
+                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          active ? "bg-slate-100" : "text-gray-900"
+                        }`
+                      }
+                      value={timeZone}
+                    >
+                      {({ selected }) => (
+                        <>
                           <span
-                            className="absolute inset-y-0 left-0 flex items-center pl-3"
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
                           >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            {tzDisplay(timeZone)}
                           </span>
-                        }
-                      </>
-                    )}
-                  </Combobox.Option>
-                ))
+                          {selected &&
+                            <span
+                              className="absolute inset-y-0 left-0 flex items-center pl-3"
+                            >
+                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                          }
+                        </>
+                      )}
+                    </Combobox.Option>
+                  ))}
+                  {(filteredTimeZones.length > maxResults) &&
+                    <div className="relative cursor-default select-none py-2 px-4 text-gray-400">
+                      Showing {maxResults} items out of {filteredTimeZones.length}. Please, narrow your search.
+                    </div>
+                  }
+                </>
               )}
             </Combobox.Options>
           </Transition>

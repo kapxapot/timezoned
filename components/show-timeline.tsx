@@ -20,10 +20,10 @@ export default function ShowTimeline(props: Props) {
       flexWidth={true}
     >
       <Timeline
-        timeZone={props.clock.timeZone}
         baseTimeZone={props.defaultClock.timeZone}
-        title={props.clock.title + " time"}
         baseTitle={props.defaultClock.title}
+        timeZone={props.clock.timeZone}
+        title={props.clock.title + " time"}
       />
     </ModalContainer>
   );

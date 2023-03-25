@@ -4,29 +4,35 @@ import Modal from "./core/modal";
 import ClockAlreadyAdded from "./clock-already-added";
 import { ClockChange, IClock } from "@/lib/clock";
 import { extractCity } from "@/lib/timezones";
+import { useAppContext } from "./context/app-context";
+import { ActionType } from "./context/app-reducer";
 
 interface Props {
   show: boolean;
   clock: IClock;
-  timeZones: string[];
-  addedTimeZones: string[];
   onClose: () => void;
-  onEdit: (change: ClockChange) => void;
 }
 
 export default function EditClock(props: Props) {
   const formId = "editClock";
+  const { activeTimeZones, dispatch } = useAppContext();
   const [timeZone, setTimeZone] = useState("");
 
   const alreadyAdded = timeZone !== props.clock.timeZone
-    && props.addedTimeZones.some(tz => tz === timeZone);
+    && activeTimeZones.some(tz => tz === timeZone);
 
   function saveClock(change: ClockChange) {
     if (!change.title) {
       change.title = extractCity(change.timeZone);
     }
 
-    props.onEdit(change);
+    dispatch({
+      type: ActionType.Edit,
+      payload: {
+        clock: props.clock,
+        change
+      }
+    });
   }
 
   return (
@@ -42,8 +48,6 @@ export default function EditClock(props: Props) {
       <ClockForm
         id={formId}
         clock={props.clock}
-        timeZones={props.timeZones}
-        addedTimeZones={props.addedTimeZones}
         onTimeZoneChange={setTimeZone}
         onSubmit={saveClock}
       />

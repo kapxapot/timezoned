@@ -6,21 +6,28 @@ import TimeZoneAutocomplete from './timezone-autocomplete';
 import ClockAlreadyAdded from './clock-already-added';
 import { extractCity } from '@/lib/timezones';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
+import { useAppContext } from './context/app-context';
+import { ActionType } from './context/app-reducer';
+import { IClock } from '@/lib/clock';
 
 interface Props {
-  timeZones: string[];
-  addedTimeZones: string[];
-  baseTimeZone: string;
-  baseTitle: string;
+  defaultClock: IClock;
   inNavbar?: boolean;
   buttonClassName?: string;
-  onAddClock: (timeZone: string) => void;
 }
 
 export default function QuickTimeline(props: Props) {
-  const [timeZone, setTimeZone] = useState(props.timeZones[0]);
+  const { timeZones, activeTimeZones, dispatch } = useAppContext();
+  const [timeZone, setTimeZone] = useState(timeZones[0]);
 
-  const alreadyAdded = props.addedTimeZones.some(tz => tz === timeZone);
+  const alreadyAdded = activeTimeZones.some(tz => tz === timeZone);
+
+  function addClock() {
+    dispatch({
+      type: ActionType.AddTimeZone,
+      payload: { timeZone }
+    });
+  }
 
   return (
     <ModalContainer
@@ -32,7 +39,7 @@ export default function QuickTimeline(props: Props) {
       submitDisabled={alreadyAdded}
       inNavbar={props.inNavbar}
       flexWidth={true}
-      onSubmit={() => props.onAddClock(timeZone)}
+      onSubmit={addClock}
     >
       <div className="mb-5">
         <div className="mb-2 block">
@@ -40,17 +47,16 @@ export default function QuickTimeline(props: Props) {
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          timeZones={props.timeZones}
           defaultValue={timeZone}
           onChange={setTimeZone}
         />
       </div>
 
       <Timeline
+        baseTimeZone={props.defaultClock.timeZone}
+        baseTitle={props.defaultClock.title}
         timeZone={timeZone}
-        baseTimeZone={props.baseTimeZone}
         title={extractCity(timeZone) + " time"}
-        baseTitle={props.baseTitle}
       />
 
       {alreadyAdded && <ClockAlreadyAdded />}

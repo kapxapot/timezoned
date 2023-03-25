@@ -147,7 +147,7 @@ export function tzNow(timeZone?: string): Date {
 
 export function tzDate(date: Date, timeZone?: string): Date {
   const dateStr = timeZone
-    ? date.toLocaleString("en-US", { timeZone: timeZone })
+    ? date.toLocaleString("en-US", { timeZone })
     : date.toLocaleString("en-US");
 
   return new Date(dateStr);

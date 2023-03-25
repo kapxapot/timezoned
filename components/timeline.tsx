@@ -4,10 +4,10 @@ import { justifyBy } from "@/lib/common";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
 interface Props {
-  timeZone: string;
   baseTimeZone: string;
+  baseTitle: string;
+  timeZone: string;
   title?: string;
-  baseTitle?: string;
 }
 
 interface CellProps {
@@ -71,7 +71,7 @@ export default function Timeline(props: Props) {
       </div>
       <div className="flex flex-wrap gap-y-2 mb-4">
         <Cell
-          value1={props.baseTitle ?? (extractCity(props.baseTimeZone) + " time")}
+          value1={props.baseTitle ?? "Local time"}
           value2={props.title ?? (extractCity(props.timeZone) + " time")}
         />
         {hours.map(hour => (

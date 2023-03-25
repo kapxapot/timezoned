@@ -2,27 +2,30 @@ import { useState } from 'react';
 import ClockForm from './clock-form';
 import ModalContainer from './core/modal-container';
 import ClockAlreadyAdded from './clock-already-added';
-import { IClock, Clock, ClockChange } from '@/lib/clock';
+import { Clock, ClockChange } from '@/lib/clock';
 import { ClockIcon } from '@heroicons/react/20/solid';
+import { useAppContext } from './context/app-context';
+import { ActionType } from './context/app-reducer';
 
 interface Props {
-  timeZones: string[];
-  addedTimeZones: string[];
   inNavbar?: boolean;
   buttonClassName?: string;
-  addClock: (clock: IClock) => void;
 }
 
 export default function AddClock(props: Props) {
   const formId = "addClock";
+  const { activeTimeZones, dispatch } = useAppContext();
   const [timeZone, setTimeZone] = useState("");
 
-  const alreadyAdded = props.addedTimeZones.some(tz => tz === timeZone);
+  const alreadyAdded = activeTimeZones.some(tz => tz === timeZone);
 
   function addClock(change: ClockChange) {
-    props.addClock(
-      Clock.fromChange(change)
-    );
+    dispatch({
+      type: ActionType.Add,
+      payload: {
+        clock: Clock.fromChange(change)
+      }
+    });
   }
 
   function reset() {
@@ -42,8 +45,6 @@ export default function AddClock(props: Props) {
     >
       <ClockForm
         id={formId}
-        timeZones={props.timeZones}
-        addedTimeZones={props.addedTimeZones}
         onTimeZoneChange={setTimeZone}
         onSubmit={addClock}
       />

@@ -6,16 +6,18 @@ import { filterTimeZones, getTimeZoneByAbbr, tzDiffTime } from '@/lib/timezones'
 import { justifyBy } from '@/lib/common';
 import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
+import { useAppContext } from './context/app-context';
+import { ActionType } from './context/app-reducer';
 
 interface Props {
-  addedTimeZones: string[];
   baseTimeZone: string;
   inNavbar?: boolean;
   buttonClassName?: string;
-  onAddClock: (timeZone: string) => void;
 }
 
 export default function TimeConverter(props: Props) {
+  const { activeTimeZones, dispatch } = useAppContext()
+
   const [rawTime, setRawTime] = useState("");
   const [time, setTime] = useState("");
   const [timeZone, setTimeZone] = useState("");
@@ -131,7 +133,14 @@ export default function TimeConverter(props: Props) {
     setRawTime("");
   }
 
-  const alreadyAdded = !!timeZone && props.addedTimeZones.some(tz => tz === timeZone);
+  const alreadyAdded = !!timeZone && activeTimeZones.some(tz => tz === timeZone);
+
+  function addClock() {
+    dispatch({
+      type: ActionType.AddTimeZone,
+      payload: { timeZone }
+    });
+  }
 
   return (
     <ModalContainer
@@ -143,7 +152,7 @@ export default function TimeConverter(props: Props) {
       submitDisabled={!timeZone || alreadyAdded}
       inNavbar={true}
       onClose={fullReset}
-      onSubmit={() => props.onAddClock(timeZone)}
+      onSubmit={addClock}
     >
       <div>
         <div className="mb-2 block">
