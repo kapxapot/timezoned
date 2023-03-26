@@ -68,7 +68,7 @@ export default function TimeZoneAutocomplete(props: Props) {
           >
             <Combobox.Options className="absolute mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20">
               {!filteredTimeZones.length && query !== "" ? (
-                <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                <div className="relative select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
               ) : (
@@ -77,7 +77,7 @@ export default function TimeZoneAutocomplete(props: Props) {
                     <Combobox.Option
                       key={timeZone}
                       className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
                           active ? "bg-slate-100" : "text-gray-900"
                         }`
                       }
@@ -92,7 +92,7 @@ export default function TimeZoneAutocomplete(props: Props) {
                     </Combobox.Option>
                   ))}
                   {(filteredTimeZones.length > maxResults) &&
-                    <div className="relative cursor-default select-none py-2 px-4 text-gray-400">
+                    <div className="relative select-none py-2 px-4 text-gray-400">
                       Showing {maxResults} items out of {filteredTimeZones.length}. Please, narrow your search.
                     </div>
                   }

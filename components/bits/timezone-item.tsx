@@ -14,7 +14,7 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZone, selected }: Props) {
     : timeZone;
 
   return (
-    <span className="cursor-pointer">
+    <>
       <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
         {tzName}
       </span>
@@ -24,7 +24,7 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZone, selected }: Props) {
           <CheckIcon className="h-5 w-5" aria-hidden="true" />
         </span>
       }
-    </span>
+    </>
   );
 });
 
