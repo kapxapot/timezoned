@@ -13,6 +13,8 @@ interface Props {
 
 export default function TimeZoneAutocomplete(props: Props) {
   const maxResults = 20;
+  const debounceTimeout = 100;
+
   const { timeZones } = useAppContext();
   const [query, setQuery] = useState("");
 
@@ -29,7 +31,7 @@ export default function TimeZoneAutocomplete(props: Props) {
   };
 
   const debouncedQueryChangeHandler = useMemo(
-    () => debounce(queryChangeHandler, 200)
+    () => debounce(queryChangeHandler, debounceTimeout)
   , []);
 
   function tzDisplay(timeZone: string): string {

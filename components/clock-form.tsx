@@ -1,22 +1,25 @@
-import { FormEvent, useState } from 'react';
-import { Label, TextInput } from 'flowbite-react';
+import { FormEvent } from 'react';
+import { Button, Label, TextInput } from 'flowbite-react';
 import TimeZoneAutocomplete from './timezone-autocomplete';
 import { ClockChange, IClock } from '@/lib/clock';
 import { cast } from '@/lib/common';
+import ClockAlreadyAdded from './clock-already-added';
 import { useAppContext } from './context/app-context';
 
 interface Props {
-  id: string;
   clock?: IClock;
+  timeZone: string;
+  submitLabel: string;
   onTimeZoneChange?: (timeZone: string) => void;
   onSubmit: (change: ClockChange) => void;
+  onCancel: () => void;
 }
 
 export default function ClockForm(props: Props) {
-  const { timeZones } = useAppContext();
-  const [timeZone, setTimeZone] = useState(props.clock?.timeZone || timeZones[0]);
+  const { activeTimeZones } = useAppContext();
 
-  props.onTimeZoneChange?.(timeZone);
+  const alreadyAdded = (!props.clock || props.timeZone !== props.clock.timeZone)
+    && activeTimeZones.some(tz => tz === props.timeZone);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,15 +32,9 @@ export default function ClockForm(props: Props) {
     );
   }
 
-  function onTimeZoneChange(timeZone: string) {
-    setTimeZone(timeZone);
-    props.onTimeZoneChange?.(timeZone);
-  }
-
   return (
     <form
       className="flex flex-col gap-4"
-      id={props.id}
       onSubmit={onSubmit}
     >
       <div>
@@ -46,8 +43,8 @@ export default function ClockForm(props: Props) {
         </div>
         <TimeZoneAutocomplete
           id="timeZone"
-          defaultValue={timeZone}
-          onChange={onTimeZoneChange}
+          defaultValue={props.timeZone}
+          onChange={(tz) => props.onTimeZoneChange?.(tz)}
         />
       </div>
 
@@ -61,6 +58,25 @@ export default function ClockForm(props: Props) {
           maxLength={20}
           defaultValue={props.clock ? props.clock.title : ""}
         />
+      </div>
+
+      {alreadyAdded && <ClockAlreadyAdded />}
+
+      <div className="flex justify-end gap-3 mt-6 w-full">
+        <Button
+          color="purple"
+          disabled={alreadyAdded}
+          type="submit"
+        >
+          {props.submitLabel}
+        </Button>
+
+        <Button
+          color="gray"
+          onClick={props.onCancel}
+        >
+          Cancel
+        </Button>
       </div>
     </form>
   )

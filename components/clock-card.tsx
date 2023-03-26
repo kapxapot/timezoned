@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Badge } from 'flowbite-react';
-import { tzOffset, gmtStr } from '@/lib/timezones';
-import { IClock } from '@/lib/clock';
-import EditClock from './edit-clock';
-import ShowTimeline from './show-timeline';
+import { tzOffset, gmtStr, extractCity } from '@/lib/timezones';
+import { ClockChange, IClock } from '@/lib/clock';
+import EditClock from './modals/edit-clock';
+import ShowTimeline from './modals/show-timeline';
 import { Card } from './core/card';
 import { DropdownMenu, MenuItem } from './core/dropdown-menu';
 import TimeDisplay from './time-display';
@@ -23,21 +23,45 @@ export function ClockCard(props: Props) {
   const clock = props.clock;
   const timeZone = clock.timeZone;
 
-  function deleteClock(clock: IClock) {
+  function saveClock(change: ClockChange) {
+    setShowEdit(false);
+
+    if (!change.title) {
+      change.title = extractCity(change.timeZone);
+    }
+
+    dispatch({
+      type: ActionType.Edit,
+      payload: {
+        clock: props.clock,
+        change
+      }
+    });
+  }
+
+  function deleteClock() {
     dispatch({
       type: ActionType.Delete,
       payload: { clock }
     });
   }
 
+  function openEdit() {
+    setShowEdit(true);
+  }
+
+  function closeEdit() {
+    setShowEdit(false);
+  }
+
   const menuItems: MenuItem[] = [
     {
       label: "Edit clock",
-      action: () => setShowEdit(true)
+      action: openEdit
     },
     {
       label: "Delete clock",
-      action: () => deleteClock(clock),
+      action: deleteClock,
       className: "text-red-500"
     }
   ];
@@ -85,7 +109,8 @@ export function ClockCard(props: Props) {
       <EditClock
         clock={clock}
         show={showEdit}
-        onClose={() => setShowEdit(false)}
+        onSubmit={saveClock}
+        onCancel={closeEdit}
       />
     </>
   )

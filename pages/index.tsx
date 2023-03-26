@@ -1,10 +1,10 @@
 import { Flowbite, Navbar } from "flowbite-react";
 import { flowbiteTheme } from "@/components/config/flowbite-theme";
 import { ClockCard } from "@/components/clock-card";
-import AddClock from "@/components/add-clock";
+import AddClock from "@/components/modals/add-clock";
 import { DefaultClockCard } from "@/components/default-clock-card";
-import QuickTimeline from "@/components/quick-timeline";
-import TimeConverter from "@/components/time-converter";
+import QuickTimeline from "@/components/modals/quick-timeline";
+import TimeConverter from "@/components/modals/time-converter";
 import Footer from "@/components/footer";
 import PageHead from "@/components/page-head";
 import Tour from "@/components/tour";

@@ -1,13 +1,14 @@
 import { ChangeEvent, useState } from 'react';
 import { Label, TextInput } from 'flowbite-react';
-import ModalContainer from './core/modal-container';
-import ClockAlreadyAdded from './clock-already-added';
+import ClockAlreadyAdded from '../clock-already-added';
 import { filterTimeZones, getTimeZoneByAbbr, tzDiffTime } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
 import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
-import { useAppContext } from './context/app-context';
-import { ActionType } from './context/app-reducer';
+import { useAppContext } from '../context/app-context';
+import { ActionType } from '../context/app-reducer';
+import PopupModal from '../core/popup-modal';
+import ModalButton from '../core/modal-button';
 
 interface Props {
   baseTimeZone: string;
@@ -23,6 +24,8 @@ export default function TimeConverter(props: Props) {
   const [timeZone, setTimeZone] = useState("");
   const [matchingTimeZones, setMatchingTimeZones] = useState("");
   const [localTime, setLocalTime] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
 
   function padMinutes(minutes: number): string {
     return String(minutes).padStart(2, "0");
@@ -136,51 +139,75 @@ export default function TimeConverter(props: Props) {
   const alreadyAdded = !!timeZone && activeTimeZones.some(tz => tz === timeZone);
 
   function addClock() {
-    dispatch({
+    const action = {
       type: ActionType.AddTimeZone,
       payload: { timeZone }
-    });
+    };
+
+    closeModal()
+
+    dispatch(action);
+  }
+
+  function openModal() {
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    fullReset();
   }
 
   return (
-    <ModalContainer
-      modalTitle="Time converter"
-      buttonLabel="Converter"
-      buttonIcon={<CogIcon className="w-5" />}
-      buttonClassName={props.buttonClassName}
-      submitLabel="Add clock"
-      submitDisabled={!timeZone || alreadyAdded}
-      inNavbar={true}
-      onClose={fullReset}
-      onSubmit={addClock}
-    >
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="rawTime" value="Time" />
+    <>
+      <ModalButton
+        buttonLabel="Converter"
+        buttonIcon={<CogIcon className="w-5" />}
+        buttonClassName={props.buttonClassName}
+        inNavbar={props.inNavbar}
+        onClick={openModal}
+      />
+
+      <PopupModal
+        show={showModal}
+        title="Time converter"
+        submitLabel="Add clock"
+        submitDisabled={!timeZone || alreadyAdded}
+        onSubmit={addClock}
+        onCancel={closeModal}
+      >
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="rawTime" value="Time" />
+          </div>
+          <TextInput
+            autoComplete="off"
+            id="rawTime"
+            placeholder="12:00PM UTC"
+            value={rawTime}
+            onChange={rawTimeChanged}
+          />
+          {time &&
+            <>
+              <div className="mt-5">Time: {time}</div>
+
+              {timeZone &&
+                <div>Timezone: {timeZone}</div>
+              }
+
+              {matchingTimeZones &&
+                <div>{matchingTimeZones}</div>
+              }
+
+              {localTime &&
+                <div className="mt-2">My time: {localTime}</div>
+              }
+
+              {alreadyAdded && <ClockAlreadyAdded />}
+            </>
+          }
         </div>
-        <TextInput
-          autoComplete="off"
-          id="rawTime"
-          placeholder="12:00PM UTC"
-          value={rawTime}
-          onChange={rawTimeChanged}
-        />
-        {time && (
-          <>
-            <div className="mt-5">Time: {time}</div>
-            {timeZone && (
-              <div>Timezone: {timeZone}</div>
-            )}
-            {matchingTimeZones && (
-              <div>{matchingTimeZones}</div>
-            )}
-            {localTime && (
-              <div className="mt-2">My time: {localTime}</div>
-            )}
-            {alreadyAdded && <ClockAlreadyAdded />}
-          </>
-        )}
-      </div>
-    </ModalContainer>
+      </PopupModal>
+    </>
   )
 }

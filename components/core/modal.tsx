@@ -1,26 +1,15 @@
-import { Button } from 'flowbite-react';
 import { Fragment, PropsWithChildren } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 
 interface Props {
-  formId?: string;
   show: boolean;
   title: string;
-  submitLabel?: string;
-  submitDisabled?: boolean;
-  cancelLabel?: string;
-  onSubmit?: () => void;
-  onCancel?: () => void;
-  noCancelButton?: boolean;
   flexWidth?: boolean;
+  onCancel?: () => void;
 }
 
 export default function Modal(props: PropsWithChildren<Props>) {
-  function submit() {
-    props.onSubmit?.();
-  }
-
   function cancel() {
     props.onCancel?.();
   }
@@ -59,6 +48,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
                     {props.title}
                   </h3>
+
                   <button
                     aria-label="Close"
                     className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -73,26 +63,6 @@ export default function Modal(props: PropsWithChildren<Props>) {
                 </Dialog.Title>
 
                 {props.children}
-
-                <div className="flex justify-end gap-3 mt-6 w-full">
-                  <Button
-                    color="purple"
-                    disabled={props.submitDisabled}
-                    form={props.formId}
-                    onClick={submit}
-                    type="submit"
-                  >
-                    {props.submitLabel ?? 'Submit'}
-                  </Button>
-                  {!props.noCancelButton && (
-                    <Button
-                      color="gray"
-                      onClick={cancel}
-                    >
-                      {props.cancelLabel ?? 'Cancel'}
-                    </Button>
-                  )}
-                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
