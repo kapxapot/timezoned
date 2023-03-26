@@ -2,7 +2,7 @@ import { ChangeEvent, Fragment, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
 import { timeZoneMatches } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useAppContext } from './context/app-context';
 import TimeZoneItem from './bits/timezone-item';
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
-  const maxResults = 50;
+  const maxResults = 100;
   const debounceTimeout = 100;
 
   const { timeZones } = useAppContext();
@@ -83,26 +83,12 @@ export default function TimeZoneAutocomplete(props: Props) {
                       }
                       value={timeZone}
                     >
-                      {({ selected }) => (
-                        <>
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-medium" : "font-normal"
-                            }`}
-                          >
-                            <TimeZoneItem
-                              timeZone={timeZone}
-                            />
-                          </span>
-                          {selected &&
-                            <span
-                              className="absolute inset-y-0 left-0 flex items-center pl-3"
-                            >
-                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                            </span>
-                          }
-                        </>
-                      )}
+                      {({ selected }) =>
+                        <TimeZoneItem
+                          selected={selected}
+                          timeZone={timeZone}
+                        />
+                      }
                     </Combobox.Option>
                   ))}
                   {(filteredTimeZones.length > maxResults) &&
