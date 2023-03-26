@@ -2,8 +2,8 @@ import { Badge } from 'flowbite-react';
 import { gmtStr } from '@/lib/timezones';
 import { IClock } from '@/lib/clock';
 import { Card } from './core/card';
-import TimeDisplay from './time-display';
-import DateDisplay from './date-display';
+import TimeDisplay from './bits/time-display';
+import DateDisplay from './bits/date-display';
 
 interface Props {
   clock: IClock;

@@ -3,7 +3,7 @@ import { Button, Label, TextInput } from 'flowbite-react';
 import TimeZoneAutocomplete from './timezone-autocomplete';
 import { ClockChange, IClock } from '@/lib/clock';
 import { cast } from '@/lib/common';
-import ClockAlreadyAdded from './clock-already-added';
+import ClockAlreadyAdded from './bits/clock-already-added';
 import { useAppContext } from './context/app-context';
 
 interface Props {

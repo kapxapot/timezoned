@@ -6,8 +6,8 @@ import EditClock from './modals/edit-clock';
 import ShowTimeline from './modals/show-timeline';
 import { Card } from './core/card';
 import { DropdownMenu, MenuItem } from './core/dropdown-menu';
-import TimeDisplay from './time-display';
-import DateDisplay from './date-display';
+import TimeDisplay from './bits/time-display';
+import DateDisplay from './bits/date-display';
 import { useAppContext } from './context/app-context';
 import { ActionType } from './context/app-reducer';
 

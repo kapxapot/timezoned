@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Label } from 'flowbite-react';
 import Timeline from '../timeline';
 import TimeZoneAutocomplete from '../timezone-autocomplete';
-import ClockAlreadyAdded from '../clock-already-added';
+import ClockAlreadyAdded from '../bits/clock-already-added';
 import { extractCity } from '@/lib/timezones';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 import { useAppContext } from '../context/app-context';

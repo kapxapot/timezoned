@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { Label, TextInput } from 'flowbite-react';
-import ClockAlreadyAdded from '../clock-already-added';
+import ClockAlreadyAdded from '../bits/clock-already-added';
 import { filterTimeZones, getTimeZoneByAbbr, tzDiffTime } from '@/lib/timezones';
 import { justifyBy } from '@/lib/common';
 import { CogIcon } from '@heroicons/react/20/solid';

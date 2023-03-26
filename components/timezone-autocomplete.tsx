@@ -1,18 +1,19 @@
 import { ChangeEvent, Fragment, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
-import { getTimeZone, gmtStr, timeZoneMatches } from '@/lib/timezones';
+import { timeZoneMatches } from '@/lib/timezones';
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useAppContext } from './context/app-context';
+import TimeZoneItem from './bits/timezone-item';
 
 interface Props {
   id: string;
-  defaultValue?: string;
+  defaultValue: string;
   onChange?: (value: string) => void;
 }
 
 export default function TimeZoneAutocomplete(props: Props) {
-  const maxResults = 20;
+  const maxResults = 50;
   const debounceTimeout = 100;
 
   const { timeZones } = useAppContext();
@@ -31,21 +32,14 @@ export default function TimeZoneAutocomplete(props: Props) {
   };
 
   const debouncedQueryChangeHandler = useMemo(
-    () => debounce(queryChangeHandler, debounceTimeout)
-  , []);
-
-  function tzDisplay(timeZone: string): string {
-    const tz = getTimeZone(timeZone);
-
-    return tz
-      ? `${tz.name} (${gmtStr(tz.name)})`
-      : timeZone;
-  }
+    () => debounce(queryChangeHandler, debounceTimeout),
+    []
+  );
 
   return (
     <div>
       <Combobox
-        defaultValue={props.defaultValue ?? timeZones[0]}
+        defaultValue={props.defaultValue}
         onChange={value => props.onChange?.(value)}
       >
         <div className="relative mt-1">
@@ -96,7 +90,9 @@ export default function TimeZoneAutocomplete(props: Props) {
                               selected ? "font-medium" : "font-normal"
                             }`}
                           >
-                            {tzDisplay(timeZone)}
+                            <TimeZoneItem
+                              timeZone={timeZone}
+                            />
                           </span>
                           {selected &&
                             <span
