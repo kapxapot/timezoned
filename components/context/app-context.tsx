@@ -12,20 +12,31 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [defaultClock, setDefaultClock] = useState<IClock | null>(null);
   const [customClocks, dispatch] = useReducer(customClocksReducer, initialCustomClocks);
 
-  const allClocks = defaultClock
-    ? [defaultClock, ...customClocks]
-    : customClocks;
+  const allClocks = useMemo(() => {
+    return defaultClock
+      ? [defaultClock, ...customClocks]
+      : customClocks;
+  }, [defaultClock, customClocks]);
 
   // all timezones
   const timeZones = useMemo(() => sortedTimeZones, []);
 
   // timezones of the clocks on the dashboard
-  const activeTimeZones = timeZones.filter(
-    tz => allClocks.some(clock => clock.timeZone === tz.name)
+  const activeTimeZones = useMemo(() => {
+    return timeZones.filter(
+      tz => allClocks.some(clock => clock.timeZone === tz.name)
+    )
+  }, [timeZones, allClocks]);
+
+  const timeZoneNames = useMemo(
+    () => timeZones.map(tz => tz.name),
+    [timeZones]
   );
 
-  const timeZoneNames = timeZones.map(tz => tz.name);
-  const activeTimeZoneNames = activeTimeZones.map(tz => tz.name);
+  const activeTimeZoneNames = useMemo(
+    () => activeTimeZones.map(tz => tz.name),
+    [activeTimeZones]
+  );
 
   useEffect(() => {
     setDefaultClock(

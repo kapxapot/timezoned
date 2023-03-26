@@ -28,7 +28,7 @@ export default function Tour() {
 
   return (
     <>
-      {showTour && (
+      {showTour &&
         <JoyrideClientSide
           steps={[
             {
@@ -92,7 +92,7 @@ export default function Tour() {
             last: "End tour"
           }}
         />
-      )}
+      }
     </>
   )
 }
