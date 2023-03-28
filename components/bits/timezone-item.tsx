@@ -27,9 +27,11 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZoneName, selected }: Prop
               <Badge color="pink">
                 {timeZone.abbreviation}
               </Badge>
-              <Badge color="indigo">
-                {timeZone.countryName}
-              </Badge>
+              {timeZone.countryName &&
+                <Badge color="indigo">
+                  {timeZone.countryName}
+                </Badge>
+              }
             </div>
             {timeZone.mainCities.length &&
               <div className="text-slate-400">
