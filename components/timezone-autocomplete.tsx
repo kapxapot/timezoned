@@ -14,7 +14,7 @@ interface Props {
 
 export default function TimeZoneAutocomplete(props: Props) {
   const maxResults = 100;
-  const debounceTimeout = 100;
+  const debounceTimeout = 200;
 
   const { timeZones } = useAppContext();
   const [query, setQuery] = useState("");
@@ -86,7 +86,7 @@ export default function TimeZoneAutocomplete(props: Props) {
                       {({ selected }) =>
                         <TimeZoneItem
                           selected={selected}
-                          timeZone={timeZone}
+                          timeZoneName={timeZone}
                         />
                       }
                     </Combobox.Option>

@@ -9,3 +9,7 @@ export function merge(obj1: any, obj2: any): any {
 export function justifyBy(n: number, by: number): number {
   return (n + by) % by;
 }
+
+export function commaJoin(words: string[]): string {
+  return words.join(", ");
+}

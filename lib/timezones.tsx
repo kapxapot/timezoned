@@ -36,11 +36,17 @@ function matches(query: string, value?: string): boolean {
   return value
     .toLowerCase()
     .replace(/(\s|_|\/)+/g, "")
-    .includes(query.toLowerCase().replace(/\s+/g, ""));
+    .includes(query.replace(/\s+/g, ""));
 }
 
-export function timeZoneMatches(query: string, timeZoneName?: string): boolean {
-  if (matches(query, timeZoneName)) {
+export function timeZoneMatches(query: string, timeZoneName: string): boolean {
+  const lq = query.toLowerCase();
+
+  if (matches(lq, timeZoneName)) {
+    return true;
+  }
+
+  if (lq.startsWith("gmt") && gmtStr(timeZoneName).toLowerCase().startsWith(lq)) {
     return true;
   }
 
@@ -50,10 +56,9 @@ export function timeZoneMatches(query: string, timeZoneName?: string): boolean {
     return false;
   }
 
-  return matches(query, timeZone.abbreviation)
+  return matches(lq, timeZone.abbreviation)
     || matches(query, timeZone.countryName)
-    || timeZone.mainCities.some(city => matches(query, city))
-    || timeZone.group.some(ge => matches(query, ge));
+    || timeZone.mainCities.some(city => matches(query, city));
 }
 
 export function utcOffset(timeZone: string): string {
