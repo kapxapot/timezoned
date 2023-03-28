@@ -15,11 +15,11 @@ export default function Footer({ host }: Props) {
             All rights reserved. &copy; {baseYear}{year > baseYear && (`—${year}`)} <a href={host} className="font-semibold hover:underline">Timezoned</a>
           </div>
           <div>
-            Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">Sergey Atroshchenko</a>
+            Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
           </div>
         </div>
         <div>
-          <a className="hover:underline" href="https://www.buymeacoffee.com/kapxapot">☕ Buy me a coffee</a>
+          <a className="font-semibold hover:underline" href="https://www.buymeacoffee.com/kapxapot">☕ Buy me a coffee</a> or <a className="font-semibold hover:underline" href="https://pay.cloudtips.ru/p/064a10db">💰 Pay me a tip</a>
         </div>
       </div>
       <div>
