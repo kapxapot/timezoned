@@ -57,8 +57,8 @@ export function timeZoneMatches(query: string, timeZoneName: string): boolean {
   }
 
   return matches(lq, timeZone.abbreviation)
-    || matches(query, timeZone.countryName)
-    || timeZone.mainCities.some(city => matches(query, city));
+    || matches(lq, timeZone.countryName)
+    || timeZone.mainCities.some(city => matches(lq, city));
 }
 
 export function utcOffset(timeZone: string): string {

@@ -77,18 +77,13 @@ export default function TimeZoneAutocomplete(props: Props) {
                     <Combobox.Option
                       key={timeZone}
                       className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                          active ? "bg-slate-100" : "text-gray-900"
-                        }`
+                        `relative cursor-pointer select-none py-2 px-4 border-b last:border-none ${active && "bg-slate-100"}`
                       }
                       value={timeZone}
                     >
-                      {({ selected }) =>
-                        <TimeZoneItem
-                          selected={selected}
-                          timeZoneName={timeZone}
-                        />
-                      }
+                      <TimeZoneItem
+                        timeZoneName={timeZone}
+                      />
                     </Combobox.Option>
                   ))}
                   {(filteredTimeZones.length > maxResults) &&
