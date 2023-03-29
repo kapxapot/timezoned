@@ -19,7 +19,7 @@ export default function Footer({ host }: Props) {
           </div>
         </div>
         <div>
-          <a className="font-semibold hover:underline" href="https://www.buymeacoffee.com/kapxapot">☕ Buy me a coffee</a> or <a className="font-semibold hover:underline" href="https://pay.cloudtips.ru/p/064a10db">💰 Pay me a tip</a>
+          You can <a className="md:font-semibold hover:underline" href="https://www.buymeacoffee.com/kapxapot">☕ buy me a coffee</a> or <a className="md:font-semibold hover:underline" href="https://pay.cloudtips.ru/p/064a10db">💳 pay me a tip</a>
         </div>
       </div>
       <div>
