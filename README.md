@@ -20,7 +20,7 @@ Implementation details:
 
 Built on:
 
-- React / Next.js / TypeScript
+- React.js / Next.js / TypeScript
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Flowbite React](https://flowbite-react.com/)
 - [Headless UI](https://headlessui.com/)
