@@ -1,5 +1,5 @@
-import {v4 as uuidv4} from 'uuid';
-import { extractCity } from './timezones';
+import { v4 as uuidv4 } from "uuid";
+import { extractCity } from "./timezones";
 
 export interface IClock {
   timeZone: string;
