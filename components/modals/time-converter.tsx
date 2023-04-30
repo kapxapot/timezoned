@@ -6,7 +6,6 @@ import { justifyBy } from '@/lib/common';
 import { CogIcon } from '@heroicons/react/20/solid';
 import { TimeZone } from '@vvo/tzdb';
 import { useAppContext } from '../context/app-context';
-import { ActionType } from '../context/app-reducer';
 import PopupModal from '../core/popup-modal';
 import ModalButton from '../core/modal-button';
 
@@ -139,14 +138,8 @@ export default function TimeConverter(props: Props) {
   const alreadyAdded = !!timeZone && activeTimeZones.some(tz => tz === timeZone);
 
   function addClock() {
-    const action = {
-      type: ActionType.AddTimeZone,
-      payload: { timeZone }
-    };
-
     closeModal()
-
-    dispatch(action);
+    dispatch({ type: "AddTimeZone", timeZone });
   }
 
   function openModal() {

@@ -6,7 +6,6 @@ import ClockAlreadyAdded from '../bits/clock-already-added';
 import { extractCity } from '@/lib/timezones';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 import { useAppContext } from '../context/app-context';
-import { ActionType } from '../context/app-reducer';
 import { IClock } from '@/lib/clock';
 import ModalButton from '../core/modal-button';
 import PopupModal from '../core/popup-modal';
@@ -26,11 +25,7 @@ export default function QuickTimeline(props: Props) {
 
   function addClock() {
     closeModal();
-
-    dispatch({
-      type: ActionType.AddTimeZone,
-      payload: { timeZone }
-    });
+    dispatch({ type: "AddTimeZone", timeZone });
   }
 
   function openModal() {

@@ -3,7 +3,6 @@ import ClockForm from '../clock-form';
 import { Clock, ClockChange } from '@/lib/clock';
 import { ClockIcon } from '@heroicons/react/20/solid';
 import { useAppContext } from '../context/app-context';
-import { ActionType } from '../context/app-reducer';
 import ModalButton from '../core/modal-button';
 import Modal from '../core/modal';
 
@@ -22,10 +21,8 @@ export default function AddClock(props: Props) {
     closeModal();
 
     dispatch({
-      type: ActionType.Add,
-      payload: {
-        clock: Clock.fromChange(change)
-      }
+      type: "Add",
+      clock: Clock.fromChange(change)
     });
   }
 

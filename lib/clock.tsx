@@ -30,11 +30,11 @@ export class Clock implements IClock {
     this.id = id ?? uuidv4();
   }
 
-  static deserialize(obj: any): IClock {
+  static deserialize(obj: any) {
     return new Clock(obj.timeZone, obj.title, obj.default, obj.id);
   }
 
-  static fromChange(change: ClockChange): IClock {
+  static fromChange(change: ClockChange) {
     return new Clock(change.timeZone, change.title);
   }
 }

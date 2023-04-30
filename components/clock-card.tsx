@@ -9,7 +9,6 @@ import { DropdownMenu, MenuItem } from './core/dropdown-menu';
 import TimeDisplay from './bits/time-display';
 import DateDisplay from './bits/date-display';
 import { useAppContext } from './context/app-context';
-import { ActionType } from './context/app-reducer';
 
 interface Props {
   clock: IClock;
@@ -30,20 +29,11 @@ export function ClockCard(props: Props) {
       change.title = extractCity(change.timeZone);
     }
 
-    dispatch({
-      type: ActionType.Edit,
-      payload: {
-        clock: props.clock,
-        change
-      }
-    });
+    dispatch({ type: "Edit", clock, change });
   }
 
   function deleteClock() {
-    dispatch({
-      type: ActionType.Delete,
-      payload: { clock }
-    });
+    dispatch({ type: "Delete", clock });
   }
 
   function openEdit() {

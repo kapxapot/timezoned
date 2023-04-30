@@ -2,7 +2,7 @@ import { Clock, IClock } from "@/lib/clock";
 import { load, save } from "@/lib/storage";
 import { sortedTimeZones } from "@/lib/timezones";
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer, useState } from "react";
-import { ActionType, AppContextType, customClocksReducer, initialCustomClocks } from "./app-reducer";
+import { AppContextType, customClocksReducer, initialCustomClocks } from "./app-reducer";
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -53,11 +53,9 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    const clocks = rawClocks.map(obj => Clock.deserialize(obj));
-
     dispatch({
-      type: ActionType.Set,
-      payload: { clocks }
+      type: "Set",
+      clocks: rawClocks.map(obj => Clock.deserialize(obj))
     });
   }, []);
 
@@ -75,7 +73,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       customClocks,
       dispatch
     };
-  }, [timeZones, activeTimeZones, defaultClock, customClocks, dispatch]);
+  }, [timeZoneNames, activeTimeZoneNames, defaultClock, customClocks, dispatch]);
 
   return (
     <AppContext.Provider value={contextValue}>

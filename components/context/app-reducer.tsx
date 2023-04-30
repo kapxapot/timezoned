@@ -1,19 +1,12 @@
-import { Clock, IClock } from "@/lib/clock";
+import { Clock, ClockChange, IClock } from "@/lib/clock";
 import { merge } from "@/lib/common";
 import { Dispatch } from "react";
 
-export enum ActionType {
-  Set = "Set",
-  Add = "Add",
-  AddTimeZone = "AddTimeZone",
-  Edit = "Edit",
-  Delete = "Delete"
-}
-
-export interface DispatchAction {
-  type: ActionType;
-  payload: any;
-}
+export type DispatchAction =
+  { type: "Set"; clocks: IClock[] } |
+  { type: "Add" | "Delete"; clock: IClock } |
+  { type: "AddTimeZone"; timeZone: string } |
+  { type: "Edit"; clock: IClock; change: ClockChange };
 
 export interface AppContextType {
   timeZones: string[];
@@ -26,34 +19,24 @@ export interface AppContextType {
 export const initialCustomClocks: IClock[] = [];
 
 export function customClocksReducer(clocks: IClock[], action: DispatchAction): IClock[] {
-  const { type, payload } = action;
+  switch (action.type) {
+    case "Set":
+      return [...action.clocks];
 
-  switch (type) {
-    case ActionType.Set:
-      return [
-        ...payload.clocks
-      ];
+    case "Add":
+      return [...clocks, action.clock];
 
-    case ActionType.Add:
-      return [
-        ...clocks,
-        payload.clock
-      ];
+    case "AddTimeZone":
+      return [...clocks, new Clock(action.timeZone)];
 
-    case ActionType.AddTimeZone:
-      return [
-        ...clocks,
-        new Clock(payload.timeZone)
-      ];
-
-    case ActionType.Edit:
+    case "Edit":
       return clocks.map(clock => {
-        return clock === payload.clock
-          ? merge(clock, payload.change)
+        return clock === action.clock
+          ? merge(clock, action.change)
           : clock;
       });
 
-    case ActionType.Delete:
-      return clocks.filter(clock => clock !== payload.clock);
+    case "Delete":
+      return clocks.filter(clock => clock !== action.clock);
   }
 }
