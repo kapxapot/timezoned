@@ -25,7 +25,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const activeTimeZones = useMemo(() => {
     return timeZones.filter(
       tz => allClocks.some(clock => clock.timeZone === tz.name)
-    )
+    );
   }, [timeZones, allClocks]);
 
   const timeZoneNames = useMemo(

@@ -42,7 +42,7 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZoneName }: Props) {
         </>
       )}
     </div>
-  );
+  )
 });
 
 export default TimeZoneItem;
