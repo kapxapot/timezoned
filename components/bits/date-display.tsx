@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { tzNow } from "@/lib/timezones";
+import { tzDate } from "@/lib/timezones";
 
 interface Props {
   timeZone: string;
@@ -9,18 +9,14 @@ interface Props {
 export default function DateDisplay(props: Props) {
   const [now, setNow] = useState(new Date());
 
-  const date = tzNow(props.timeZone);
+  const date = tzDate(now, props.timeZone);
 
   function color() {
-    if (date.getDate() < now.getDate()) {
-      return "text-red-500";
+    if (date.getDate() === now.getDate()) {
+      return "";
     }
 
-    if (date.getDate() > now.getDate()) {
-      return "text-green-500";
-    }
-
-    return "";
+    return date.getTime() < now.getTime() ? "text-red-500" : "text-green-500";
   }
 
   useEffect(() => {
