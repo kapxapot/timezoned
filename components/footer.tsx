@@ -15,7 +15,7 @@ export default function Footer({ host }: Props) {
             All rights reserved. &copy; {baseYear}{year > baseYear && (`—${year}`)} <a href={host} className="font-semibold hover:underline">Timezoned</a>
           </div>
           <div>
-            Created by <a href="https://about.me/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
+            Created by <a href="https://github.com/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
           </div>
         </div>
         <div>
