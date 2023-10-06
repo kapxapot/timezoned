@@ -5,7 +5,7 @@ interface Props {
 }
 
 export default function PageHead({ host }: Props) {
-  const pic = host + "/tz.svg";
+  const pic = `${host}/tz.svg`;
 
   const title = "Timezoned";
   const description = "Timezoned - an awesome timezone helper!";
