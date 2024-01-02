@@ -16,7 +16,7 @@ export default function Tour() {
   const [collapse, setCollapse] = useState<Collapse | undefined>();
 
   useEffect(() => {
-    setShowTour(!load("tourDone", false));
+    setShowTour(!load<boolean>("tourDone", false));
 
     const targetEl: HTMLElement | null = document.querySelector('.navbar-collapse-element');
     const triggerEl: HTMLElement | null = document.querySelector('.navbar-toggle-element');

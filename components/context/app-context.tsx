@@ -47,7 +47,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       )
     );
 
-    const rawClocks = load<any[]>(storageKey) ?? [];
+    const rawClocks = load<unknown[]>(storageKey) ?? [];
 
     if (!rawClocks.length) {
       return;
