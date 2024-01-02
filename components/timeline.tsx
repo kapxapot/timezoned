@@ -43,10 +43,17 @@ export default function Timeline(props: Props) {
   function offsetStr(hour: number): string {
     const time = tzDiffTime(props.timeZone, props.baseTimeZone);
 
-    const hours = justifyBy(time.hours + hour, 24);
-    const minutes = time.minutes ? `:${time.minutes}` : "";
+    const hoursFix = time.minutes < 0 ? -1 : 0;
+    const hours = justifyBy(time.hours + hour + hoursFix, 24);
 
-    return `${hours}${minutes}`;
+    let result = String(hours);
+
+    if (time.minutes !== 0) {
+      const minutes = justifyBy(time.minutes, 60);
+      result += minutes ? `:${minutes}` : "";
+    }
+
+    return result;
   }
 
   function isRedHour(hour: number): boolean {
