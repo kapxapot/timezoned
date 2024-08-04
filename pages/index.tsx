@@ -21,7 +21,7 @@ export default function Home() {
         host={host}
       />
 
-      <article className="flex flex-col min-h-screen gap-5">
+      <article className="flex flex-col min-h-screen min-h-svh gap-5">
         <Navbar
           fluid={true}
           className="shadow"

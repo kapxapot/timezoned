@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import { extractCity } from "./timezones";
 
 export interface IClock {
@@ -27,7 +27,7 @@ export class Clock implements IClock {
       this.default = def;
     }
 
-    this.id = id ?? uuidv4();
+    this.id = id ?? uuid();
   }
 
   static deserialize(obj: any) {
