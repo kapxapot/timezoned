@@ -9,11 +9,20 @@ import Footer from "@/components/footer";
 import PageHead from "@/components/page-head";
 import Tour from "@/components/tour";
 import { useAppContext } from "@/components/context/app-context";
+import { AnimatePresence, Reorder } from "framer-motion";
+import { IClock } from "@/lib/clock";
 
 export default function Home() {
   const host = "https://timezoned.vercel.app";
 
-  const { defaultClock, customClocks } = useAppContext();
+  const { defaultClock, customClocks, dispatch } = useAppContext();
+
+  function reorderClocks(clocks: IClock[]) {
+    dispatch({
+      type: "Set",
+      clocks
+    });
+  }
 
   return (
     <Flowbite theme={flowbiteTheme}>
@@ -21,7 +30,7 @@ export default function Home() {
         host={host}
       />
 
-      <article className="flex flex-col min-h-screen min-h-svh gap-5">
+      <article className="flex flex-col min-h-dvh gap-5">
         <Navbar
           fluid={true}
           className="shadow"
@@ -80,15 +89,29 @@ export default function Home() {
           }
 
           {defaultClock && (
-            <div className="flex flex-wrap justify-center mx-5 gap-5">
-              {customClocks.map(clock => (
-                <ClockCard
-                  key={clock.id}
-                  clock={clock}
-                  defaultClock={defaultClock}
-                />
-              ))}
-            </div>
+            <Reorder.Group
+              values={customClocks}
+              onReorder={reorderClocks}
+              axis="x"
+              className="flex flex-wrap justify-center mx-5 gap-5"
+            >
+              <AnimatePresence>
+                {customClocks.map(clock => (
+                  <Reorder.Item
+                    key={clock.id}
+                    value={clock}
+                    whileDrag={{
+                      scale: 1.1
+                    }}
+                  >
+                    <ClockCard
+                      clock={clock}
+                      defaultClock={defaultClock}
+                    />
+                  </Reorder.Item>
+                ))}
+              </AnimatePresence>
+            </Reorder.Group>
           )}
         </main>
 
