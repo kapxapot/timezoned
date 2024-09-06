@@ -23,7 +23,7 @@ export default function Footer({ host }: Props) {
         </div>
       </div>
       <div>
-        <a href="https://github.com/kapxapot/timezoned" className="opacity-50 hover:opacity-100">
+        <a href="https://github.com/kapxapot/timezoned" className="opacity-50 hover:opacity-100 transition-opacity">
           <picture>
             <img
               src="/github.svg"
