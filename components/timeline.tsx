@@ -71,11 +71,15 @@ export default function Timeline(props: Props) {
   const hasRedHour = hours.some(hour => isRedHour(hour));
   const hasGreenHour = hours.some(hour => isGreenHour(hour));
 
+  const offset = tzOffset(props.timeZone, props.baseTimeZone);
+
   return (
     <>
-      <div className="mb-4">
-        <span className="font-bold text-gray-600">Time difference:</span> {tzOffset(props.timeZone, props.baseTimeZone)}
-      </div>
+      {offset && (
+        <div className="mb-4">
+          <span className="font-bold text-gray-600">Time difference:</span> {offset}
+        </div>
+      )}
       <div className="flex flex-wrap gap-y-2 mb-4">
         <Cell
           value1={props.baseTitle ?? "Local time"}

@@ -21,6 +21,7 @@ export function ClockCard(props: Props) {
 
   const clock = props.clock;
   const timeZone = clock.timeZone;
+  const offset = tzOffset(timeZone);
 
   function saveClock(change: ClockChange) {
     setShowEdit(false);
@@ -82,7 +83,7 @@ export function ClockCard(props: Props) {
         </div>
         <div className="flex flex-wrap gap-1">
           <Badge color="indigo">
-            {tzOffset(timeZone)}
+            {offset ?? "🏡"}
           </Badge>
           <Badge color="success">
             {gmtStr(timeZone)}
@@ -92,6 +93,7 @@ export function ClockCard(props: Props) {
           <ShowTimeline
             clock={clock}
             defaultClock={props.defaultClock}
+            buttonDisabled={!offset}
           />
         </div>
       </Card>

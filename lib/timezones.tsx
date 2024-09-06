@@ -70,15 +70,11 @@ export function utcOffset(timeZone: string): string {
   return `${hours}${minutes}`;
 }
 
-export function localOffset(timeZone: string): string {
-  return tzOffset(timeZone);
-}
-
-export function tzOffset(timeZone: string, baseTimeZone?: string): string {
+export function tzOffset(timeZone: string, baseTimeZone?: string): string | null {
   const time = tzDiffTime(timeZone, baseTimeZone);
 
   if (time.isEmpty) {
-    return "local";
+    return null;
   }
 
   const sign = plus(time.hours + time.minutes, true);

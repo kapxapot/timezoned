@@ -8,6 +8,7 @@ import Timeline from "../timeline";
 interface Props {
   clock: IClock;
   defaultClock: IClock;
+  buttonDisabled?: boolean;
 }
 
 export default function ShowTimeline(props: Props) {
@@ -27,6 +28,7 @@ export default function ShowTimeline(props: Props) {
         buttonLabel="Timeline"
         buttonIcon={<CalendarDaysIcon className="w-5" />}
         onClick={openModal}
+        buttonDisabled={props.buttonDisabled}
       />
 
       <PopupModal
