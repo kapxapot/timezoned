@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { tzOffset, tzDiffHours, extractCity, tzDiffTime } from "@/lib/timezones";
 import { justifyBy } from "@/lib/common";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
+import { useNow } from "@/hooks/useNow";
 
 interface Props {
   baseTimeZone: string;
@@ -30,14 +30,7 @@ function Cell(props: CellProps) {
 }
 
 export default function Timeline(props: Props) {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    setInterval(() => {
-      setNow(new Date());
-    }, 100);
-  }, []);
-
+  const now = useNow();
   const diffHours = tzDiffHours(props.timeZone, props.baseTimeZone);
 
   function offsetStr(hour: number): string {
@@ -65,7 +58,7 @@ export default function Timeline(props: Props) {
   }
 
   function isCurrentHour(hour: number): boolean {
-    return new Date().getHours() === hour;
+    return now.getHours() === hour;
   }
 
   const hasRedHour = hours.some(hour => isRedHour(hour));

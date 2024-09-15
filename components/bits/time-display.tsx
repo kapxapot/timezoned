@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { tzDate } from "@/lib/timezones";
+import { useNow } from "@/hooks/useNow";
 
 interface Props {
   timeZone: string;
@@ -8,13 +8,7 @@ interface Props {
 }
 
 export default function TimeDisplay(props: Props) {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    setInterval(() => {
-      setNow(new Date());
-    }, 100);
-  }, []);
+  const now = useNow();
 
   return (
     <div className={`${props.color ?? "text-indigo-500"} text-5xl`}>
