@@ -1,4 +1,4 @@
-import { Flowbite, Navbar } from "flowbite-react";
+import { DarkThemeToggle, Flowbite, Navbar } from "flowbite-react";
 import { flowbiteTheme } from "@/components/config/flowbite-theme";
 import { ClockCard } from "@/components/clock-card";
 import AddClock from "@/components/modals/add-clock";
@@ -21,7 +21,7 @@ export default function Home() {
         host={host}
       />
 
-      <article className="flex flex-col min-h-screen min-h-svh gap-5">
+      <article className="flex flex-col min-h-dvh gap-5">
         <Navbar
           fluid={true}
           className="shadow"
@@ -70,14 +70,18 @@ export default function Home() {
         </Navbar>
 
         <main className="grow">
-          {defaultClock && 
-            <div className="flex justify-center mb-5">
-              <DefaultClockCard
-                clock={defaultClock}
-                className="tour-step-clock"
-              />
-            </div>
-          }
+          <div className="flex">
+            {defaultClock &&
+              <div className="flex justify-center mb-5">
+                <DefaultClockCard
+                  clock={defaultClock}
+                  className="tour-step-clock"
+                />
+              </div>
+            }
+
+            <DarkThemeToggle />
+          </div>
 
           {defaultClock && (
             <div className="flex flex-wrap justify-center mx-5 gap-5">
