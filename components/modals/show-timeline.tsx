@@ -4,6 +4,7 @@ import { useState } from "react";
 import ModalButton from "../core/modal-button";
 import PopupModal from "../core/popup-modal";
 import Timeline from "../timeline";
+import { useNow } from "@/hooks/useNow";
 
 interface Props {
   clock: IClock;
@@ -11,7 +12,8 @@ interface Props {
   buttonDisabled?: boolean;
 }
 
-export default function ShowTimeline(props: Props) {
+export default function ShowTimeline({ clock, defaultClock, buttonDisabled }: Props) {
+  const { curHour } = useNow();
   const [showModal, setShowModal] = useState(false);
 
   function openModal() {
@@ -28,12 +30,12 @@ export default function ShowTimeline(props: Props) {
         buttonLabel="Timeline"
         buttonIcon={<CalendarDaysIcon className="w-5" />}
         onClick={openModal}
-        buttonDisabled={props.buttonDisabled}
+        buttonDisabled={buttonDisabled}
       />
 
       <PopupModal
         show={showModal}
-        title={`${props.clock.title} timeline`}
+        title={`${clock.title} timeline`}
         flexWidth={true}
         submitLabel="Close"
         noCancelButton={true}
@@ -41,10 +43,11 @@ export default function ShowTimeline(props: Props) {
         onCancel={closeModal}
       >
         <Timeline
-          baseTimeZone={props.defaultClock.timeZone}
-          baseTitle={props.defaultClock.title}
-          timeZones={[props.clock.timeZone]}
-          titles={[`${props.clock.title} time`]}
+          curHour={curHour}
+          baseTimeZone={defaultClock.timeZone}
+          baseTitle={defaultClock.title}
+          timeZones={[clock.timeZone]}
+          titles={[`${clock.title} time`]}
         />
       </PopupModal>
     </>

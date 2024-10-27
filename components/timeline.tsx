@@ -1,84 +1,82 @@
 import { tzOffset, tzDiffHours, tzDiffTime } from "@/lib/timezones";
 import { justifyBy } from "@/lib/common";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
-import { useNow } from "@/hooks/useNow";
+import { memo, useMemo } from "react";
 
 interface Props {
+  curHour: number;
   baseTimeZone: string;
   baseTitle: string;
   timeZones: string[]
   titles: string[];
 }
 
-interface CellProps {
-  baseValue: string | number;
-  values: (string | number)[];
-  reds?: boolean[];
-  greens?: boolean[];
-  current?: boolean;
+const diffHours = (baseTimeZone: string, timeZone: string) => tzDiffHours(timeZone, baseTimeZone);
+
+function isRedHour(baseTimeZone: string, timeZone: string, hour: number): boolean {
+  const diff = diffHours(baseTimeZone, timeZone);
+  return diff < 0 && justifyBy(hour + diff, 24) > hour;
 }
 
-const hours = Array.from(Array(24).keys());
-
-function Column({ baseValue, values, reds, greens, current }: CellProps) {
-  return (
-    <div className={`border border-x-2 dark:border-gray-700 ${current && "border-indigo-500 dark:border-indigo-400"} inline-flex flex-col items-center whitespace-nowrap`}>
-      <div className="py-1 px-2 bg-teal-50 dark:bg-teal-800 dark:text-gray-300 w-full text-center">
-        {baseValue}
-      </div>
-      {values.map((value, index) =>
-        <div
-          key={index}
-          className={`py-1 px-2 w-full text-center dark:text-gray-400 ${reds && reds[index] && "text-red-500 dark:text-red-400"} ${greens && greens[index] && "text-green-500 dark:text-green-400"} ${index % 2 && "bg-gray-100 dark:bg-gray-900"}`}
-        >
-          {value}
-        </div>
-      )}
-    </div>
-  )
+function isGreenHour(baseTimeZone: string, timeZone: string, hour: number): boolean {
+  const diff = diffHours(baseTimeZone, timeZone);
+  return diff > 0 && justifyBy(hour + diff, 24) < hour;
 }
 
-export default function Timeline({ baseTimeZone, baseTitle, timeZones, titles }: Props) {
+function offsetStr(baseTimeZone: string, timeZone: string, hour: number): string {
+  const time = tzDiffTime(timeZone, baseTimeZone);
+
+  const hoursFix = time.minutes < 0 ? -1 : 0;
+  const hours = justifyBy(time.hours + hour + hoursFix, 24);
+
+  let result = String(hours);
+
+  if (time.minutes !== 0) {
+    const minutes = justifyBy(time.minutes, 60);
+    result += minutes ? `:${minutes}` : "";
+  }
+
+  return result;
+}
+
+type HourData = {
+  hour: number;
+  isCurrent: boolean;
+  isLast: boolean;
+};
+
+type TimeZoneHourData = {
+  offset: string;
+  isRed: boolean;
+  isGreen: boolean;
+  isLast: boolean;
+};
+
+type TimeZoneData = {
+  timeZone: string;
+  isOdd: boolean;
+  isLast: boolean;
+  hourData: TimeZoneHourData[];
+};
+
+const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, timeZones, titles }: Props) {
   const multiZone = timeZones.length > 1;
   const firstTimeZone = timeZones[0];
 
-  const now = useNow();
-  const diffHours = (timeZone: string) => tzDiffHours(timeZone, baseTimeZone);
-
-  function offsetStr(timeZone: string, hour: number): string {
-    const time = tzDiffTime(timeZone, baseTimeZone);
-
-    const hoursFix = time.minutes < 0 ? -1 : 0;
-    const hours = justifyBy(time.hours + hour + hoursFix, 24);
-
-    let result = String(hours);
-
-    if (time.minutes !== 0) {
-      const minutes = justifyBy(time.minutes, 60);
-      result += minutes ? `:${minutes}` : "";
-    }
-
-    return result;
-  }
-
-  function isRedHour(timeZone: string, hour: number): boolean {
-    const diff = diffHours(timeZone);
-    return diff < 0 && justifyBy(hour + diff, 24) > hour;
-  }
-
-  function isGreenHour(timeZone: string, hour: number): boolean {
-    const diff = diffHours(timeZone);
-    return diff > 0 && justifyBy(hour + diff, 24) < hour;
-  }
-
-  function isCurrentHour(hour: number): boolean {
-    return now.getHours() === hour;
-  }
-
-  const hasRedHour = hours.some(hour => timeZones.some(tz => isRedHour(tz, hour)));
-  const hasGreenHour = hours.some(hour => timeZones.some(tz => isGreenHour(tz, hour)));
-
   const firstOffset = tzOffset(firstTimeZone, baseTimeZone);
+
+  const hourData: HourData[] = useMemo(() => {
+    const hours = Array.from(Array(24).keys());
+
+    return hours.map((hour, index) => ({
+      hour,
+      isCurrent: hour === curHour,
+      isLast: index === hours.length - 1
+    }));
+  }, [curHour]);
+
+  const hasRedHour = hourData.some(hd => timeZones.some(tz => isRedHour(baseTimeZone, tz, hd.hour)));
+  const hasGreenHour = hourData.some(hd => timeZones.some(tz => isGreenHour(baseTimeZone, tz, hd.hour)));
 
   return (
     <>
@@ -87,22 +85,48 @@ export default function Timeline({ baseTimeZone, baseTitle, timeZones, titles }:
           <span className="font-bold">Time difference:</span> {firstOffset}
         </div>
       )}
-      <div className="overflow-x-auto mb-4">
-        <Column
-          baseValue={baseTitle ?? "Local time"}
-          values={titles}
-        />
-        {hours.map(hour =>
-          <Column
-            key={hour}
-            baseValue={hour}
-            values={timeZones.map(tz => offsetStr(tz, hour))}
-            reds={timeZones.map(tz => isRedHour(tz, hour))}
-            greens={timeZones.map(tz => isGreenHour(tz, hour))}
-            current={isCurrentHour(hour)}
-          />
-        )}
-      </div>
+      <table className="border-separate border-spacing-0 mb-4 whitespace-nowrap border border-gray-100 dark:border-gray-700">
+        <tbody>
+          <tr
+            className="bg-teal-50 dark:bg-teal-800 dark:text-gray-300"
+          >
+            <td
+              className={`py-1 px-2 text-left border-r border-gray-100 dark:border-gray-700 ${hourData[0].isCurrent && "border-r-2 border-indigo-500 dark:border-indigo-400"}`}
+            >
+              {baseTitle}
+            </td>
+            {hourData.map(hd => (
+              <td
+                key={hd.hour}
+                className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hd.isCurrent && "border-r"} ${hd.isCurrent && "border-l-2 border-r-2 border-t-2 border-indigo-500 dark:border-indigo-400"}`}
+              >
+                {hd.hour}
+              </td>
+            ))}
+          </tr>
+          {timeZones.map((timeZone, tIndex) => (
+            <tr
+              className={`group dark:text-gray-300 ${(tIndex % 2) && "bg-gray-50 dark:bg-gray-900"}`}
+              key={tIndex}
+            >
+              <td
+                className={`py-1 px-2 text-left border-r border-gray-100 dark:border-gray-700 ${hourData[0].isCurrent && "border-r-2 border-indigo-500 dark:border-indigo-400"} group-hover:border-y-2 group-hover:border-l-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 group-hover:border-l-green-500 group-hover:dark:border-l-green-400`}
+              >
+                {titles[tIndex]}
+              </td>
+              {hourData.map(hd => (
+                <td
+                  key={hd.hour}
+                  className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hd.isCurrent && "border-r"} ${tIndex === timeZones.length - 1 && hd.isCurrent && "border-b-2"} ${hd.isCurrent && "border-l-2 border-r-2 border-indigo-500 dark:border-indigo-400"} ${isRedHour(baseTimeZone, timeZone, hd.hour) && "text-red-500 dark:text-red-400"} ${isGreenHour(baseTimeZone, timeZone, hd.hour) && "text-green-500 dark:text-green-400"} group-hover:border-y-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 ${hd.isLast && "group-hover:border-r-2 group-hover:border-r-green-500 group-hover:dark:border-r-green-400"}`}
+                >
+                  {offsetStr(baseTimeZone, timeZone, hd.hour)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       {(hasRedHour || hasGreenHour) && (
         <div className="mt-3 flex gap-1">
           <ExclamationCircleIcon className="w-5 text-blue-500" />
@@ -122,4 +146,6 @@ export default function Timeline({ baseTimeZone, baseTitle, timeZones, titles }:
       )}
     </>
   )
-}
+});
+
+export default Timeline;

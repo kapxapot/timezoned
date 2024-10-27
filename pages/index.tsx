@@ -9,19 +9,31 @@ import Footer from "@/components/footer";
 import PageHead from "@/components/page-head";
 import Tour from "@/components/tour";
 import { useAppContext } from "@/components/context/app-context";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HiOutlineViewGrid, HiOutlineViewList } from "react-icons/hi";
 import Timeline from "@/components/timeline";
-import { Card } from "@/components/core/card";
+import { useNow } from "@/hooks/useNow";
 
 export default function Home() {
   const host = "https://timezoned.vercel.app";
+
+  const { curHour } = useNow();
 
   const { defaultClock, customClocks } = useAppContext();
   const [dark, setDark] = useState(false);
   const [timelineMode, setTimelineMode] = useState(false);
 
   const hasCustomClocks = customClocks.length > 0;
+
+  const timeZones = useMemo(
+    () => customClocks.map(clock => clock.timeZone),
+    [customClocks]
+  );
+
+  const titles = useMemo(
+    () => customClocks.map(clock => clock.title),
+    [customClocks]
+  );
 
   useEffect(() => {
     setDark(localStorage.getItem("theme") === "dark");
@@ -91,9 +103,9 @@ export default function Home() {
           </Navbar.Collapse>
         </Navbar>
 
-        <main className="grow">
+        <main className="grow mx-5">
           {defaultClock &&
-            <div className="flex items-start justify-center gap-3 mb-5">
+            <div className="flex items-center justify-center gap-3 mb-5">
               <Tooltip content={timelineMode ? "Toggle card mode" : "Toggle timeline mode"}>
                 <button
                   className="flex-shrink-0 rounded-lg p-2.5 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-700 cursor-pointer disabled:cursor-not-allowed"
@@ -118,19 +130,18 @@ export default function Home() {
           {defaultClock && (
             <>
               {timelineMode && hasCustomClocks && (
-                <div className="flex justify-center mx-5">
-                  <div className="rounded-lg border border-gray-200 shadow-md p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
-                    <Timeline
-                      baseTimeZone={defaultClock.timeZone}
-                      baseTitle={defaultClock.title}
-                      timeZones={customClocks.map(clock => clock.timeZone)}
-                      titles={customClocks.map(clock => clock.title)}
-                    />
-                  </div>
+                <div className="max-w-fit overflow-x-auto mx-auto rounded-lg border border-gray-200 shadow-md p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
+                  <Timeline
+                    curHour={curHour}
+                    baseTimeZone={defaultClock.timeZone}
+                    baseTitle={defaultClock.title}
+                    timeZones={timeZones}
+                    titles={titles}
+                  />
                 </div>
               )}
               {!timelineMode && (
-                <div className="flex flex-wrap justify-center mx-5 gap-5">
+                <div className="flex flex-wrap justify-center gap-5">
                   {customClocks.map(clock => (
                     <ClockCard
                       key={clock.id}

@@ -11,5 +11,5 @@ export function useNow() {
     return () => clearInterval(intervalId);
   }, []);
 
-  return now;
+  return { now, curHour: now.getHours() };
 }

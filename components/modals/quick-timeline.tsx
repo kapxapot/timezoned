@@ -9,6 +9,7 @@ import { useAppContext } from '../context/app-context';
 import { IClock } from '@/lib/clock';
 import ModalButton from '../core/modal-button';
 import PopupModal from '../core/popup-modal';
+import { useNow } from '@/hooks/useNow';
 
 interface Props {
   defaultClock: IClock;
@@ -16,7 +17,8 @@ interface Props {
   buttonClassName?: string;
 }
 
-export default function QuickTimeline(props: Props) {
+export default function QuickTimeline({ defaultClock, inNavbar, buttonClassName }: Props) {
+  const { curHour } = useNow();
   const { timeZones, activeTimeZones, dispatch } = useAppContext();
   const [timeZone, setTimeZone] = useState(timeZones[0]);
   const [showModal, setShowModal] = useState(false);
@@ -41,8 +43,8 @@ export default function QuickTimeline(props: Props) {
       <ModalButton
         buttonLabel="Timeline"
         buttonIcon={<CalendarDaysIcon className="w-5" />}
-        buttonClassName={props.buttonClassName}
-        inNavbar={props.inNavbar}
+        buttonClassName={buttonClassName}
+        inNavbar={inNavbar}
         onClick={openModal}
       />
 
@@ -67,8 +69,9 @@ export default function QuickTimeline(props: Props) {
         </div>
 
         <Timeline
-          baseTimeZone={props.defaultClock.timeZone}
-          baseTitle={props.defaultClock.title}
+          curHour={curHour}
+          baseTimeZone={defaultClock.timeZone}
+          baseTitle={defaultClock.title}
           timeZones={[timeZone]}
           titles={[`${extractCity(timeZone)} time`]}
         />

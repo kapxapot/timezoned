@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function DateDisplay(props: Props) {
-  const now = useNow();
+  const { now } = useNow();
   const date = tzDate(now, props.timeZone);
 
   function color() {
@@ -15,7 +15,9 @@ export default function DateDisplay(props: Props) {
       return "dark:text-gray-400";
     }
 
-    return date.getTime() < now.getTime() ? "text-red-500 dark:text-red-400" : "text-green-500 dark:text-green-400";
+    return date.getTime() < now.getTime()
+      ? "text-red-500 dark:text-red-400"
+      : "text-green-500 dark:text-green-400";
   }
 
   return (

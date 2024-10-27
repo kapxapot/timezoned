@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function TimeDisplay(props: Props) {
-  const now = useNow();
+  const { now } = useNow();
 
   return (
     <div className={`${props.color ?? "text-indigo-500 dark:text-indigo-400"} text-5xl`}>
