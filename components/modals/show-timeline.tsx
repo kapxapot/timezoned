@@ -43,8 +43,8 @@ export default function ShowTimeline(props: Props) {
         <Timeline
           baseTimeZone={props.defaultClock.timeZone}
           baseTitle={props.defaultClock.title}
-          timeZone={props.clock.timeZone}
-          title={`${props.clock.title} time`}
+          timeZones={[props.clock.timeZone]}
+          titles={[`${props.clock.title} time`]}
         />
       </PopupModal>
     </>

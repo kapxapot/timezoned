@@ -69,8 +69,8 @@ export default function QuickTimeline(props: Props) {
         <Timeline
           baseTimeZone={props.defaultClock.timeZone}
           baseTitle={props.defaultClock.title}
-          timeZone={timeZone}
-          title={`${extractCity(timeZone)} time`}
+          timeZones={[timeZone]}
+          titles={[`${extractCity(timeZone)} time`]}
         />
 
         {alreadyAdded && <ClockAlreadyAdded />}

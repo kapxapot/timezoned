@@ -11,7 +11,7 @@ export default function TimeDisplay(props: Props) {
   const now = useNow();
 
   return (
-    <div className={`${props.color ?? "text-indigo-500"} text-5xl`}>
+    <div className={`${props.color ?? "text-indigo-500 dark:text-indigo-400"} text-5xl`}>
       {format(tzDate(now, props.timeZone), "HH:mm")}
     </div>
   )

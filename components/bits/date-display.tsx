@@ -12,10 +12,10 @@ export default function DateDisplay(props: Props) {
 
   function color() {
     if (date.getDate() === now.getDate()) {
-      return "";
+      return "dark:text-gray-400";
     }
 
-    return date.getTime() < now.getTime() ? "text-red-500" : "text-green-500";
+    return date.getTime() < now.getTime() ? "text-red-500 dark:text-red-400" : "text-green-500 dark:text-green-400";
   }
 
   return (

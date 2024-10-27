@@ -4,6 +4,11 @@ export const flowbiteTheme: ThemeProps = {
   theme: {
     badge: {
       root: {
+        color: {
+          success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 group-hover:bg-green-200 dark:group-hover:bg-green-300',
+          indigo: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-300',
+          pink: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200 group-hover:bg-pink-200 dark:group-hover:bg-pink-300',
+        },
         size: {
           xs: 'text-xs'
         }

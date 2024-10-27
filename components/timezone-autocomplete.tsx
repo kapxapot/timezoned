@@ -66,9 +66,9 @@ export default function TimeZoneAutocomplete(props: Props) {
             leaveTo="opacity-0"
             afterLeave={() => setQuery("")}
           >
-            <Combobox.Options className="absolute mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20">
+            <Combobox.Options className="absolute mt-1 max-h-52 w-full overflow-auto rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none sm:text-sm z-20">
               {!filteredTimeZones.length && query !== "" ? (
-                <div className="relative select-none py-2 px-4 text-gray-700">
+                <div className="relative select-none py-2 px-4 text-gray-700 dark:text-gray-400">
                   Nothing found.
                 </div>
               ) : (
@@ -77,7 +77,7 @@ export default function TimeZoneAutocomplete(props: Props) {
                     <Combobox.Option
                       key={timeZone}
                       className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 px-4 border-b last:border-none ${active && "bg-slate-100"}`
+                        `relative cursor-pointer select-none py-2 px-4 border-b dark:border-gray-500 last:border-none ${active && "bg-slate-100 dark:bg-slate-600"}`
                       }
                       value={timeZone}
                     >

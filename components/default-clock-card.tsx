@@ -16,13 +16,13 @@ export function DefaultClockCard(props: Props) {
 
   return (
     <Card className={props.className}>
-      <h3 className="inline-flex font-bold -mt-0.5">
+      <h3 className="inline-flex font-bold -mt-0.5 dark:text-gray-400">
         {clock.title}
       </h3>
       <div className="-mt-1">
         <TimeDisplay
           timeZone={timeZone}
-          color="text-green-500"
+          color="text-green-500 dark:text-green-400"
         />
       </div>
       <div className="mb-1">

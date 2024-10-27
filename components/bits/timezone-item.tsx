@@ -11,7 +11,7 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZoneName }: Props) {
   const timeZone = getTimeZone(timeZoneName);
 
   return (
-    <div className="truncate text-gray-900">
+    <div className="truncate text-gray-900 dark:text-gray-200">
       {timeZone ? (
         <>
           <div className="flex items-center gap-1">
