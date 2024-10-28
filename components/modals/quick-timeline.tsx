@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Label } from 'flowbite-react';
-import Timeline from '../timeline';
 import TimeZoneAutocomplete from '../timezone-autocomplete';
 import ClockAlreadyAdded from '../bits/clock-already-added';
 import { extractCity } from '@/lib/timezones';
@@ -9,7 +8,7 @@ import { useAppContext } from '../context/app-context';
 import { IClock } from '@/lib/clock';
 import ModalButton from '../core/modal-button';
 import PopupModal from '../core/popup-modal';
-import { useNow } from '@/hooks/useNow';
+import TimelineWrapper from '../timeline-wrapper';
 
 interface Props {
   defaultClock: IClock;
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export default function QuickTimeline({ defaultClock, inNavbar, buttonClassName }: Props) {
-  const { curHour } = useNow();
   const { timeZones, activeTimeZones, dispatch } = useAppContext();
   const [timeZone, setTimeZone] = useState(timeZones[0]);
   const [showModal, setShowModal] = useState(false);
@@ -68,10 +66,8 @@ export default function QuickTimeline({ defaultClock, inNavbar, buttonClassName 
           />
         </div>
 
-        <Timeline
-          curHour={curHour}
-          baseTimeZone={defaultClock.timeZone}
-          baseTitle={defaultClock.title}
+        <TimelineWrapper
+          defaultClock={defaultClock}
           timeZones={[timeZone]}
           titles={[`${extractCity(timeZone)} time`]}
         />

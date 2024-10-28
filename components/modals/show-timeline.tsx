@@ -3,8 +3,7 @@ import { CalendarDaysIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import ModalButton from "../core/modal-button";
 import PopupModal from "../core/popup-modal";
-import Timeline from "../timeline";
-import { useNow } from "@/hooks/useNow";
+import TimelineWrapper from "../timeline-wrapper";
 
 interface Props {
   clock: IClock;
@@ -13,7 +12,6 @@ interface Props {
 }
 
 export default function ShowTimeline({ clock, defaultClock, buttonDisabled }: Props) {
-  const { curHour } = useNow();
   const [showModal, setShowModal] = useState(false);
 
   function openModal() {
@@ -42,10 +40,8 @@ export default function ShowTimeline({ clock, defaultClock, buttonDisabled }: Pr
         onSubmit={closeModal}
         onCancel={closeModal}
       >
-        <Timeline
-          curHour={curHour}
-          baseTimeZone={defaultClock.timeZone}
-          baseTitle={defaultClock.title}
+        <TimelineWrapper
+          defaultClock={defaultClock}
           timeZones={[clock.timeZone]}
           titles={[`${clock.title} time`]}
         />

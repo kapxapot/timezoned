@@ -1,7 +1,8 @@
-import { tzOffset, tzDiffHours, tzDiffTime } from "@/lib/timezones";
-import { justifyBy } from "@/lib/common";
+import { HourData, isGreenHour, isRedHour, offsetStr, TimeZoneData, TimeZoneHourData } from "@/lib/timeline";
+import { tzOffset } from "@/lib/timezones";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import { memo, useMemo } from "react";
+import TimelineItem from "./bits/timeline-item";
 
 interface Props {
   curHour: number;
@@ -10,55 +11,6 @@ interface Props {
   timeZones: string[]
   titles: string[];
 }
-
-const diffHours = (baseTimeZone: string, timeZone: string) => tzDiffHours(timeZone, baseTimeZone);
-
-function isRedHour(baseTimeZone: string, timeZone: string, hour: number): boolean {
-  const diff = diffHours(baseTimeZone, timeZone);
-  return diff < 0 && justifyBy(hour + diff, 24) > hour;
-}
-
-function isGreenHour(baseTimeZone: string, timeZone: string, hour: number): boolean {
-  const diff = diffHours(baseTimeZone, timeZone);
-  return diff > 0 && justifyBy(hour + diff, 24) < hour;
-}
-
-function offsetStr(baseTimeZone: string, timeZone: string, hour: number): string {
-  const time = tzDiffTime(timeZone, baseTimeZone);
-
-  const hoursFix = time.minutes < 0 ? -1 : 0;
-  const hours = justifyBy(time.hours + hour + hoursFix, 24);
-
-  let result = String(hours);
-
-  if (time.minutes !== 0) {
-    const minutes = justifyBy(time.minutes, 60);
-    result += minutes ? `:${minutes}` : "";
-  }
-
-  return result;
-}
-
-type HourData = {
-  hour: number;
-  isCurrent: boolean;
-  isLast: boolean;
-};
-
-type TimeZoneHourData = {
-  offset: string;
-  isRed: boolean;
-  isGreen: boolean;
-  isLast: boolean;
-};
-
-type TimeZoneData = {
-  timeZone: string;
-  title: string;
-  isOdd: boolean;
-  isLast: boolean;
-  hourData: TimeZoneHourData[];
-};
 
 const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, timeZones, titles }: Props) {
   const multiZone = timeZones.length > 1;
@@ -101,20 +53,20 @@ const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, time
           <span className="font-bold">Time difference:</span> {firstOffset}
         </div>
       )}
-      <table className="border-separate border-spacing-0 mb-4 whitespace-nowrap border border-gray-100 dark:border-gray-700">
+      <table className="border-separate border-spacing-0 mb-4 whitespace-nowrap">
         <tbody>
           <tr
             className="bg-teal-50 dark:bg-teal-800 dark:text-gray-300"
           >
             <td
-              className={`py-1 px-2 text-left border-r border-gray-100 dark:border-gray-700 ${hourData[0].isCurrent && "border-r-2 border-indigo-500 dark:border-indigo-400"}`}
+              className={`py-1 px-2 text-left border border-gray-100 dark:border-gray-700`}
             >
               {baseTitle}
             </td>
             {hourData.map(hd => (
               <td
                 key={hd.hour}
-                className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hd.isCurrent && "border-r"} ${hd.isCurrent && "border-l-2 border-r-2 border-t-2 border-indigo-500 dark:border-indigo-400"}`}
+                className={`py-1 px-2 text-center border border-gray-100 dark:border-gray-700 ${hd.isCurrent && "border-x-indigo-500 dark:border-x-indigo-400 border-t-indigo-500 dark:border-t-indigo-400"}`}
               >
                 {hd.hour}
               </td>
@@ -126,17 +78,18 @@ const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, time
               key={index}
             >
               <td
-                className={`py-1 px-2 text-left border-r border-gray-100 dark:border-gray-700 ${hourData[0].isCurrent && "border-r-2 border-indigo-500 dark:border-indigo-400"} group-hover:border-y-2 group-hover:border-l-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 group-hover:border-l-green-500 group-hover:dark:border-l-green-400`}
+                className={`py-1 px-2 text-left border border-gray-100 dark:border-gray-700 ${multiZone && "group-hover:border-y-green-500 group-hover:dark:border-y-green-400 group-hover:border-l-green-500 group-hover:dark:border-l-green-400"}`}
               >
                 {tz.title}
               </td>
               {tz.hourData.map((hd, hIndex) => (
-                <td
+                <TimelineItem
                   key={hIndex}
-                  className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hourData[hIndex].isCurrent && "border-r"} ${tz.isLast && hourData[hIndex].isCurrent && "border-b-2"} ${hourData[hIndex].isCurrent && "border-l-2 border-r-2 border-indigo-500 dark:border-indigo-400"} ${hd.isRed && "text-red-500 dark:text-red-400"} ${hd.isGreen && "text-green-500 dark:text-green-400"} group-hover:border-y-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 ${hd.isLast && "group-hover:border-r-2 group-hover:border-r-green-500 group-hover:dark:border-r-green-400"}`}
-                >
-                  {hd.offset}
-                </td>
+                  hourData={hd}
+                  isCurrent={hourData[hIndex].isCurrent}
+                  isLast={tz.isLast}
+                  withHover={multiZone}
+                />
               ))}
             </tr>
           ))}

@@ -7,13 +7,13 @@ import { STATUS } from "react-joyride";
 export default function Tour() {
   const [showTour, setShowTour] = useState(true);
 
+  // navbar collapse
+  const [collapse, setCollapse] = useState<Collapse | undefined>();
+
   const JoyrideClientSide = dynamic(
     () => import('react-joyride'),
     { ssr: false }
   );
-
-  // navbar collapse
-  const [collapse, setCollapse] = useState<Collapse | undefined>();
 
   useEffect(() => {
     setShowTour(!load<boolean>("tourDone", false));
@@ -54,6 +54,16 @@ export default function Tour() {
             {
               target: ".tour-step-converter",
               content: "Parse times with a timezone abbreviation like UTC and convert them to your local time.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-timeline-view",
+              content: "Switch between list and timeline views.",
+              disableBeacon: true,
+            },
+            {
+              target: ".tour-step-dark-theme",
+              content: "Switch between light and dark themes.",
               disableBeacon: true,
             },
           ]}

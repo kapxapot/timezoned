@@ -27,6 +27,7 @@ export default function AddClock(props: Props) {
   }
 
   function openModal() {
+    console.log('clicked');
     setShowModal(true);
   }
 
