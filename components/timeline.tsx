@@ -54,6 +54,7 @@ type TimeZoneHourData = {
 
 type TimeZoneData = {
   timeZone: string;
+  title: string;
   isOdd: boolean;
   isLast: boolean;
   hourData: TimeZoneHourData[];
@@ -74,6 +75,21 @@ const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, time
       isLast: index === hours.length - 1
     }));
   }, [curHour]);
+
+  const timeZoneData: TimeZoneData[] = useMemo(() => {
+    return timeZones.map((timeZone, index) => ({
+      timeZone,
+      title: titles[index],
+      isOdd: index % 2 === 1,
+      isLast: index === timeZones.length - 1,
+      hourData: hourData.map((hd): TimeZoneHourData => ({
+        offset: offsetStr(baseTimeZone, timeZone, hd.hour),
+        isRed: isRedHour(baseTimeZone, timeZone, hd.hour),
+        isGreen: isGreenHour(baseTimeZone, timeZone, hd.hour),
+        isLast: hd.isLast
+      }))
+    }));
+  }, [baseTimeZone, timeZones, titles, hourData]);
 
   const hasRedHour = hourData.some(hd => timeZones.some(tz => isRedHour(baseTimeZone, tz, hd.hour)));
   const hasGreenHour = hourData.some(hd => timeZones.some(tz => isGreenHour(baseTimeZone, tz, hd.hour)));
@@ -104,22 +120,22 @@ const Timeline = memo(function Timeline({ curHour, baseTimeZone, baseTitle, time
               </td>
             ))}
           </tr>
-          {timeZones.map((timeZone, tIndex) => (
+          {timeZoneData.map((tz, index) => (
             <tr
-              className={`group dark:text-gray-300 ${(tIndex % 2) && "bg-gray-50 dark:bg-gray-900"}`}
-              key={tIndex}
+              className={`group dark:text-gray-300 ${tz.isOdd && "bg-gray-50 dark:bg-gray-900"}`}
+              key={index}
             >
               <td
                 className={`py-1 px-2 text-left border-r border-gray-100 dark:border-gray-700 ${hourData[0].isCurrent && "border-r-2 border-indigo-500 dark:border-indigo-400"} group-hover:border-y-2 group-hover:border-l-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 group-hover:border-l-green-500 group-hover:dark:border-l-green-400`}
               >
-                {titles[tIndex]}
+                {tz.title}
               </td>
-              {hourData.map(hd => (
+              {tz.hourData.map((hd, hIndex) => (
                 <td
-                  key={hd.hour}
-                  className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hd.isCurrent && "border-r"} ${tIndex === timeZones.length - 1 && hd.isCurrent && "border-b-2"} ${hd.isCurrent && "border-l-2 border-r-2 border-indigo-500 dark:border-indigo-400"} ${isRedHour(baseTimeZone, timeZone, hd.hour) && "text-red-500 dark:text-red-400"} ${isGreenHour(baseTimeZone, timeZone, hd.hour) && "text-green-500 dark:text-green-400"} group-hover:border-y-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 ${hd.isLast && "group-hover:border-r-2 group-hover:border-r-green-500 group-hover:dark:border-r-green-400"}`}
+                  key={hIndex}
+                  className={`py-1 px-2 text-center border-l border-gray-100 dark:border-gray-700 ${!hd.isLast && !hourData[hIndex].isCurrent && "border-r"} ${tz.isLast && hourData[hIndex].isCurrent && "border-b-2"} ${hourData[hIndex].isCurrent && "border-l-2 border-r-2 border-indigo-500 dark:border-indigo-400"} ${hd.isRed && "text-red-500 dark:text-red-400"} ${hd.isGreen && "text-green-500 dark:text-green-400"} group-hover:border-y-2 group-hover:border-y-green-500 group-hover:dark:border-y-green-400 ${hd.isLast && "group-hover:border-r-2 group-hover:border-r-green-500 group-hover:dark:border-r-green-400"}`}
                 >
-                  {offsetStr(baseTimeZone, timeZone, hd.hour)}
+                  {hd.offset}
                 </td>
               ))}
             </tr>
