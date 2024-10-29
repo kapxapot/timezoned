@@ -4,12 +4,10 @@ import Copyright from "./copyright";
 export default function Footer() {
   return (
     <footer className="text-sm w-full py-2 px-3 text-gray-500 bg-white border-t border-gray-200 shadow flex flex-col sm:flex-row flex-wrap gap-3 items-center justify-between dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
-      <div>
+      <div className="text-center sm:text-left">
+        <Copyright baseYear={2023} name="Timezoned" />
         <div>
-          <Copyright baseYear={2023} name="Timezoned" />
-          <div>
-            Created by <a href="https://github.com/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
-          </div>
+          Created by <a href="https://github.com/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
         </div>
       </div>
 
