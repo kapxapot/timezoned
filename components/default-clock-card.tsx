@@ -16,7 +16,7 @@ export function DefaultClockCard(props: Props) {
 
   return (
     <Card className={props.className}>
-      <h3 className="inline-flex font-bold -mt-0.5 dark:text-gray-400">
+      <h3 className="inline-flex font-bold -mt-0.5 dark:text-gray-200">
         {clock.title}
       </h3>
       <div className="-mt-1">

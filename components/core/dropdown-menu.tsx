@@ -17,7 +17,7 @@ export function DropdownMenu(props: Props) {
     <Menu as="div" className="relative inline-block">
       <Menu.Button>
         <h3 className="inline-flex pl-3">
-          <span className="font-bold dark:text-gray-400">
+          <span className="font-bold dark:text-gray-200">
             {props.label}
           </span>
           <ChevronDownIcon
