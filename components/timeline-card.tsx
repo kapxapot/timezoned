@@ -19,7 +19,7 @@ export default function TimelineCard({ defaultClock, customClocks }: Props) {
   );
 
   return (
-    <div className="max-w-fit overflow-x-auto mx-auto rounded-lg border border-gray-200 shadow-md p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-fit mx-auto rounded-lg border border-gray-200 shadow-md p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
       <TimelineWrapper
         defaultClock={defaultClock}
         timeZones={timeZones}

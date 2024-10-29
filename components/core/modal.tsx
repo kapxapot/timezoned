@@ -9,13 +9,13 @@ interface Props {
   onCancel?: () => void;
 }
 
-export default function Modal(props: PropsWithChildren<Props>) {
+export default function Modal({ show, title, flexWidth, onCancel, children }: PropsWithChildren<Props>) {
   function cancel() {
-    props.onCancel?.();
+    onCancel?.();
   }
 
   return (
-    <Transition appear show={props.show} as={Fragment}>
+    <Transition appear show={show} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={cancel}>
         <Transition.Child
           as={Fragment}
@@ -40,13 +40,13 @@ export default function Modal(props: PropsWithChildren<Props>) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className={`${!props.flexWidth && "w-full max-w-md"} transform rounded-md bg-white dark:bg-gray-800 p-4 text-left align-middle shadow-xl transition-all`}>
+              <Dialog.Panel className={`${flexWidth ? "max-w-full" : "w-full max-w-md"} transform rounded-md bg-white dark:bg-gray-800 p-4 text-left align-middle shadow-xl transition-all`}>
                 <Dialog.Title
                   as="div"
                   className="flex items-start justify-between mb-4"
                 >
                   <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-                    {props.title}
+                    {title}
                   </h3>
 
                   <button
@@ -62,7 +62,7 @@ export default function Modal(props: PropsWithChildren<Props>) {
                   </button>
                 </Dialog.Title>
 
-                {props.children}
+                {children}
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -12,12 +12,14 @@ export default function TimelineWrapper({ defaultClock, timeZones, titles }: Pro
   const { curHour } = useNow();
 
   return (
-    <Timeline
-      curHour={curHour}
-      baseTimeZone={defaultClock.timeZone}
-      baseTitle={defaultClock.title}
-      timeZones={timeZones}
-      titles={titles}
-    />
+    <div className="max-w-7xl overflow-x-auto">
+      <Timeline
+        curHour={curHour}
+        baseTimeZone={defaultClock.timeZone}
+        baseTitle={defaultClock.title}
+        timeZones={timeZones}
+        titles={titles}
+      />
+    </div>
   );
 }
