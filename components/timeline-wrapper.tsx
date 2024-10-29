@@ -57,7 +57,7 @@ const TimelineWrapper = memo(function TimelineWrapper({ defaultClock, timeZones,
         </div>
       )}
 
-      <div className="max-w-7xl overflow-x-auto">
+      <div className="max-w-screen-2xl overflow-x-auto">
         <Timeline
           baseTitle={defaultClock.title}
           hourData={hourData}
