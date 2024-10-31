@@ -23,7 +23,18 @@ export default function Home() {
   const hasCustomClocks = customClocks.length > 0;
 
   useEffect(() => {
-    setDark(localStorage.getItem("theme") === "dark");
+    const appTheme = localStorage.getItem("theme");
+
+    if (appTheme) {
+      setDark(appTheme === "dark");
+      return;
+    }
+
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (systemDark) {
+      setDark(true);
+    }
   }, []);
 
   function onThemeToggle() {
