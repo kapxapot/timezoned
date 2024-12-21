@@ -181,7 +181,7 @@ export default function TimeConverter(props: Props) {
             onChange={rawTimeChanged}
           />
           {time &&
-            <>
+            <div className="dark:text-gray-400">
               <div className="mt-5">Time: {time}</div>
 
               {timeZone &&
@@ -197,7 +197,7 @@ export default function TimeConverter(props: Props) {
               }
 
               {alreadyAdded && <ClockAlreadyAdded />}
-            </>
+            </div>
           }
         </div>
       </PopupModal>

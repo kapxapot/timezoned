@@ -53,7 +53,7 @@ export default function Home() {
         host={host}
       />
 
-      <article className="flex flex-col min-h-dvh gap-5">
+      <article className="flex flex-col min-h-dvh gap-5 bg-indigo-100 dark:bg-slate-600">
         <Navbar
           fluid={true}
           className="shadow"
