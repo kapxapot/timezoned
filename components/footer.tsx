@@ -18,7 +18,7 @@ export default function Footer() {
           </a>
         </div>
 
-        <div className="flex-shrink-0 dark:opacity-50">
+        <div className="flex-shrink-0 dark:opacity-50 dark:hover:opacity-100 transition-opacity">
           <a href="https://www.producthunt.com/products/timezoned/reviews" target="_blank">
             <img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=527753&theme=neutral" alt="Timezoned - A simple but useful timezone helper | Product Hunt" width="167" height="36" />
           </a>
