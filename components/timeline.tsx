@@ -1,14 +1,18 @@
 import { HourData, TimeZoneData } from "@/lib/timeline";
+import { tzDate } from "@/lib/timezones";
+import { format } from "date-fns";
 import { memo } from "react";
 import TimelineItem from "./bits/timeline-item";
 
 interface Props {
   baseTitle: string;
+  baseTimeZone: string;
+  now: Date;
   hourData: HourData[];
   timeZoneData: TimeZoneData[];
 }
 
-const Timeline = memo(function Timeline({ baseTitle, hourData, timeZoneData }: Props) {
+const Timeline = memo(function Timeline({ baseTitle, baseTimeZone, now, hourData, timeZoneData }: Props) {
   const multiZone = timeZoneData.length > 1;
 
   return (
@@ -27,7 +31,9 @@ const Timeline = memo(function Timeline({ baseTitle, hourData, timeZoneData }: P
               key={hd.hour}
               className={`py-1 px-2 text-center border border-gray-100 dark:border-gray-700 ${hd.isCurrent && "border-x-indigo-500 dark:border-x-indigo-400 border-t-indigo-500 dark:border-t-indigo-400"}`}
             >
-              {hd.hour}
+              {hd.isCurrent
+                ? format(tzDate(now, baseTimeZone), "HH:mm")
+                : hd.hour}
             </td>
           ))}
         </tr>
@@ -45,6 +51,8 @@ const Timeline = memo(function Timeline({ baseTitle, hourData, timeZoneData }: P
               <TimelineItem
                 key={hIndex}
                 hourData={hd}
+                timeZone={tz.timeZone}
+                now={now}
                 isCurrent={hourData[hIndex].isCurrent}
                 isLast={tz.isLast}
                 withHover={multiZone}

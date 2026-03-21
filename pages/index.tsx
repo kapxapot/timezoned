@@ -149,6 +149,10 @@ export default function Home() {
                   ))}
                 </div>
               )}
+
+              <div className="flex justify-center mt-6">
+                <AddClock buttonClassName="dark:border-gray-800" />
+              </div>
             </>
           )}
         </main>

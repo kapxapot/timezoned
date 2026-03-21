@@ -7,21 +7,20 @@ export default function Footer() {
       <div className="text-center sm:text-left">
         <Copyright baseYear={2023} name="Timezoned" />
         <div>
-          Created by <a href="https://github.com/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a>
+          Created by <a href="https://github.com/kapxapot" className="font-semibold hover:underline">👨‍💻 Sergey Atroshchenko</a> <a href="https://www.buymeacoffee.com/kapxapot" title="Buy me a coffee">☕</a>
         </div>
       </div>
 
-      <div className="flex-shrink-0 flex items-center gap-5">
+      <div className="flex-shrink-0 flex items-center gap-3">
         <div>
           <a href="https://github.com/kapxapot/timezoned" target="_blank">
             <GitHubIcon className="fill-gray-600 dark:fill-gray-400 w-8 h-8 opacity-50 hover:opacity-100 transition-opacity" />
           </a>
         </div>
 
-        <div className="flex-shrink-0 dark:opacity-50 dark:hover:opacity-100 transition-opacity">
-          <a href="https://www.producthunt.com/products/timezoned/reviews" target="_blank">
-            <img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=527753&theme=neutral" alt="Timezoned - A simple but useful timezone helper | Product Hunt" width="167" height="36" />
-          </a>
+        <div className="text-right flex sm:flex-col gap-x-2">
+          <span>My new project:</span>
+          <a href="https://mapfolks.com" className="font-semibold hover:underline" target="_blank">🗺️ Mapfolks</a>
         </div>
       </div>
     </footer>

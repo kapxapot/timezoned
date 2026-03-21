@@ -30,7 +30,7 @@ export function DefaultClockCard(props: Props) {
           timeZone={timeZone}
         />
       </div>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1 justify-center">
         <Badge color="gray">
           {timeZone}
         </Badge>

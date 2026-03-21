@@ -2,7 +2,7 @@ import { useNow } from "@/hooks/useNow";
 import Timeline from "./timeline";
 import { IClock } from "@/lib/clock";
 import { memo, useMemo } from "react";
-import { tzOffset } from "@/lib/timezones";
+import { tzDate, tzOffset } from "@/lib/timezones";
 import { HourData, isGreenHour, isRedHour, offsetStr, TimeZoneData, TimeZoneHourData } from "@/lib/timeline";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
@@ -13,9 +13,10 @@ interface Props {
 }
 
 const TimelineWrapper = memo(function TimelineWrapper({ defaultClock, timeZones, titles }: Props) {
-  const { curHour } = useNow();
+  const { now } = useNow();
 
   const baseTimeZone = defaultClock.timeZone;
+  const curHour = tzDate(now, baseTimeZone).getHours();
   const multiZone = timeZones.length > 1;
   const firstTimeZone = timeZones[0];
 
@@ -60,6 +61,8 @@ const TimelineWrapper = memo(function TimelineWrapper({ defaultClock, timeZones,
       <div className="max-w-screen-2xl overflow-x-auto">
         <Timeline
           baseTitle={defaultClock.title}
+          baseTimeZone={baseTimeZone}
+          now={now}
           hourData={hourData}
           timeZoneData={timeZoneData}
         />
