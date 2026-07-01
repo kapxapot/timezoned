@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { getTimeZone, gmtStr } from "@/lib/timezones";
+import { getTimeZone, utcStr } from "@/lib/timezones";
 import { commaJoin } from "@/lib/common";
 import { Badge } from "flowbite-react";
 
@@ -19,7 +19,7 @@ const TimeZoneItem = memo(function TimeZoneItem({ timeZoneName }: Props) {
               {timeZone.name}
             </span>
             <Badge color="success" className="ml-1">
-              {gmtStr(timeZone.name)}
+              {utcStr(timeZone.name)}
             </Badge>
             <Badge color="pink">
               {timeZone.abbreviation}

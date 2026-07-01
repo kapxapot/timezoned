@@ -1,5 +1,5 @@
 import { Badge } from 'flowbite-react';
-import { gmtStr } from '@/lib/timezones';
+import { utcStr } from '@/lib/timezones';
 import { IClock } from '@/lib/clock';
 import { Card } from './core/card';
 import TimeDisplay from './bits/time-display';
@@ -35,7 +35,7 @@ export function DefaultClockCard(props: Props) {
           {timeZone}
         </Badge>
         <Badge color="success">
-          {gmtStr(timeZone)}
+          {utcStr(timeZone)}
         </Badge>
       </div>
     </Card>

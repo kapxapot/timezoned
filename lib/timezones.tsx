@@ -46,7 +46,7 @@ export function timeZoneMatches(query: string, timeZoneName: string): boolean {
     return true;
   }
 
-  if (lq.startsWith("gmt") && gmtStr(timeZoneName).toLowerCase().startsWith(lq)) {
+  if ((lq.startsWith("utc") || lq.startsWith("gmt")) && utcStr(timeZoneName).toLowerCase().startsWith(lq.replace(/^gmt/, "utc"))) {
     return true;
   }
 
@@ -154,8 +154,8 @@ export function tzDate(date: Date, timeZone?: string): Date {
   return new Date(dateStr);
 }
 
-export function gmtStr(timeZone: string): string {
-  return `GMT${utcOffset(timeZone)}`;
+export function utcStr(timeZone: string): string {
+  return `UTC${utcOffset(timeZone)}`;
 }
 
 function plus(n: number, emptyForZero: boolean = false): string {

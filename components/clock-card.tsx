@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Badge } from 'flowbite-react';
-import { tzOffset, gmtStr, extractCity } from '@/lib/timezones';
+import { tzOffset, utcStr, extractCity } from '@/lib/timezones';
 import { ClockChange, IClock } from '@/lib/clock';
 import EditClock from './modals/edit-clock';
 import ShowTimeline from './modals/show-timeline';
@@ -86,7 +86,7 @@ export function ClockCard(props: Props) {
             {offset ?? "🏡"}
           </Badge>
           <Badge color="success">
-            {gmtStr(timeZone)}
+            {utcStr(timeZone)}
           </Badge>
         </div>
         <div className="mt-2">
