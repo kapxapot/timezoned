@@ -1,3 +1,4 @@
+import Image from "next/image";
 import GitHubIcon from "./github-icon";
 import Copyright from "./copyright";
 
@@ -20,7 +21,7 @@ export default function Footer() {
 
         <div className="text-right flex sm:flex-col gap-x-2">
           <span>My new project:</span>
-          <a href="https://mapfolks.com" className="font-semibold hover:underline" target="_blank">🗺️ Mapfolks</a>
+          <a href="https://nametoavatar.com" className="font-semibold hover:underline flex items-center gap-1" target="_blank"><Image src="https://nametoavatar.com/favicon/favicon-32x32.png" alt="Name to Avatar" width={16} height={16} /> Name to Avatar</a>
         </div>
       </div>
     </footer>
